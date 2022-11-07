@@ -1,0 +1,40 @@
+{
+	"printWidth": 80,
+	"semi": false,
+	"singleQuote": false,
+	"tabWidth": 4,
+	"trailingComma": "all",
+	"useTabs": true,
+	"plugins": ["./node_modules/prettier-plugin-astro"],
+	"overrides": [
+		{
+			"files": "*.astro",
+			"options": {
+				"parser": "astro",
+				"printWidth": 80
+			}
+		},
+		{
+			"files": [
+				".*",
+				"*.json",
+				"*.md",
+				"*.toml",
+				"*.yml"
+			],
+			"options": {
+				"useTabs": true
+			}
+		},
+		{
+			"files": [
+				"**/*.css",
+				"**/*.scss"
+			],
+			"options": {
+				"useTabs": true,
+				"singleQuote": false
+			}
+		}
+	]
+}

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /$
+Sitemap: https://dapp.faterium.com/sitemap-0.xml

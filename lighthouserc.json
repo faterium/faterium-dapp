@@ -1,0 +1,31 @@
+{
+	"ci": {
+		"collect": {
+			"numberOfRuns": 1,
+			"staticDistDir": "./dist",
+			"url": ["/"]
+		},
+		"assert": {
+			"preset": "lighthouse:recommended",
+			"assertions": {
+				"apple-touch-icon": "off",
+				"crawlable-anchors": "off",
+				"csp-xss": "off",
+				"html-has-lang": "off",
+				"installable-manifest": "off",
+				"link-name": "off",
+				"maskable-icon": "off",
+				"meta-description": "off",
+				"service-worker": "off",
+				"splash-screen": "off",
+				"non-composited-animations": "off",
+				"themed-omnibox": "off"
+			}
+		},
+		"upload": {
+			"target": "temporary-public-storage"
+		},
+		"server": {},
+		"wizard": {}
+	}
+}

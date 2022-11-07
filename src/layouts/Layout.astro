@@ -1,0 +1,101 @@
+---
+// eslint-disable-next-line import/no-unresolved
+// import "virtual:windi.css"
+import "aos/dist/aos.css"
+import Head from "@components/Head.astro"
+
+export interface Props {
+	title: string
+	description: string
+	coverUrl: string
+}
+const { title, description, coverUrl } = Astro.props
+---
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<Head title={title} description={description} coverUrl={coverUrl} />
+
+		<style lang="sass" is:global>
+			/* NunitoSans - Bold */
+			@font-face
+				font-display: swap
+				font-family: "NunitoSans"
+				font-style: normal
+				font-weight: 700
+				src: local(""), url("/fonts/NunitoSans/NunitoSans-Bold.ttf") format("ttf")
+			/* NunitoSans - Regular */
+			@font-face
+				font-display: swap
+				font-family: "NunitoSans"
+				font-style: normal
+				font-weight: 600
+				src: local(""), url("/fonts/NunitoSans/NunitoSans-SemiBold.ttf") format("ttf")
+			/* NunitoSans - Regular */
+			@font-face
+				font-display: swap
+				font-family: "NunitoSans"
+				font-style: normal
+				font-weight: 400
+				src: local(""), url("/fonts/NunitoSans/NunitoSans-Regular.ttf") format("ttf")
+			/* NunitoSans - Regular */
+			@font-face
+				font-display: swap
+				font-family: "NunitoSans"
+				font-style: normal
+				font-weight: 300
+				src: local(""), url("/fonts/NunitoSans/NunitoSans-Light.ttf") format("ttf")
+
+			html, body
+				background: hsla(260,40%,5%,1)
+
+			body
+				margin: 0
+				padding: 0
+				height: 100vh
+				width: 100vw
+				overflow-x: hidden
+				overflow-y: auto
+				display: flex
+				flex-direction: column
+				font-family: "NunitoSans", sans-serif
+				font-weight: 300
+				color: white
+				button
+					font-weight: 700
+				p, li
+					// color: #A2A3A8
+		</style>
+
+		<script>
+			import AOS from "aos"
+			AOS.init({
+				once: true,
+			})
+			window.addEventListener("load", AOS.refresh)
+		</script>
+
+		<script>
+			const lightSchemeIcon = document.querySelector("link#light-scheme-icon")
+			const darkSchemeIcon = document.querySelector("link#dark-scheme-icon")
+
+			const matcher = window.matchMedia("(prefers-color-scheme: dark)")
+			matcher.addEventListener("change", onUpdate)
+			onUpdate()
+
+			function onUpdate() {
+				if (matcher.matches) {
+					lightSchemeIcon.remove()
+					document.head.append(darkSchemeIcon)
+				} else {
+					document.head.append(lightSchemeIcon)
+					darkSchemeIcon.remove()
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<slot />
+	</body>
+</html>

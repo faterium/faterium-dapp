@@ -1,0 +1,130 @@
+{
+	"settings": {
+		"import/resolver": {
+			"typescript": {
+				"project": [
+					"tsconfig.json"
+				]
+			}
+		}
+	},
+	"env": {
+		"node": true,
+		"es2022": true,
+		"browser": true
+	},
+	"extends": ["eslint:recommended"],
+	"plugins": ["eslint-plugin-tsdoc"],
+	"rules": {
+		"no-tabs": 0,
+		"no-restricted-syntax": 0,
+		"tsdoc/syntax": "warn",
+		"no-mixed-spaces-and-tabs": "error",
+		"indent": ["error", "tab"],
+		"quotes": ["error", "double"],
+		"comma-dangle": ["error", "always-multiline"],
+		"semi": ["error", "never"]
+	},
+	"parserOptions": {
+		"ecmaVersion": "latest",
+		"sourceType": "module"
+	},
+	"overrides": [
+		{
+			"files": ["*.astro"],
+			"extends": [
+				"airbnb-base",
+				"plugin:astro/recommended",
+				"prettier"
+			],
+			"parser": "astro-eslint-parser",
+			"parserOptions": {
+				"parser": "@typescript-eslint/parser",
+				"extraFileExtensions": [".astro"]
+			},
+			"rules": {
+				"import/extensions": "off",
+				"quotes": ["error", "double"],
+				"import/no-named-as-default-member": "off",
+				"import/no-named-as-default": "off",
+				"import/prefer-default-export": "off",
+				"import/no-unresolved": [2, {
+					"ignore": [
+						"@astrojs/image/components"
+					]
+				}],
+				"import/no-extraneous-dependencies": "off",
+				"indent": ["error", "tab"],
+				"max-lines": ["error", {
+					"max": 200,
+					"skipComments": true,
+					"skipBlankLines": true
+				}]
+			},
+			"globals": {
+				"astroHTML": "readonly"
+			}
+		},
+		{
+			"files": ["*.vue"],
+			"extends": [
+				"airbnb-base",
+				"plugin:prettier/recommended",
+				"plugin:vue/vue3-recommended",
+				"prettier"
+			],
+			"parserOptions": {
+				"parser": "@typescript-eslint/parser",
+				"extraFileExtensions": [".vue"]
+			},
+			"rules": {
+				"import/no-extraneous-dependencies": "off",
+				"no-mixed-spaces-and-tabs": "error",
+				"vue/multi-word-component-names": "off",
+				"vue/script-indent": ["error", "tab"],
+				"vue/html-indent": ["error", "tab"],
+				"indent": ["error", "tab"],
+				"no-unused-vars": "off",
+				"quotes": ["error", "double"],
+				"comma-dangle": ["error", "always-multiline"],
+				"semi": ["error", "never"],
+				"import/extensions": "off"
+			}
+		},
+		{
+			"files": ["*.ts"],
+			"parser": "@typescript-eslint/parser",
+			"extends": [
+				"airbnb-base",
+				"plugin:@typescript-eslint/recommended",
+				"prettier"
+			],
+			"rules": {
+				"@typescript-eslint/no-unused-vars": ["error", {
+					"argsIgnorePattern": "^_",
+					"destructuredArrayIgnorePattern": "^_"
+				}],
+				"@typescript-eslint/no-non-null-assertion": "off",
+				"max-lines": ["error", {
+					"max": 200,
+					"skipComments": true,
+					"skipBlankLines": true
+				}],
+				"quotes": ["error", "double"],
+				"indent": ["error", "tab"],
+				"import/prefer-default-export": 0,
+				"import/no-extraneous-dependencies": 0,
+				"import/extensions": [
+					"error",
+					"ignorePackages",
+					{
+						"js": "never",
+						"jsx": "never",
+						"ts": "never",
+						"tsx": "never"
+					}
+				]
+			}
+		}
+	]
+}

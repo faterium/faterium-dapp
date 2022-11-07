@@ -1,0 +1,17 @@
+{
+  	"extends": "astro/tsconfigs/base",
+	"compilerOptions": {
+		"types": ["astro/client"],
+		"jsx": "preserve",
+		"allowSyntheticDefaultImports": true,
+		"baseUrl": ".",
+		"paths": {
+			"@partials/*": ["src/partials/*"],
+			"@components/*": ["src/components/*"],
+			"@layouts/*": ["src/layouts/*"],
+			"@lib/*": ["src/lib/*"],
+			"@utils/*": ["src/utils/*"],
+			"@assets/*": ["public/assets/*"]
+		}
+	}
+}

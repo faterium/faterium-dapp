@@ -1,0 +1,21 @@
+{
+	"editor.codeActionsOnSave": {
+		"source.fixAll": true,
+		"source.fixAll.eslint": true
+	},
+	"eslint.validate": [
+		"javascript",
+		"javascriptreact",
+		"astro",
+		"typescript",
+		"typescriptreact",
+		"vue",
+		"mdx"
+	],
+	"scss.lint.unknownAtRules": "ignore",
+	"editor.tabSize": 4,
+	"editor.detectIndentation": false,
+	"editor.insertSpaces": false,
+	"prettier.tabWidth": 4,
+	"prettier.useTabs": true
+}

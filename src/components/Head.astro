@@ -1,0 +1,62 @@
+---
+export interface Props {
+	title: string
+	description?: string
+	coverUrl?: string
+}
+
+const { title, description = "", coverUrl = "https://faterium.com/preview.png" } = Astro.props
+const canonicalUrl = Astro.url.href
+const schema = {
+	"@context": "https://schema.org",
+	"@type": "Organization",
+	url: "https://faterium.com/",
+	name: title,
+	contactPoint: {
+		"@type": "ContactPoint",
+		email: "support@faterium.com",
+		availableLanguage: {
+			"@type": "Language",
+			name: "English",
+			alternateName: "en",
+		},
+		contactType: "Customer Support",
+	},
+}
+---
+
+<!-- Global Metadata -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width" />
+
+<!-- Primary Meta Tags -->
+<title>{title}</title>
+<meta name="title" content={title} />
+{description && <meta name="description" content={description} />}
+<link rel="canonical" href={canonicalUrl} />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:title" content={title} />
+{description && <meta property="og:description" content={description} />}
+<meta property="og:image" content={coverUrl} />
+<meta property="og:site_name" content={title} />
+
+<!-- Twitter Tags -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content={canonicalUrl} />
+<meta property="twitter:title" content={title} />
+{description && <meta property="twitter:description" content={description} />}
+<meta property="twitter:image" content={coverUrl} />
+<meta name="twitter:site" content="@faterium" />
+<meta name="twitter:creator" content="@faterium" />
+
+<!-- Favicon -->
+<link rel="icon" href="/favicon_dark.ico" id="light-scheme-icon">
+<link rel="icon" href="/favicon_light.ico" id="dark-scheme-icon">
+
+<!-- Fonts -->
+<link rel="preload" href="/fonts/NunitoSans/NunitoSans-Bold.ttf" as="font" type="font/ttf" crossorigin>
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)}></script>

@@ -1,0 +1,12 @@
+{
+	"recommendations": [
+		"dbaeumer.vscode-eslint",
+		"astro-build.astro-vscode",
+		"voorjaar.windicss-intellisense",
+		"syler.sass-indented",
+		"mrmlnc.vscode-pugbeautify",
+		"esbenp.prettier-vscode",
+		"svelte.svelte-vscode"
+	],
+	"unwantedRecommendations": []
+}

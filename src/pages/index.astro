@@ -1,0 +1,17 @@
+---
+import Layout from "@layouts/Layout.astro"
+import MainSection from "@components/MainSection.vue"
+import Footer from "@components/Footer.vue"
+---
+
+<Layout
+	title="Faterium"
+	description="Faterium Decentralized Application to work with Faterium Network."
+	coverUrl="https://dapp.faterium.com/preview.png"
+>
+	<MainSection client:only />
+	<Footer />
+</Layout>
+
+<style lang="scss" is:global>
+</style>
