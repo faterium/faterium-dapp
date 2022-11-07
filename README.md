@@ -1,4 +1,4 @@
-# Official Faterium Website
+# Faterium Decentralized Application
 
 Faterium - a place where fates are forged.
 

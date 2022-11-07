@@ -2,16 +2,15 @@
 import { web3Enable } from "@polkadot/extension-dapp"
 
 const onClick = async () => {
-	// const { web3Enable } = require("@polkadot/extension-dapp")
 	const allInjected = await web3Enable("Faterium Future dApp")
-	alert("Connected")
+	alert(`Connected ${allInjected.length} account/s`)
 }
 </script>
 
 <template lang="pug">
 main.content.section
 	div.content--canvas
-	div.wrapper(data-aos="zoom-in" data-aos-duration="2000" data-aos-delay="500")
+	div.wrapper(data-aos="zoom-in" data-aos-duration="1000")
 		h2.title Faterium
 		div.link.connect(@click="onClick")
 			span.link_inner Connect to Polkadot

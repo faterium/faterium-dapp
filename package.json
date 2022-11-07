@@ -46,7 +46,6 @@
 	},
 	"dependencies": {
 		"@polkadot/extension-dapp": "^0.44.6",
-		"aos": "^2.3.4",
-		"simplex-noise": "^4.0.1"
+		"aos": "^2.3.4"
 	}
 }
