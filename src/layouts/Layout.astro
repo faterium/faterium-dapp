@@ -24,31 +24,18 @@ const { title, description, coverUrl } = Astro.props
 				font-family: "NunitoSans"
 				font-style: normal
 				font-weight: 700
-				src: local(""), url("/fonts/NunitoSans/NunitoSans-Bold.ttf") format("ttf")
-			/* NunitoSans - Regular */
-			@font-face
-				font-display: swap
-				font-family: "NunitoSans"
-				font-style: normal
-				font-weight: 600
-				src: local(""), url("/fonts/NunitoSans/NunitoSans-SemiBold.ttf") format("ttf")
-			/* NunitoSans - Regular */
-			@font-face
-				font-display: swap
-				font-family: "NunitoSans"
-				font-style: normal
-				font-weight: 400
-				src: local(""), url("/fonts/NunitoSans/NunitoSans-Regular.ttf") format("ttf")
-			/* NunitoSans - Regular */
+				src: local(""), url("/fonts/NunitoSans-Bold.woff2") format("woff2")
+			/* NunitoSans - Light */
 			@font-face
 				font-display: swap
 				font-family: "NunitoSans"
 				font-style: normal
 				font-weight: 300
-				src: local(""), url("/fonts/NunitoSans/NunitoSans-Light.ttf") format("ttf")
+				src: local(""), url("/fonts/NunitoSans-Light.woff2") format("woff2")
 
 			html, body
 				background: hsla(260,40%,5%,1)
+				font-family: "NunitoSans"
 
 			body
 				margin: 0
@@ -59,7 +46,7 @@ const { title, description, coverUrl } = Astro.props
 				overflow-y: auto
 				display: flex
 				flex-direction: column
-				font-family: "NunitoSans", sans-serif
+				font-family: "NunitoSans"
 				font-weight: 300
 				color: white
 				button
