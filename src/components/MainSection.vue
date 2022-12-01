@@ -4,7 +4,8 @@ import PocketBase from "pocketbase"
 
 const onClickConnect = async () => {
 	const allInjected = await web3Enable("Faterium Future dApp")
-	alert(`Connected ${allInjected.length} account/s`)
+	// eslint-disable-next-line no-console
+	console.log(`Connected ${allInjected.length} account/s`)
 }
 const onClick = async () => {
 	const pb = new PocketBase("https://dapp-api.faterium.com")
@@ -13,6 +14,7 @@ const onClick = async () => {
 	// 	"0123456789",
 	// )
 	const result = await pb.collection("images").getList(1, 20, {})
+	// eslint-disable-next-line no-console
 	console.log(result)
 }
 </script>
@@ -30,40 +32,21 @@ main.content.section
 
 <style lang="scss" scoped>
 .content {
-	display: flex;
-	flex-direction: column;
-	height: 100vh;
-	width: 100vw;
-	position: relative;
-	justify-content: center;
-	align-items: center;
-	position: relative;
+	@apply flex flex-col h-100vh w-100vw relative justify-center items-center;
 
 	.wrapper {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		z-index: 2;
+		@apply flex flex-col justify-center items-center z-2;
 
 		.title {
-			font-size: 96px;
-			line-height: 1;
-			text-align: center;
-			margin: 0 0 30px;
+			@apply text-8xl leading-none m-0 mb-8 text-center;
 		}
 
 		.button-wrapper {
-			display: flex;
-			flex-direction: column;
-			gap: 10px;
-			justify-content: center;
-			align-items: center;
+			@apply flex flex-col gap-3 justify-center items-center;
 		}
 
 		.link {
-			cursor: pointer;
-			z-index: 0;
+			@apply cursor-pointer z-0 text-white uppercase no-underline rounded-4xl font-normal text-sm py-17px px-1px;
 			background: linear-gradient(
 				93deg,
 				#ce3131 0.11%,
@@ -72,25 +55,15 @@ main.content.section
 				#d5af51 74.8%,
 				#e9c681 99.76%
 			);
-			color: white;
-			text-transform: uppercase;
-			text-decoration: none;
-			border-radius: 30px;
-			font-weight: 400;
-			font-size: 14px;
 			transition: all 0.8s;
-			padding: 17px 1px;
 
 			span.link_inner {
-				border-radius: 30px;
+				@apply rounded-4xl py-4 px-15;
 				background: hsla(260, 40%, 5%, 1);
-				padding: 16px 60px;
 				transition: all 0.4s;
 			}
 
 			&:hover {
-				background: white;
-
 				background: linear-gradient(
 					93deg,
 					#fff 0.11%,
@@ -100,8 +73,7 @@ main.content.section
 					#fff 99.76%
 				);
 				span.link_inner {
-					background: rgb(255, 255, 255);
-					color: black;
+					@apply bg-white text-black;
 				}
 			}
 		}
