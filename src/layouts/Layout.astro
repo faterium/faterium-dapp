@@ -1,7 +1,6 @@
 ---
 // eslint-disable-next-line import/no-unresolved
 // import "virtual:windi.css"
-import "aos/dist/aos.css"
 import Head from "@components/Head.astro"
 
 export interface Props {
@@ -54,14 +53,6 @@ const { title, description, coverUrl } = Astro.props
 				p, li
 					// color: #A2A3A8
 		</style>
-
-		<script>
-			import AOS from "aos"
-			AOS.init({
-				once: true,
-			})
-			window.addEventListener("load", AOS.refresh)
-		</script>
 
 		<script>
 			const lightSchemeIcon = document.querySelector("link#light-scheme-icon")

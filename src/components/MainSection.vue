@@ -1,19 +1,31 @@
 <script lang="ts" setup>
 import { web3Enable } from "@polkadot/extension-dapp"
+import PocketBase from "pocketbase"
 
-const onClick = async () => {
+const onClickConnect = async () => {
 	const allInjected = await web3Enable("Faterium Future dApp")
 	alert(`Connected ${allInjected.length} account/s`)
+}
+const onClick = async () => {
+	const pb = new PocketBase("https://dapp-api.faterium.com")
+	// const authData = await pb.admins.authWithPassword(
+	// 	"test@faterium.com",
+	// 	"0123456789",
+	// )
+	const result = await pb.collection("images").getList(1, 20, {})
+	console.log(result)
 }
 </script>
 
 <template lang="pug">
 main.content.section
-	div.content--canvas
-	div.wrapper(data-aos="zoom-in" data-aos-duration="1000")
+	div.wrapper
 		h2.title Faterium
-		div.link.connect(@click="onClick")
-			span.link_inner Connect to Polkadot
+		div.button-wrapper
+			div.link.substrate(@click="onClickConnect")
+				span.link_inner Connect to Polkadot
+			div.link.pocketbase(@click="onClick")
+				span.link_inner Connect to PocketBase
 </template>
 
 <style lang="scss" scoped>
@@ -39,6 +51,14 @@ main.content.section
 			line-height: 1;
 			text-align: center;
 			margin: 0 0 30px;
+		}
+
+		.button-wrapper {
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+			justify-content: center;
+			align-items: center;
 		}
 
 		.link {

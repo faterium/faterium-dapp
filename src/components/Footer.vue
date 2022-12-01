@@ -4,18 +4,8 @@ import Logo from "./Logo.vue"
 
 <template lang="pug">
 div.footer
-	span.copyright(
-		data-aos="zoom-in-right"
-		data-aos-duration="1000"
-		data-aos-delay="500"
-		data-aos-anchor=".content"
-	) © 2022 Faterium. All rights reserved.
-	span.author(
-		data-aos="zoom-in-left"
-		data-aos-duration="1000"
-		data-aos-delay="500"
-		data-aos-anchor=".content"
-	) Made with love by <a href="https://dodorare.com" target="_blank"><Logo /></a>
+	span.copyright © 2022 Faterium. All rights reserved.
+	span.author Made with love by <a href="https://dodorare.com" target="_blank"><Logo /></a>
 </template>
 
 <style lang="scss" scoped>

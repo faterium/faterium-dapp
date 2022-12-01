@@ -1,7 +1,7 @@
 {
 	"ci": {
 		"collect": {
-			"numberOfRuns": 1,
+			"numberOfRuns": 3,
 			"staticDistDir": "./dist",
 			"url": ["/"]
 		},
@@ -19,7 +19,10 @@
 				"service-worker": "off",
 				"splash-screen": "off",
 				"non-composited-animations": "off",
-				"themed-omnibox": "off"
+				"themed-omnibox": "off",
+				"canonical": "off",
+				"content-width": "off",
+				"external-anchors-use-rel-noopener": "off"
 			}
 		},
 		"upload": {
