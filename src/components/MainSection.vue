@@ -25,9 +25,9 @@ main.content.section
 		h2.title Faterium
 		div.button-wrapper
 			div.link.substrate(@click="onClickConnect")
-				span.link_inner Connect to Polkadot
+				span.link_inner Connect
 			div.link.pocketbase(@click="onClick")
-				span.link_inner Connect to PocketBase
+				span.link_inner Update
 </template>
 
 <style lang="scss" scoped>
@@ -38,11 +38,11 @@ main.content.section
 		@apply flex flex-col justify-center items-center z-2;
 
 		.title {
-			@apply text-8xl leading-none m-0 mb-8 text-center;
+			@apply text-8xl font-bold m-0 mb-8 text-center;
 		}
 
 		.button-wrapper {
-			@apply flex flex-col gap-3 justify-center items-center;
+			@apply flex flex-row gap-3 justify-center items-center;
 		}
 
 		.link {
