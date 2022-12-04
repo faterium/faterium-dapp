@@ -6,6 +6,7 @@ import windiCSS from "vite-plugin-windicss"
 // https://astro.build/config
 export default defineConfig({
 	site: "https://dapp.faterium.com",
+	output: "server",
 	vite: {
 		plugins: [windiCSS()],
 	},

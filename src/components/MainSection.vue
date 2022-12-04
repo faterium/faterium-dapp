@@ -1,12 +1,8 @@
 <script lang="ts" setup>
-import { web3Enable } from "@polkadot/extension-dapp"
 import PocketBase from "pocketbase"
+import Button from "@components/Button.vue"
+import ListPoll from "@components/ListPoll.vue"
 
-const onClickConnect = async () => {
-	const allInjected = await web3Enable("Faterium Future dApp")
-	// eslint-disable-next-line no-console
-	console.log(`Connected ${allInjected.length} account/s`)
-}
 const onClick = async () => {
 	const pb = new PocketBase("https://dapp-api.faterium.com")
 	// const authData = await pb.admins.authWithPassword(
@@ -22,12 +18,16 @@ const onClick = async () => {
 <template lang="pug">
 main.content.section
 	div.wrapper
-		h2.title Faterium
-		div.button-wrapper
-			div.link.substrate(@click="onClickConnect")
-				span.link_inner Connect
-			div.link.pocketbase(@click="onClick")
-				span.link_inner Update
+		h1.title all polls
+		div.polls-list
+			ListPoll.x1(
+				link="/polls/pid"
+				title="How many times should Jon Snow die in the next season?"
+				image="https://dapp-api.faterium.com/ipfs/QmPL7MwuSHKH2e6qma1ZnTeMt4QJKSMY2ZHyVx3mQNXyPH"
+			)
+		div.actions
+			Button.action.create(text="create a poll" fill @click="onClick")
+			Button.action.update(text="update list" fill @click="onClick")
 </template>
 
 <style lang="scss" scoped>
@@ -36,46 +36,14 @@ main.content.section
 
 	.wrapper {
 		@apply flex flex-col justify-center items-center z-2;
-
 		.title {
-			@apply text-8xl font-bold m-0 mb-8 text-center;
+			@apply text-4xl font-bold m-0 mb-8 text-center text-black;
 		}
-
-		.button-wrapper {
-			@apply flex flex-row gap-3 justify-center items-center;
+		div.polls-list {
+			@apply flex justify-start items-start overflow-scroll h-60 w-120;
 		}
-
-		.link {
-			@apply cursor-pointer z-0 text-white uppercase no-underline rounded-4xl font-normal text-sm py-17px px-1px;
-			background: linear-gradient(
-				93deg,
-				#ce3131 0.11%,
-				#d65b4d 25.06%,
-				#c56217 50%,
-				#d5af51 74.8%,
-				#e9c681 99.76%
-			);
-			transition: all 0.8s;
-
-			span.link_inner {
-				@apply rounded-4xl py-4 px-15;
-				background: hsla(260, 40%, 5%, 1);
-				transition: all 0.4s;
-			}
-
-			&:hover {
-				background: linear-gradient(
-					93deg,
-					#fff 0.11%,
-					#fff 25.06%,
-					#fff 50%,
-					#fff 74.8%,
-					#fff 99.76%
-				);
-				span.link_inner {
-					@apply bg-white text-black;
-				}
-			}
+		div.actions {
+			@apply flex flex-row gap-4;
 		}
 	}
 }

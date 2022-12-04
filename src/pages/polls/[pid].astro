@@ -1,16 +1,17 @@
 ---
 import Layout from "@layouts/Layout.astro"
-import MainSection from "@components/MainSection.vue"
+// import MainSection from "@components/MainSection.vue"
 import Header from "@components/Header.vue"
-// import Footer from "@components/Footer.vue"
+
+const { pid } = Astro.params;
 ---
 
 <Layout
-	title="Faterium dApp"
+	title="Faterium poll"
 	description="Faterium Decentralized Application to work with Faterium Network."
 	coverUrl="https://dapp.faterium.com/preview.png"
 >
 	<Header client:only />
-	<MainSection client:load />
+	<h1>{ pid }</h1>
 	<!-- <Footer /> -->
 </Layout>

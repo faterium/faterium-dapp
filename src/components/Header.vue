@@ -1,12 +1,19 @@
 <script lang="ts" setup>
 import Button from "@components/Button.vue"
+import { web3Enable } from "@polkadot/extension-dapp"
+
+const onClickConnect = async () => {
+	const allInjected = await web3Enable("Faterium Future dApp")
+	// eslint-disable-next-line no-console
+	console.log(`Connected ${allInjected.length} account/s`)
+}
 </script>
 
 <template lang="pug">
 header.header
-	a.logo(title="Main" href="/" rel="noopener") Logo
+	a.logo(title="Main" href="/" rel="noopener") faterium
 	//- Links
-	Button.action(text="Connect" fill target="_self" url="mailto:support@faterium.com")
+	Button.action(text="Connect" fill @click="onClickConnect")
 	//- Button.action(text="Contact us" fill target="_self" url="mailto:support@faterium.com") Contact Us
 </template>
 
@@ -18,7 +25,7 @@ header.header
 		lg:(px-15)
 		2xl:(h-80px px-20);
 	.logo {
-		@apply <sm:(hidden h-32px)
+		@apply font-bold text-2xl <sm:(hidden h-32px)
 			lg:(mr-20px)
 			xl:(mr-36px)
 			2xl:(h-42px);
