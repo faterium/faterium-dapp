@@ -18,10 +18,25 @@ main.content.section
 	div.wrapper
 		h1.title all polls
 		div.polls-list
-			ListPoll.x1(
-				link="/polls/pid"
+			ListPoll(
+				link="/polls/pid1"
 				title="How many times should Jon Snow die in the next season?"
 				image="https://dapp-api.faterium.com/ipfs/QmPL7MwuSHKH2e6qma1ZnTeMt4QJKSMY2ZHyVx3mQNXyPH"
+			)
+			ListPoll(
+				link="/polls/pid2"
+				title="How many times should Jon Snow die in the next season?"
+				image="https://dapp-api.faterium.com/ipfs/QmZSQzbqm7qbk8EfuT1F158RQGPUTJWCKgFUYJSbkf88CY"
+			)
+			ListPoll(
+				link="/polls/pid3"
+				title="How many times should Jon Snow die in the next season?"
+				image="https://dapp-api.faterium.com/ipfs/QmPL7MwuSHKH2e6qma1ZnTeMt4QJKSMY2ZHyVx3mQNXyPH"
+			)
+			ListPoll(
+				link="/polls/pid4"
+				title="How many times should Jon Snow die in the next season?"
+				image="https://dapp-api.faterium.com/ipfs/QmZSQzbqm7qbk8EfuT1F158RQGPUTJWCKgFUYJSbkf88CY"
 			)
 		div.actions
 			Button.action.create(text="create a poll" fill url="/create-poll")
@@ -37,16 +52,10 @@ main.content.section
 			@apply text-4xl font-bold m-0 mb-8 text-center text-black;
 		}
 		div.polls-list {
-			@apply flex justify-start items-start overflow-scroll h-60 w-120;
+			@apply flex flex-col justify-start items-start gap-4 overflow-scroll h-80 w-120;
 		}
 		div.actions {
-			@apply flex flex-row gap-4;
-			.create {
-				@apply bg-green-500;
-				&:hover {
-					@apply bg-green-400;
-				}
-			}
+			@apply flex flex-row gap-4 mt-8;
 		}
 	}
 }

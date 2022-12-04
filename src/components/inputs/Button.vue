@@ -20,19 +20,25 @@ button.button(v-else :class="fill ? 'filled' : 'empty'") {{ text }}
 	border: 1px transparent solid;
 	transition: background 0.3s ease, color 0.2s ease;
 	letter-spacing: 1px;
-}
-.button.empty {
-	border: 1px #333 solid;
+	&.empty {
+		border: 1px #333 solid;
 
-	&:hover {
-		background: #fff;
-		color: rgba(234, 108, 85, 1);
+		&:hover {
+			background: #fff;
+			color: rgba(234, 108, 85, 1);
+		}
 	}
-}
-.button.filled {
-	background-color: #333;
-	&:hover {
-		background: #555;
+	&.filled {
+		background-color: #333;
+		&:hover {
+			background: #555;
+		}
+	}
+	&.create {
+		@apply bg-green-500;
+		&:hover {
+			@apply bg-green-400;
+		}
 	}
 }
 </style>
