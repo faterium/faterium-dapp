@@ -45,6 +45,7 @@
 		"windicss": "^3.5.6"
 	},
 	"dependencies": {
+		"@astrojs/cloudflare": "^4.1.0",
 		"@polkadot/api": "^9.9.4",
 		"@polkadot/extension-dapp": "^0.44.6",
 		"pocketbase": "^0.8.1"

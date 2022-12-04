@@ -2,11 +2,13 @@ import { defineConfig } from "astro/config"
 import sitemap, { ChangeFreq } from "@astrojs/sitemap"
 import vue from "@astrojs/vue"
 import windiCSS from "vite-plugin-windicss"
+import cloudflare from "@astrojs/cloudflare"
 
 // https://astro.build/config
 export default defineConfig({
 	site: "https://dapp.faterium.com",
 	output: "server",
+	adapter: cloudflare(),
 	vite: {
 		plugins: [windiCSS()],
 	},

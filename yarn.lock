@@ -15,6 +15,14 @@
   resolved "https://registry.yarnpkg.com/@antfu/utils/-/utils-0.5.2.tgz#8c2d931ff927be0ebe740169874a3d4004ab414b"
   integrity sha512-CQkeV+oJxUazwjlHD0/3ZD08QWKuGQkhnrKo3e6ly5pd48VUpXbb77q0xMU4+vc2CkJnDS02Eq/M9ugyX20XZA==
 
+"@astrojs/cloudflare@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@astrojs/cloudflare/-/cloudflare-4.1.0.tgz#cacf6a1946f6b7433946d119e06ab5fd9dbd93e5"
+  integrity sha512-BDuNFi1sA9qx6Jiei+cVhbGrmd0w/IdN9CD861M8fT8/k2P08py1jubzp3SZ5PcOWudyvKjQhkb7ON5JkniIcg==
+  dependencies:
+    esbuild "^0.14.42"
+    tiny-glob "^0.2.9"
+
 "@astrojs/compiler@0.18.0 - 0.23.0 || ^0.23.0", "@astrojs/compiler@^0.23.4":
   version "0.23.5"
   resolved "https://registry.yarnpkg.com/@astrojs/compiler/-/compiler-0.23.5.tgz#ea57a2b994b2930e3b3d2d524f10866698fef4f1"
@@ -2674,7 +2682,7 @@ esbuild-windows-arm64@0.15.12:
   resolved "https://registry.yarnpkg.com/esbuild-windows-arm64/-/esbuild-windows-arm64-0.15.12.tgz#9a7266404334a86be800957eaee9aef94c3df328"
   integrity sha512-Of3MIacva1OK/m4zCNIvBfz8VVROBmQT+gRX6pFTLPngFYcj6TFH/12VveAqq1k9VB2l28EoVMNMUCcmsfwyuA==
 
-esbuild@^0.14.0, esbuild@^0.14.43:
+esbuild@^0.14.0, esbuild@^0.14.42, esbuild@^0.14.43:
   version "0.14.54"
   resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.14.54.tgz#8b44dcf2b0f1a66fc22459943dccf477535e9aa2"
   integrity sha512-Cy9llcy8DvET5uznocPyqL3BFRrFXSVqbgpMJ9Wz8oVjZlh/zUSNbPRbov0VX7VxN2JH1Oa0uNxZ7eLRb62pJA==
