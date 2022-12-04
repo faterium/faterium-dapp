@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import Button from "@components/Button.vue"
+import Button from "@components/inputs/Button.vue"
 import { web3Enable } from "@polkadot/extension-dapp"
 
 const onClickConnect = async () => {

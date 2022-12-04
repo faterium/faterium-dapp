@@ -1,16 +1,14 @@
 ---
 import Layout from "@layouts/Layout.astro"
 import Header from "@components/Header.vue"
-import MainSection from "@partials/MainSection.vue"
-// import Footer from "@components/Footer.vue"
+import CreateSection from "@partials/CreateSection.vue"
 ---
 
 <Layout
-	title="Faterium dApp"
+	title="Create Poll"
 	description="Faterium Decentralized Application to work with Faterium Network."
 	coverUrl="https://dapp.faterium.com/preview.png"
 >
 	<Header client:only />
-	<MainSection client:load />
-	<!-- <Footer /> -->
+	<CreateSection client:load />
 </Layout>

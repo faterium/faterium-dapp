@@ -1,7 +1,7 @@
 ---
 import Layout from "@layouts/Layout.astro"
-// import MainSection from "@components/MainSection.vue"
 import Header from "@components/Header.vue"
+import OpenPollSection from "@partials/OpenPollSection.vue"
 
 const { pid } = Astro.params;
 ---
@@ -12,6 +12,5 @@ const { pid } = Astro.params;
 	coverUrl="https://dapp.faterium.com/preview.png"
 >
 	<Header client:only />
-	<h1>{ pid }</h1>
-	<!-- <Footer /> -->
+	<OpenPollSection client:only pid={pid as string} />
 </Layout>

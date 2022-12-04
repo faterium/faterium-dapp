@@ -1,17 +1,15 @@
 <script lang="ts" setup>
-import PocketBase from "pocketbase"
-import Button from "@components/Button.vue"
+import Button from "@components/inputs/Button.vue"
 import ListPoll from "@components/ListPoll.vue"
+import { connectPB } from "@utils/pb"
 
 const onClick = async () => {
-	const pb = new PocketBase("https://dapp-api.faterium.com")
+	const pb = connectPB()
 	// const authData = await pb.admins.authWithPassword(
 	// 	"test@faterium.com",
 	// 	"0123456789",
 	// )
 	const result = await pb.collection("images").getList(1, 20, {})
-	// eslint-disable-next-line no-console
-	console.log(result)
 }
 </script>
 
@@ -26,17 +24,16 @@ main.content.section
 				image="https://dapp-api.faterium.com/ipfs/QmPL7MwuSHKH2e6qma1ZnTeMt4QJKSMY2ZHyVx3mQNXyPH"
 			)
 		div.actions
-			Button.action.create(text="create a poll" fill @click="onClick")
+			Button.action.create(text="create a poll" fill url="/create-poll")
 			Button.action.update(text="update list" fill @click="onClick")
 </template>
 
 <style lang="scss" scoped>
 .content {
 	@apply flex flex-col h-100vh w-100vw relative justify-center items-center;
-
 	.wrapper {
 		@apply flex flex-col justify-center items-center z-2;
-		.title {
+		h1.title {
 			@apply text-4xl font-bold m-0 mb-8 text-center text-black;
 		}
 		div.polls-list {
@@ -44,6 +41,12 @@ main.content.section
 		}
 		div.actions {
 			@apply flex flex-row gap-4;
+			.create {
+				@apply bg-green-500;
+				&:hover {
+					@apply bg-green-400;
+				}
+			}
 		}
 	}
 }
