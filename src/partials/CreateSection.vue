@@ -4,29 +4,44 @@ import Button from "@components/inputs/Button.vue"
 import ListInput from "@components/inputs/ListInput.vue"
 import FormInput from "@components/inputs/FormInput.vue"
 import ListPoll from "@components/ListPoll.vue"
-import { connectPB } from "@utils/pb"
+import { connectPB, PocketBase } from "@utils/pb"
 
+const fileFormData = new FormData()
 const formData = ref({
 	title: "",
 	image: "",
 	description: "",
-	// options: [],
+	options: [],
 	dateStart: "",
 	dateEnd: "",
 	currency: "",
 	goal: "",
-	// beneficiaries: [],
+	beneficiaries: [],
 })
 
-const onClick = async () => {
+const fileChanged = (event: Event) => {
+	const element = event.target as HTMLInputElement
+	const fileList: FileList | null = element.files
+	for (let i = 0; i < fileList.length; i += 1) {
+		fileFormData.append("file", fileList.item(i))
+	}
+}
+const uploadFile = async (pb: PocketBase) => {
+	const result = await pb.collection("images").create(fileFormData)
 	// eslint-disable-next-line no-console
-	console.log(formData.value)
-	// const pb = connectPB()
+	console.log("Upload file result", result)
+	return result.cid
+}
+const onClick = async () => {
+	const pb = connectPB()
+	const imageCid = await uploadFile(pb)
 	// const authData = await pb.admins.authWithPassword(
 	// 	"test@faterium.com",
 	// 	"0123456789",
 	// )
-	// const result = await pb.collection("images").getList(1, 20, {})
+	// const fileFormData = new FormData()
+	// const result = await pb.collection("polls").create()
+	// console.log(result)
 }
 </script>
 
@@ -47,6 +62,7 @@ main.content.section
 				title="Preview image"
 				v-model="formData.image"
 				type="file"
+				@change.stop="fileChanged"
 				required
 			)
 				| File types supported: JPG, PNG, GIF, SVG.
@@ -92,10 +108,11 @@ main.content.section
 			) The minimum target amount of tokens to make poll happen.
 			ListInput.beneficiaries(
 				title="Poll beneficiaries"
+				v-model="formData.beneficiaries"
 			) The minimum amount of tokens to make poll happen.
 		div.actions
 			Button.action.create(text="create poll" fill @click="onClick")
-			Button.action.back(text="cancel" fill url="/")
+			//- Button.action.back(text="cancel" fill url="/")
 </template>
 
 <style lang="scss" scoped>

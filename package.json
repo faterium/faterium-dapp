@@ -46,6 +46,7 @@
 	},
 	"dependencies": {
 		"@astrojs/cloudflare": "^4.1.0",
+		"@braid/vue-formulate": "^2.5.3",
 		"@polkadot/api": "^9.9.4",
 		"@polkadot/extension-dapp": "^0.44.6",
 		"pocketbase": "^0.8.1"
