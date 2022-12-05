@@ -3,6 +3,7 @@ interface Props {
 	title: string
 	modelValue?: any
 	required?: boolean
+	textarea?: boolean
 }
 const props = defineProps<Props>()
 const emit = defineEmits(["update:modelValue"])
@@ -12,7 +13,14 @@ const emit = defineEmits(["update:modelValue"])
 div.form-input
 	h3.title {{ title }} {{ required ? "*" : "" }}
 	div.description: slot
+	textarea(
+		v-if="textarea"
+		:value="modelValue"
+		@input="emit('update:modelValue', $event.target.value)"
+		v-bind="$attrs"
+	)
 	input(
+		v-else
 		:value="modelValue"
 		@input="emit('update:modelValue', $event.target.value)"
 		v-bind="$attrs"
@@ -28,11 +36,12 @@ div.form-input {
 	div.description {
 		@apply text-sm font-normal;
 	}
-	input {
+	input,
+	textarea {
 		@apply p-3 mt-3 rounded-4px w-full;
-		&[type="file"] {
-			@apply p-0;
-		}
+	}
+	textarea {
+		@apply min-h-30;
 	}
 }
 </style>

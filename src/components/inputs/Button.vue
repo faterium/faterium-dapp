@@ -23,11 +23,9 @@ button.button(v-else :class="fill ? 'filled' : 'empty'") {{ text }}
 	transition: background 0.3s ease, color 0.2s ease;
 	letter-spacing: 1px;
 	&.empty {
-		border: 1px #333 solid;
-
+		@apply p-0 py-4 bg-transparent border-none text-dark-300;
 		&:hover {
-			background: #fff;
-			color: rgba(234, 108, 85, 1);
+			@apply text-dark-300;
 		}
 	}
 	&.filled {

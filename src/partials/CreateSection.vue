@@ -2,10 +2,14 @@
 import { ref } from "vue"
 import dayjs from "dayjs"
 import Swal from "sweetalert2"
-
-import Button from "@components/inputs/Button.vue"
-import ListInput from "@components/inputs/ListInput.vue"
-import FormInput from "@components/inputs/FormInput.vue"
+import {
+	Button,
+	ListInput,
+	MediaInput,
+	FormInput,
+	ListItemOption,
+	ListItemBeneficiary,
+} from "@components/inputs"
 import { connectPB, PocketBase } from "@utils/pb"
 
 const fileFormData = new FormData()
@@ -14,12 +18,12 @@ const formData = ref({
 	title: "",
 	image: "",
 	description: "",
-	options: [],
+	options: [""],
 	dateStart: "",
 	dateEnd: "",
 	currency: "",
 	goal: "",
-	beneficiaries: [],
+	beneficiaries: [] as string[][],
 })
 
 const fileChanged = (event: Event) => {
@@ -33,13 +37,13 @@ const uploadFile = async (pb: PocketBase) => {
 	const result = await pb.collection("images").create(fileFormData)
 	// eslint-disable-next-line no-console
 	console.log("Upload file result", result)
-	return result.cid
+	return result
 }
 const uploadPollDetails = async (pb: PocketBase, data: any) => {
 	const result = await pb.collection("polls").create(data)
 	// eslint-disable-next-line no-console
 	console.log("Upload poll result", result)
-	return result.cid
+	return result
 }
 const submit = async () => {
 	submitDisabled.value = true
@@ -52,7 +56,7 @@ const submit = async () => {
 		showConfirmButton: false,
 		didOpen: () => Swal.showLoading(null),
 	})
-	const imageCid = await uploadFile(pb).catch((err) => {
+	const image = await uploadFile(pb).catch((err) => {
 		Swal.fire({
 			title: "Error on image upload!",
 			text: `Server returned ${err.status} error.
@@ -61,7 +65,7 @@ const submit = async () => {
 			confirmButtonText: "I will try again!",
 		})
 	})
-	if (!imageCid) return
+	if (!image) return
 	Swal.fire({
 		title: "Image successfully uploaded to the server and IPFS!",
 		toast: true,
@@ -75,12 +79,13 @@ const submit = async () => {
 	const data = {
 		title: formData.value.title,
 		description: formData.value.description,
-		options: "{}",
+		options: JSON.stringify(formData.value.options),
 		dateStart: formatDate(formData.value.dateStart),
 		dateEnd: formatDate(formData.value.dateEnd),
-		imageCid,
+		imageCid: image.cid,
+		image: image.id,
 	}
-	const pollCid = await uploadPollDetails(pb, data).catch((err) => {
+	const poll = await uploadPollDetails(pb, data).catch((err) => {
 		Swal.fire({
 			title: "Error during poll details upload!",
 			text: `Server returned ${err.status} error.
@@ -89,7 +94,11 @@ const submit = async () => {
 			confirmButtonText: "Cool, let me fix it!",
 		})
 	})
-	if (!pollCid) return
+	if (!poll) return
+	// TODO: Call substrate
+	// beneficiaries: formData.value.beneficiaries.map(
+	// 	([address, _]) => address,
+	// ),
 	await Swal.fire({
 		title: "Poll successfully created!",
 		icon: "success",
@@ -114,13 +123,13 @@ main.content.section
 		p.description * Required fields
 		form.create-form(type="group" @submit.prevent="submitButton")
 			FormInput.title(
-				title="Title"
+				title="Poll title"
 				v-model="formData.title"
 				placeholder="e.g. What poll to make?"
 				type="text"
 				required
 			) Title of the poll, will be shown on all views.
-			FormInput.image(
+			MediaInput.image(
 				title="Preview image"
 				type="file"
 				@change.stop="fileChanged"
@@ -128,18 +137,25 @@ main.content.section
 			)
 				| File types supported: JPG, PNG, GIF, SVG.
 				br
-				| Max size: 100 MB.
+				| Max size: 10 MB. Preferred aspect ratio: 2.39:1 or 16:9.
 			FormInput.description(
 				title="Description of poll"
 				placeholder="Provide a detailed description of your poll."
 				v-model="formData.description"
+				textarea
 			)
 				| The description will be included on the poll's detail page underneath its image.
 				br
 				| Markdown syntax is supported.
 			ListInput.options(
+				:itemComponent="ListItemOption"
 				title="Voting options"
+				:inputSettings=`[{
+					placeholder: "e.g. Some awesome voting option.",
+				}]`
 				v-model="formData.options"
+				addText="add an option"
+				:onItemAdd="function() { formData.options.push('') }"
 				required
 			) Voting options for the poll.
 			FormInput.start-date(
@@ -168,9 +184,22 @@ main.content.section
 				required
 			) The minimum target amount of tokens to make poll happen.
 			ListInput.beneficiaries(
+				:itemComponent="ListItemBeneficiary"
 				title="Poll beneficiaries"
+				:inputSettings=`[{
+					placeholder: "e.g. FvnazYM5KAetYpXoVDfqt9WFcJogKbekXVJ3Fz5oW2Dv82P",
+					flex: 4,
+				}, {
+					placeholder: "e.g. 10.0%",
+					flex: 1,
+				}]`
 				v-model="formData.beneficiaries"
-			) The minimum amount of tokens to make poll happen.
+				addText="add a beneficiary"
+				:onItemAdd="function () { formData.beneficiaries.push(['', '10.00']) }"
+			)
+				| Those who will get the winning deposit and their interest.
+				br
+				| Interest sum of all beneficiaries should be min=0 and max=10,000.
 			div.actions
 				Button.action.create(
 					text="create poll"

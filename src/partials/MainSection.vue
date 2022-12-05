@@ -1,16 +1,31 @@
 <script lang="ts" setup>
-import Button from "@components/inputs/Button.vue"
+import { ref, onMounted } from "vue"
+import { Button } from "@components/inputs"
 import ListPoll from "@components/ListPoll.vue"
-import { connectPB } from "@utils/pb"
+import { connectPB, Record } from "@utils/pb"
 
-const onClick = async () => {
+const polls = ref([])
+
+const loadPolls = async () => {
 	const pb = connectPB()
-	// const authData = await pb.admins.authWithPassword(
-	// 	"test@faterium.com",
-	// 	"0123456789",
-	// )
-	const result = await pb.collection("images").getList(1, 20, {})
+	// const result = await pb.collection("images").getList(1, 20, {})
+	const result = await pb.collection("polls").getList(1, 10, {
+		sort: "-created",
+		expand: "image",
+	})
+	polls.value = result.items.map((val) => {
+		const img = val.expand.image as Record
+		return {
+			url: `/polls/${val.id}`,
+			title: val.title,
+			image: `https://dapp-api.faterium.com/ipfs/${val.imageCid}`,
+			thumb: `https://dapp-api.faterium.com/api/files/${img.collectionId}/${img.id}/${img.file}?thumb=120x80`,
+		}
+	})
 }
+onMounted(() => {
+	loadPolls()
+})
 </script>
 
 <template lang="pug">
@@ -19,28 +34,15 @@ main.content.section
 		h1.title all polls
 		div.polls-list
 			ListPoll(
-				link="/polls/pid1"
-				title="How many times should Jon Snow die in the next season?"
-				image="https://dapp-api.faterium.com/ipfs/QmPL7MwuSHKH2e6qma1ZnTeMt4QJKSMY2ZHyVx3mQNXyPH"
-			)
-			ListPoll(
-				link="/polls/pid2"
-				title="How many times should Jon Snow die in the next season?"
-				image="https://dapp-api.faterium.com/ipfs/QmZSQzbqm7qbk8EfuT1F158RQGPUTJWCKgFUYJSbkf88CY"
-			)
-			ListPoll(
-				link="/polls/pid3"
-				title="How many times should Jon Snow die in the next season?"
-				image="https://dapp-api.faterium.com/ipfs/QmPL7MwuSHKH2e6qma1ZnTeMt4QJKSMY2ZHyVx3mQNXyPH"
-			)
-			ListPoll(
-				link="/polls/pid4"
-				title="How many times should Jon Snow die in the next season?"
-				image="https://dapp-api.faterium.com/ipfs/QmZSQzbqm7qbk8EfuT1F158RQGPUTJWCKgFUYJSbkf88CY"
+				v-for="(poll, index) of polls"
+				:key="index"
+				:url="poll.url"
+				:title="poll.title"
+				:image="poll.thumb"
 			)
 		div.actions
 			Button.action.create(text="create a poll" fill url="/create-poll")
-			Button.action.update(text="update list" fill @click="onClick")
+			Button.action.update(text="load polls" fill @click="loadPolls")
 </template>
 
 <style lang="scss" scoped>

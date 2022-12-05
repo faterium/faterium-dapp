@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 interface Props {
-	link: string
+	url: string
 	title: string
 	image: string
 }
@@ -8,7 +8,7 @@ const props = defineProps<Props>()
 </script>
 
 <template lang="pug">
-a.list-poll(:href="link" target="_self")
+a.list-poll(:href="url" target="_self")
 	img.poll-image(:src="image" alt="poll image")
 	h2.poll-title {{ title }}
 </template>
