@@ -4,12 +4,14 @@ interface Props {
 	fill?: boolean
 	url?: string
 	target?: string
+	submit?: boolean
 }
 const props = defineProps<Props>()
 </script>
 
 <template lang="pug">
 a.button(v-if="url" :class="fill ? 'filled' : 'empty'" :href="url" :target="target") {{ text }}
+input.button(v-else-if="submit" :class="fill ? 'filled' : 'empty'" type="submit" :value="text" v-bind="$attrs")
 button.button(v-else :class="fill ? 'filled' : 'empty'") {{ text }}
 </template>
 
@@ -39,6 +41,10 @@ button.button(v-else :class="fill ? 'filled' : 'empty'") {{ text }}
 		&:hover {
 			@apply bg-green-400;
 		}
+	}
+	&:disabled,
+	&:disabled:hover {
+		@apply bg-slate-400;
 	}
 }
 </style>

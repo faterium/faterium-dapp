@@ -1,12 +1,15 @@
 <script lang="ts" setup>
 import { ref } from "vue"
+import dayjs from "dayjs"
+import Swal from "sweetalert2"
+
 import Button from "@components/inputs/Button.vue"
 import ListInput from "@components/inputs/ListInput.vue"
 import FormInput from "@components/inputs/FormInput.vue"
-import ListPoll from "@components/ListPoll.vue"
 import { connectPB, PocketBase } from "@utils/pb"
 
 const fileFormData = new FormData()
+const submitDisabled = ref(false)
 const formData = ref({
 	title: "",
 	image: "",
@@ -32,17 +35,76 @@ const uploadFile = async (pb: PocketBase) => {
 	console.log("Upload file result", result)
 	return result.cid
 }
-const onClick = async () => {
-	const pb = connectPB()
-	const imageCid = await uploadFile(pb)
-	// const authData = await pb.admins.authWithPassword(
-	// 	"test@faterium.com",
-	// 	"0123456789",
-	// )
-	// const fileFormData = new FormData()
-	// const result = await pb.collection("polls").create()
-	// console.log(result)
+const uploadPollDetails = async (pb: PocketBase, data: any) => {
+	const result = await pb.collection("polls").create(data)
+	// eslint-disable-next-line no-console
+	console.log("Upload poll result", result)
+	return result.cid
 }
+const submit = async () => {
+	submitDisabled.value = true
+	const pb = connectPB()
+	Swal.fire({
+		title: "Please wait, uploading image to server and IPFS...",
+		toast: true,
+		position: "bottom-right",
+		timerProgressBar: true,
+		showConfirmButton: false,
+		didOpen: () => Swal.showLoading(null),
+	})
+	const imageCid = await uploadFile(pb).catch((err) => {
+		Swal.fire({
+			title: "Error on image upload!",
+			text: `Server returned ${err.status} error.
+			It may happen if you uploaded image that is not specified or invalid!`,
+			icon: "error",
+			confirmButtonText: "I will try again!",
+		})
+	})
+	if (!imageCid) return
+	Swal.fire({
+		title: "Image successfully uploaded to the server and IPFS!",
+		toast: true,
+		icon: "success",
+		position: "bottom-right",
+		showConfirmButton: false,
+	})
+	const formatDate = (d) =>
+		// Format of: "2022-01-01 10:00:00.123Z"
+		dayjs(d).format("YYYY-MM-DD HH:mm:ss.SSS[Z]")
+	const data = {
+		title: formData.value.title,
+		description: formData.value.description,
+		options: "{}",
+		dateStart: formatDate(formData.value.dateStart),
+		dateEnd: formatDate(formData.value.dateEnd),
+		imageCid,
+	}
+	const pollCid = await uploadPollDetails(pb, data).catch((err) => {
+		Swal.fire({
+			title: "Error during poll details upload!",
+			text: `Server returned ${err.status} error.
+			It may happen if you specified invalid poll details!`,
+			icon: "error",
+			confirmButtonText: "Cool, let me fix it!",
+		})
+	})
+	if (!pollCid) return
+	await Swal.fire({
+		title: "Poll successfully created!",
+		icon: "success",
+		confirmButtonText: "Cool, take me there!",
+	})
+	// TODO: Redirect to the poll
+}
+const submitButton = () =>
+	submit()
+		.then(() => {
+			submitDisabled.value = false
+		})
+		.catch(() => {
+			submitDisabled.value = false
+		})
 </script>
 
 <template lang="pug">
@@ -50,7 +112,7 @@ main.content.section
 	div.wrapper
 		h1.title Create poll
 		p.description * Required fields
-		div.inputs
+		form.create-form(type="group" @submit.prevent="submitButton")
 			FormInput.title(
 				title="Title"
 				v-model="formData.title"
@@ -60,7 +122,6 @@ main.content.section
 			) Title of the poll, will be shown on all views.
 			FormInput.image(
 				title="Preview image"
-				v-model="formData.image"
 				type="file"
 				@change.stop="fileChanged"
 				required
@@ -110,9 +171,13 @@ main.content.section
 				title="Poll beneficiaries"
 				v-model="formData.beneficiaries"
 			) The minimum amount of tokens to make poll happen.
-		div.actions
-			Button.action.create(text="create poll" fill @click="onClick")
-			//- Button.action.back(text="cancel" fill url="/")
+			div.actions
+				Button.action.create(
+					text="create poll"
+					submit fill
+					:disabled="submitDisabled"
+				)
+				//- Button.action.back(text="cancel" fill url="/")
 </template>
 
 <style lang="scss" scoped>
@@ -123,19 +188,13 @@ main.content.section
 		h1.title {
 			@apply text-4xl font-bold m-0 text-center text-black;
 		}
-		div.inputs {
+		.create-form {
 			@apply my-6 w-full;
 			& > div {
 				@apply my-4;
 			}
-		}
-		div.actions {
-			@apply flex flex-row gap-4 pb-20;
-			.create {
-				@apply bg-green-500;
-				&:hover {
-					@apply bg-green-400;
-				}
+			div.actions {
+				@apply flex flex-row gap-4 mt-6 pb-20;
 			}
 		}
 	}

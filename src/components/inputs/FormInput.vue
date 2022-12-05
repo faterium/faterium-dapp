@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 interface Props {
 	title: string
-	modelValue: any
+	modelValue?: any
 	required?: boolean
 }
 const props = defineProps<Props>()
