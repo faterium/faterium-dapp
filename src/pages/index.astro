@@ -3,6 +3,18 @@ import Layout from "@layouts/Layout.astro"
 import Header from "@partials/Header.vue"
 import MainSection from "@partials/MainSection.vue"
 import Footer from "@partials/Footer.vue"
+import { connectPB, PollDetails } from "@utils/index"
+
+const loadPolls = async () => {
+	const pb = connectPB()
+	// const result = await pb.collection("images").getList(1, 20, {})
+	const result = await pb.collection("polls").getList(1, 10, {
+		sort: "-created",
+		expand: "image",
+	})
+	return result.items.map((val) => new PollDetails(val))
+}
+const polls = await loadPolls()
 ---
 
 <Layout
@@ -11,6 +23,6 @@ import Footer from "@partials/Footer.vue"
 	coverUrl="https://dapp.faterium.com/preview.png"
 >
 	<Header client:only />
-	<MainSection client:load />
+	<MainSection client:load polls={polls} />
 	<Footer />
 </Layout>

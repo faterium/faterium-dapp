@@ -1,28 +1,18 @@
 <script lang="ts" setup>
 import { ref, onMounted } from "vue"
 import Swal from "sweetalert2"
+import dayjs from "dayjs"
 import { Button, ListInput, ListItemVoting } from "@components/inputs"
 import { connectPB, PollDetails } from "@utils/index"
 import { connectToNode, getAccounts, web3FromSource } from "@utils/Substrate"
 
 interface Props {
-	pid: string
+	poll: PollDetails
 }
 const props = defineProps<Props>()
 
 const votes = ref([])
-const poll = ref(new PollDetails(null))
 
-const loadPoll = async () => {
-	const pb = connectPB()
-	// const result = await pb.collection("images").getList(1, 20, {})
-	const result = await pb.collection("polls").getOne(props.pid, {
-		expand: "image",
-	})
-	if (!result) return
-	poll.value = new PollDetails(result)
-	console.log(poll.value)
-}
 // Call substrate FateriumPolls Vote extrinsic
 const voteOnPoll = async () => {
 	const accounts = await getAccounts()
@@ -43,7 +33,7 @@ const voteOnPoll = async () => {
 	const now = parseInt(queryResult[1].toString(), 10)
 	const pollId = parseInt(queryResult[2].toString(), 10)
 
-	const extrinsic = api.tx.fateriumPolls.vote(poll.value.pollId, [])
+	const extrinsic = api.tx.fateriumPolls.vote(props.poll.pollId, [])
 	console.log("extrinsic", extrinsic)
 	extrinsic
 		.signAndSend(
@@ -80,29 +70,26 @@ const voteOnPoll = async () => {
 			})
 		})
 }
-onMounted(() => {
-	loadPoll()
-})
 </script>
 
 <template lang="pug">
 main.content.section
 	img.preview(
-		:src="poll.imageUrl"
+		:src="props.poll.imageUrl"
 		alt="poll preview"
 	)
 	div.wrapper
-		h1.title {{ poll.title }}
-		p.description {{ poll.description }}
+		h1.title {{ props.poll.title }}
+		p.description {{ props.poll.description }}
 		div.info
-			span.date-start Created: <b>{{ poll.dateStart.format("YYYY-MM-DD") }}</b>
-			span.date-end Will end on: <b>{{ poll.dateEnd.format("YYYY-MM-DD") }}</b>
+			span.date-start Created: <b>{{ dayjs(props.poll.dateStart).format("YYYY-MM-DD") }}</b>
+			span.date-end Will end on: <b>{{ dayjs(props.poll.dateEnd).format("YYYY-MM-DD") }}</b>
 		div.options
 			ListInput.voting-options(
 				:itemComponent="ListItemVoting"
 				title="Voting options"
 				:inputSettings=`[]`
-				v-model="poll.options"
+				v-model="props.poll.options"
 			)
 				| Specify those who will get the winning deposit and their interest.
 				br
@@ -119,7 +106,7 @@ main.content.section
 .content {
 	@apply flex flex-col w-100vw relative justify-center items-center;
 	img.preview {
-		@apply mt-60px w-screen max-h-120 object-cover;
+		@apply mt-60px w-screen max-h-120 max-h-120 object-cover;
 	}
 	.wrapper {
 		@apply flex flex-col justify-start items-start z-2 w-140 h-full pt-40px;

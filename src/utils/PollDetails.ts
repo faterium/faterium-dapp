@@ -36,13 +36,18 @@ export class PollDetails {
 			`https://dapp-api.faterium.com/api/files/${img.collectionId}/${img.id}/${img.file}?thumb=120x80`
 			: "https://faterium.com/preview.png"
 
-		this.dateStart = val ? dayjs(val.dateStart) : dayjs()
-		this.dateEnd = val ? dayjs(val.dateEnd) : dayjs()
+		this.dateStart = val ? val.dateStart : ""
+		this.dateEnd = val ? val.dateEnd : ""
 
 		this.options = val ?
 			val.options.map((text, index) => ({ text, index, vote: 0, percentage: "10.0%" }))
 			: []
 		this.pollId = val ? val.pollId : ""
+	}
+
+	public static formatDate(d: string) {
+		// Format date like: "2022-01-01 10:00:00.123Z"
+		return dayjs(d).format("YYYY-MM-DD HH:mm:ss.SSS[Z]")
 	}
 
 	public getPollUrl() {

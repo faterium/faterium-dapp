@@ -1,23 +1,12 @@
 <script lang="ts" setup>
-import { ref, onMounted } from "vue"
 import { Button } from "@components/inputs"
 import ListPoll from "@components/ListPoll.vue"
-import { connectPB, PollDetails } from "@utils/index"
+import { PollDetails } from "@utils/index"
 
-const polls = ref([])
-
-const loadPolls = async () => {
-	const pb = connectPB()
-	// const result = await pb.collection("images").getList(1, 20, {})
-	const result = await pb.collection("polls").getList(1, 10, {
-		sort: "-created",
-		expand: "image",
-	})
-	polls.value = result.items.map((val) => new PollDetails(val))
+interface Props {
+	polls: PollDetails[]
 }
-onMounted(() => {
-	loadPolls()
-})
+const props = defineProps<Props>()
 </script>
 
 <template lang="pug">
@@ -26,7 +15,7 @@ main.content.section
 		h1.title all polls
 		div.polls-list
 			ListPoll(
-				v-for="(poll, index) of polls"
+				v-for="(poll, index) of props.polls"
 				:key="index"
 				:url="poll.getPollUrl()"
 				:title="poll.title"
@@ -34,7 +23,7 @@ main.content.section
 			)
 		div.actions
 			Button.action.create(text="create a poll" fill url="/create-poll")
-			Button.action.update(text="load polls" fill @click="loadPolls")
+			Button.action.update(text="click me" fill @click="() => {}")
 </template>
 
 <style lang="scss" scoped>

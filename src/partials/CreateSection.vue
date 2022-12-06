@@ -72,15 +72,12 @@ const submit = async () => {
 		position: "bottom-right",
 		showConfirmButton: false,
 	})
-	const formatDate = (d) =>
-		// Format of: "2022-01-01 10:00:00.123Z"
-		dayjs(d).format("YYYY-MM-DD HH:mm:ss.SSS[Z]")
 	const data = {
 		title: formData.value.title,
 		description: formData.value.description,
 		options: JSON.stringify(formData.value.options),
-		dateStart: formatDate(formData.value.dateStart),
-		dateEnd: formatDate(formData.value.dateEnd),
+		dateStart: PollDetails.formatDate(formData.value.dateStart),
+		dateEnd: PollDetails.formatDate(formData.value.dateEnd),
 		image: image.id,
 	}
 	const pollRes = await uploadPollDetails(pb, data).catch((err) => {

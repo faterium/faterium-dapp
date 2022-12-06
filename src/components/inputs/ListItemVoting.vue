@@ -18,7 +18,7 @@ const onInput = (input: string) => {
 
 <template lang="pug">
 div.list-item-voting
-	div.close(@click="onRemove") {{ modelValue.index + 1 }}
+	div.index {{ modelValue.index + 1 }}
 	input.text.flex-4(
 		type="text"
 		:value="modelValue.text"
@@ -57,7 +57,7 @@ div.list-item-voting {
 			flex: 4;
 		}
 	}
-	div.close {
+	div.index {
 		@apply flex justify-center items-center min-h-8 min-w-8 text-sm
 			bg-slate-300 rounded-1 text-dark-300 font-bold cursor-pointer;
 		transition: all 0.2s ease;
