@@ -2,7 +2,7 @@
 import { ref, onMounted } from "vue"
 import { Button } from "@components/inputs"
 import ListPoll from "@components/ListPoll.vue"
-import { connectPB, Record } from "@utils/pb"
+import { connectPB, PollDetails } from "@utils/index"
 
 const polls = ref([])
 
@@ -13,15 +13,7 @@ const loadPolls = async () => {
 		sort: "-created",
 		expand: "image",
 	})
-	polls.value = result.items.map((val) => {
-		const img = val.expand.image as Record
-		return {
-			url: `/polls/${val.id}`,
-			title: val.title,
-			image: `https://dapp-api.faterium.com/ipfs/${val.imageCid}`,
-			thumb: `https://dapp-api.faterium.com/api/files/${img.collectionId}/${img.id}/${img.file}?thumb=120x80`,
-		}
-	})
+	polls.value = result.items.map((val) => new PollDetails(val))
 }
 onMounted(() => {
 	loadPolls()
@@ -36,9 +28,9 @@ main.content.section
 			ListPoll(
 				v-for="(poll, index) of polls"
 				:key="index"
-				:url="poll.url"
+				:url="poll.getPollUrl()"
 				:title="poll.title"
-				:image="poll.thumb"
+				:image="poll.thumbUrl"
 			)
 		div.actions
 			Button.action.create(text="create a poll" fill url="/create-poll")

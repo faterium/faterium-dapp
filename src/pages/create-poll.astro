@@ -1,6 +1,6 @@
 ---
 import Layout from "@layouts/Layout.astro"
-import Header from "@components/Header.vue"
+import Header from "@partials/Header.vue"
 import CreateSection from "@partials/CreateSection.vue"
 ---
 
@@ -10,5 +10,5 @@ import CreateSection from "@partials/CreateSection.vue"
 	coverUrl="https://dapp.faterium.com/preview.png"
 >
 	<Header client:only />
-	<CreateSection client:load />
+	<CreateSection client:only />
 </Layout>

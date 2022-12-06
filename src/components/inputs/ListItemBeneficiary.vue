@@ -14,7 +14,7 @@ const onInput = (id: number, input: string) => {
 }
 const onInterestFocusChange = (id: number, input: string) => {
 	const newData = props.modelValue
-	newData[id] = parseFloat(input).toFixed(2)
+	newData[id] = parseFloat(input === "" ? "0" : input).toFixed(2)
 	emit("update:modelValue", newData)
 }
 </script>

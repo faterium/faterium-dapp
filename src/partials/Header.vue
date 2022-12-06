@@ -3,7 +3,7 @@ import Button from "@components/inputs/Button.vue"
 import { web3Enable } from "@polkadot/extension-dapp"
 
 const onClickConnect = async () => {
-	const allInjected = await web3Enable("Faterium Future dApp")
+	const allInjected = await web3Enable("Faterium dApp")
 	// eslint-disable-next-line no-console
 	console.log(`Connected ${allInjected.length} account/s`)
 }

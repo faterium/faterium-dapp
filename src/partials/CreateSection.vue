@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from "vue"
+import { onMounted, ref } from "vue"
 import dayjs from "dayjs"
 import Swal from "sweetalert2"
 import {
@@ -10,7 +10,13 @@ import {
 	ListItemOption,
 	ListItemBeneficiary,
 } from "@components/inputs"
-import { connectPB, PocketBase } from "@utils/pb"
+import { connectPB, PocketBase } from "@utils/index"
+import {
+	connectToNode,
+	ApiPromise,
+	getAccounts,
+	web3FromSource,
+} from "@utils/Substrate"
 
 const fileFormData = new FormData()
 const submitDisabled = ref(false)
@@ -35,13 +41,11 @@ const fileChanged = (event: Event) => {
 }
 const uploadFile = async (pb: PocketBase) => {
 	const result = await pb.collection("images").create(fileFormData)
-	// eslint-disable-next-line no-console
 	console.log("Upload file result", result)
 	return result
 }
 const uploadPollDetails = async (pb: PocketBase, data: any) => {
 	const result = await pb.collection("polls").create(data)
-	// eslint-disable-next-line no-console
 	console.log("Upload poll result", result)
 	return result
 }
@@ -95,16 +99,77 @@ const submit = async () => {
 		})
 	})
 	if (!poll) return
-	// TODO: Call substrate
-	// beneficiaries: formData.value.beneficiaries.map(
-	// 	([address, _]) => address,
-	// ),
-	await Swal.fire({
-		title: "Poll successfully created!",
-		icon: "success",
-		confirmButtonText: "Cool, take me there!",
-	})
-	// TODO: Redirect to the poll
+	// Call substrate CreatePoll extrinsic
+	const accounts = await getAccounts()
+	const account = accounts[0]
+	console.log("account", account)
+	// To be able to retrieve the signer interface from this account
+	// we can use web3FromSource which will return an InjectedExtension type
+	const injector = await web3FromSource(account.meta.source)
+	const beneficiaries = formData.value.beneficiaries.map(
+		([address, interest]) => [
+			address,
+			Math.trunc(parseFloat(interest) * 100),
+		],
+	)
+	const api = await connectToNode()
+	console.log("beneficiaries", beneficiaries)
+	const settings = api.createType("RewardSettings", "None")
+	const currency = api.createType("PollCurrency", "Native")
+	const extrinsic = api.tx.fateriumPolls.createPoll(
+		poll.cid,
+		beneficiaries,
+		settings,
+		parseInt(formData.value.goal, 10),
+		formData.value.options.length,
+		currency,
+		6000,
+		8000,
+	)
+	console.log("extrinsic", extrinsic)
+	extrinsic
+		.signAndSend(
+			account.address,
+			{ signer: injector.signer },
+			({ status }) => {
+				if (status.isInBlock) {
+					Swal.fire({
+						title: "Poll successfully created!",
+						toast: true,
+						icon: "success",
+						position: "bottom-right",
+						showConfirmButton: false,
+					})
+					Swal.fire({
+						title: "Poll successfully created!",
+						text: `Completed at block hash #${status.asInBlock.toString()}!`,
+						icon: "success",
+						confirmButtonText: "Cool, take me there!",
+					}).then((res) => {
+						if (res.isConfirmed) {
+							window.location.replace(`/polls/${poll.id}`)
+						}
+					})
+				} else {
+					Swal.fire({
+						title: `Please wait until extrinsic completion. Current status: ${status.type}.`,
+						toast: true,
+						position: "bottom-right",
+						timerProgressBar: true,
+						showConfirmButton: false,
+						didOpen: () => Swal.showLoading(null),
+					})
+				}
+			},
+		)
+		.catch((error: any) => {
+			Swal.fire({
+				title: "Error during poll creation transaction!",
+				text: `Server returned the following error: ${error}`,
+				icon: "error",
+				confirmButtonText: "Cool, let me fix it!",
+			})
+		})
 }
 const submitButton = () =>
 	submit()
@@ -199,7 +264,7 @@ main.content.section
 			)
 				| Those who will get the winning deposit and their interest.
 				br
-				| Interest sum of all beneficiaries should be min=0 and max=10,000.
+				| Interest sum of all beneficiaries should be min=0 and max=100%.
 			div.actions
 				Button.action.create(
 					text="create poll"

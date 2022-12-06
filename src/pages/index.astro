@@ -1,8 +1,8 @@
 ---
 import Layout from "@layouts/Layout.astro"
-import Header from "@components/Header.vue"
+import Header from "@partials/Header.vue"
 import MainSection from "@partials/MainSection.vue"
-// import Footer from "@components/Footer.vue"
+import Footer from "@partials/Footer.vue"
 ---
 
 <Layout
@@ -12,5 +12,5 @@ import MainSection from "@partials/MainSection.vue"
 >
 	<Header client:only />
 	<MainSection client:load />
-	<!-- <Footer /> -->
+	<Footer />
 </Layout>

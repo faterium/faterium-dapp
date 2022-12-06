@@ -2,9 +2,7 @@
 	"settings": {
 		"import/resolver": {
 			"typescript": {
-				"project": [
-					"tsconfig.json"
-				]
+				"project": ["tsconfig.json"]
 			}
 		}
 	},
@@ -32,11 +30,7 @@
 	"overrides": [
 		{
 			"files": ["*.astro"],
-			"extends": [
-				"airbnb-base",
-				"plugin:astro/recommended",
-				"prettier"
-			],
+			"extends": ["airbnb-base", "plugin:astro/recommended", "prettier"],
 			"parser": "astro-eslint-parser",
 			"parserOptions": {
 				"parser": "@typescript-eslint/parser",
@@ -48,18 +42,22 @@
 				"import/no-named-as-default-member": "off",
 				"import/no-named-as-default": "off",
 				"import/prefer-default-export": "off",
-				"import/no-unresolved": [2, {
-					"ignore": [
-						"@astrojs/image/components"
-					]
-				}],
+				"import/no-unresolved": [
+					2,
+					{
+						"ignore": ["@astrojs/image/components"]
+					}
+				],
 				"import/no-extraneous-dependencies": "off",
 				"indent": ["error", "tab"],
-				"max-lines": ["error", {
-					"max": 200,
-					"skipComments": true,
-					"skipBlankLines": true
-				}]
+				"max-lines": [
+					"error",
+					{
+						"max": 200,
+						"skipComments": true,
+						"skipBlankLines": true
+					}
+				]
 			},
 			"globals": {
 				"astroHTML": "readonly"
@@ -78,6 +76,7 @@
 				"extraFileExtensions": [".vue"]
 			},
 			"rules": {
+				"no-console": "off",
 				"import/no-extraneous-dependencies": "off",
 				"no-mixed-spaces-and-tabs": "error",
 				"vue/multi-word-component-names": "off",
@@ -100,16 +99,23 @@
 				"prettier"
 			],
 			"rules": {
-				"@typescript-eslint/no-unused-vars": ["error", {
-					"argsIgnorePattern": "^_",
-					"destructuredArrayIgnorePattern": "^_"
-				}],
+				"@typescript-eslint/no-unused-vars": [
+					"error",
+					{
+						"argsIgnorePattern": "^_",
+						"destructuredArrayIgnorePattern": "^_"
+					}
+				],
 				"@typescript-eslint/no-non-null-assertion": "off",
-				"max-lines": ["error", {
-					"max": 200,
-					"skipComments": true,
-					"skipBlankLines": true
-				}],
+				"max-lines": [
+					"error",
+					{
+						"max": 200,
+						"skipComments": true,
+						"skipBlankLines": true
+					}
+				],
+				"no-console": "off",
 				"quotes": ["error", "double"],
 				"indent": ["error", "tab"],
 				"import/prefer-default-export": 0,
@@ -123,6 +129,11 @@
 						"ts": "never",
 						"tsx": "never"
 					}
+				],
+				"lines-between-class-members": [
+					"error",
+					"always",
+					{ "exceptAfterSingleLine": true }
 				]
 			}
 		}
