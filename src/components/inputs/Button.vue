@@ -42,7 +42,7 @@ button.button(v-else :class="fill ? 'filled' : 'empty'") {{ text }}
 	}
 	&:disabled,
 	&:disabled:hover {
-		@apply bg-slate-400;
+		@apply bg-slate-400 cursor-auto;
 	}
 }
 </style>

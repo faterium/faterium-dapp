@@ -3,10 +3,10 @@ interface Props {
 	itemComponent: any
 	title: string
 	inputSettings: any[]
-	addText: string
 	modelValue: any[]
 	required?: boolean
-	onItemAdd: Function
+	addText?: string
+	onItemAdd?: Function
 }
 const props = defineProps<Props>()
 const emit = defineEmits(["update:modelValue"])
@@ -32,7 +32,7 @@ div.list-input
 			:onRemove="() => onRemove(index)"
 		)
 	div.bottom
-		div.add-option(@click.prevent="onItemAdd")
+		div.add-option(v-if="addText" @click.prevent="onItemAdd")
 			span.add +
 			span.text {{ addText }}
 </template>

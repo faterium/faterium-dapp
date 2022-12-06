@@ -10,13 +10,8 @@ import {
 	ListItemOption,
 	ListItemBeneficiary,
 } from "@components/inputs"
-import { connectPB, PocketBase } from "@utils/index"
-import {
-	connectToNode,
-	ApiPromise,
-	getAccounts,
-	web3FromSource,
-} from "@utils/Substrate"
+import { connectPB, PocketBase, PollDetails } from "@utils/index"
+import { connectToNode, getAccounts, web3FromSource } from "@utils/Substrate"
 
 const fileFormData = new FormData()
 const submitDisabled = ref(false)
@@ -86,10 +81,9 @@ const submit = async () => {
 		options: JSON.stringify(formData.value.options),
 		dateStart: formatDate(formData.value.dateStart),
 		dateEnd: formatDate(formData.value.dateEnd),
-		imageCid: image.cid,
 		image: image.id,
 	}
-	const poll = await uploadPollDetails(pb, data).catch((err) => {
+	const pollRes = await uploadPollDetails(pb, data).catch((err) => {
 		Swal.fire({
 			title: "Error during poll details upload!",
 			text: `Server returned ${err.status} error.
@@ -98,7 +92,8 @@ const submit = async () => {
 			confirmButtonText: "Cool, let me fix it!",
 		})
 	})
-	if (!poll) return
+	if (!pollRes) return
+	const poll = new PollDetails(pollRes)
 	// Call substrate CreatePoll extrinsic
 	const accounts = await getAccounts()
 	const account = accounts[0]
@@ -112,8 +107,19 @@ const submit = async () => {
 			Math.trunc(parseFloat(interest) * 100),
 		],
 	)
-	const api = await connectToNode()
 	console.log("beneficiaries", beneficiaries)
+	// Connect to our substrate node
+	const api = await connectToNode()
+	const queryResult = await Promise.all([
+		api.query.system.number(),
+		api.query.timestamp.now(),
+		api.query.fateriumPolls.pollCount(),
+	])
+	console.log("query", queryResult)
+	const blockNumber = parseInt(queryResult[0].toString(), 10)
+	const now = parseInt(queryResult[1].toString(), 10)
+	const pollId = parseInt(queryResult[2].toString(), 10)
+
 	const settings = api.createType("RewardSettings", "None")
 	const currency = api.createType("PollCurrency", "Native")
 	const extrinsic = api.tx.fateriumPolls.createPoll(
@@ -123,8 +129,8 @@ const submit = async () => {
 		parseInt(formData.value.goal, 10),
 		formData.value.options.length,
 		currency,
-		6000,
-		8000,
+		poll.computeStartBlock(blockNumber, 6),
+		poll.computeEndBlock(blockNumber, 6),
 	)
 	console.log("extrinsic", extrinsic)
 	extrinsic
@@ -133,13 +139,8 @@ const submit = async () => {
 			{ signer: injector.signer },
 			({ status }) => {
 				if (status.isInBlock) {
-					Swal.fire({
-						title: "Poll successfully created!",
-						toast: true,
-						icon: "success",
-						position: "bottom-right",
-						showConfirmButton: false,
-					})
+					Swal.close()
+					pb.collection("polls").update(poll.id, { pollId })
 					Swal.fire({
 						title: "Poll successfully created!",
 						text: `Completed at block hash #${status.asInBlock.toString()}!`,
@@ -152,10 +153,11 @@ const submit = async () => {
 					})
 				} else {
 					Swal.fire({
-						title: `Please wait until extrinsic completion. Current status: ${status.type}.`,
+						title: `Please wait until extrinsic completion. Status: ${status.type}.`,
 						toast: true,
 						position: "bottom-right",
 						timerProgressBar: true,
+						timer: 5000,
 						showConfirmButton: false,
 						didOpen: () => Swal.showLoading(null),
 					})
@@ -179,6 +181,9 @@ const submitButton = () =>
 		.catch(() => {
 			submitDisabled.value = false
 		})
+onMounted(async () => {
+	// const api = await connectToNode()
+})
 </script>
 
 <template lang="pug">
@@ -235,12 +240,13 @@ main.content.section
 				type="datetime-local"
 				required
 			) When the poll will end.
-			FormInput.currency(
-				title="Payment currency"
-				v-model="formData.currency"
-				type="text"
-				required
-			) These tokens can be used to vote on this poll.
+			//- TODO: Handle currency selection
+			//- FormInput.currency(
+			//- 	title="Payment currency"
+			//- 	v-model="formData.currency"
+			//- 	type="text"
+			//- 	required
+			//- ) These tokens can be used to vote on this poll.
 			FormInput.goal(
 				title="Goal amount"
 				placeholder="e.g. 999.999999"
@@ -262,9 +268,9 @@ main.content.section
 				addText="add a beneficiary"
 				:onItemAdd="function () { formData.beneficiaries.push(['', '10.00']) }"
 			)
-				| Those who will get the winning deposit and their interest.
+				| Specify those who will get the winning deposit and their interest.
 				br
-				| Interest sum of all beneficiaries should be min=0 and max=100%.
+				| Interest sum of all beneficiaries should be min=0% and max=100%.
 			div.actions
 				Button.action.create(
 					text="create poll"

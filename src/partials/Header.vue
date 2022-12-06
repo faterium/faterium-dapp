@@ -1,11 +1,17 @@
 <script lang="ts" setup>
-import Button from "@components/inputs/Button.vue"
+import Swal from "sweetalert2"
 import { web3Enable } from "@polkadot/extension-dapp"
+import Button from "@components/inputs/Button.vue"
 
 const onClickConnect = async () => {
 	const allInjected = await web3Enable("Faterium dApp")
-	// eslint-disable-next-line no-console
-	console.log(`Connected ${allInjected.length} account/s`)
+	Swal.fire({
+		title: `Connected ${allInjected.length} account/s`,
+		toast: true,
+		icon: "success",
+		position: "bottom-right",
+		showConfirmButton: false,
+	})
 }
 </script>
 
