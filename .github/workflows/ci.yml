@@ -25,9 +25,9 @@ jobs:
           node-version: 16.x
       - name: Install dependencies and build
         run: yarn && yarn build
-      - name: Install and run Lighthouse CI
-        run: |
-          yarn global add @lhci/cli@0.10.x
-          lhci autorun
-        env:
-          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+      # - name: Install and run Lighthouse CI
+      #   run: |
+      #     yarn global add @lhci/cli@0.10.x
+      #     lhci autorun
+      #   env:
+      #     LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}

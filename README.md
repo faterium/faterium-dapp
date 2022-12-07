@@ -2,11 +2,7 @@
 
 Faterium - a place where fates are forged.
 
-Published by [Cloudflare Pages](https://pages.cloudflare.com/).
-
-Look at the [Astro](https://astro.build) documentation to learn more.
-
-Also, this website uses [WindiCSS](https://windicss.org/) and [SCSS](https://sass-lang.com/) preprocessors.
+Published by [Cloudflare Pages](https://pages.cloudflare.com/). Look at the [Astro](https://astro.build) documentation to learn more. Also, we use [WindiCSS](https://windicss.org/) and [SCSS](https://sass-lang.com/) preprocessors.
 
 ## 🧞 Commands
 
