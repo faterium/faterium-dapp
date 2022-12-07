@@ -1,5 +1,9 @@
-import { web3Accounts, web3Enable } from "@polkadot/extension-dapp"
+import Swal from "sweetalert2"
+import { web3Accounts, web3Enable, web3FromSource } from "@polkadot/extension-dapp"
 import { ApiPromise, WsProvider } from "@polkadot/api"
+import dayjs from "dayjs"
+import { PollDetails } from "./PollDetails"
+import { PocketBase } from "./PocketBase"
 
 export { ApiPromise } from "@polkadot/api"
 export { web3Accounts, web3Enable, web3FromSource } from "@polkadot/extension-dapp"
@@ -9,13 +13,12 @@ export const connectToNode = async () => {
 	const api = await ApiPromise.create({
 		provider: wsProvider,
 		types: {
-			AssetId: "u64",
 			RewardSettings: {
 				_enum: ["None"],
 			},
 			PollCurrency: {
 				_enum: {
-					Asset: "AssetId",
+					Asset: "u32",
 					Native: null,
 				},
 			},
@@ -37,4 +40,96 @@ export const getAccounts = async () => {
 	const allAccounts = await web3Accounts()
 	// eslint-disable-next-line consistent-return
 	return allAccounts
+}
+
+export const substrateCreatePoll = async (
+	pb: PocketBase,
+	poll: PollDetails,
+	beneficiaries: string[][],
+	goal: number,
+	optionsCount: number,
+	selectedCurrency: { name: string, value: string | null },
+) => {
+	const accounts = await getAccounts()
+	const account = accounts[0]
+	console.log("account", account)
+	// To be able to retrieve the signer interface from this account
+	// we can use web3FromSource which will return an InjectedExtension type
+	const injector = await web3FromSource(account.meta.source)
+	const bnfs = beneficiaries.map(
+		([address, interest]) => [
+			address,
+			Math.trunc(parseFloat(interest) * 100),
+		],
+	)
+	console.log("beneficiaries", bnfs)
+	// Connect to our substrate node
+	const api = await connectToNode()
+	const queryResult = await Promise.all([
+		api.query.system.number(),
+		api.query.fateriumPolls.pollCount(),
+	])
+	const blockNumber = parseInt(queryResult[0].toString(), 10)
+	const pollId = parseInt(queryResult[1].toString(), 10)
+
+	const settings = api.createType("RewardSettings", "None")
+	const currency = api.createType(
+		"PollCurrency",
+		selectedCurrency.value === null
+			? selectedCurrency.name
+			: { [selectedCurrency.name]: parseInt(selectedCurrency.value, 10) }
+	)
+	console.log("currency", currency)
+	const extrinsic = api.tx.fateriumPolls.createPoll(
+		poll.cid,
+		bnfs,
+		settings,
+		goal,
+		optionsCount,
+		currency,
+		dayjs(poll.dateStart).diff(dayjs(PollDetails.formatDate(dayjs())), "seconds") < 100
+			? blockNumber + 10
+			: poll.computeStartBlock(blockNumber, 6),
+		poll.computeEndBlock(blockNumber, 6),
+	)
+	console.log("extrinsic", extrinsic)
+	extrinsic
+		.signAndSend(
+			account.address,
+			{ signer: injector.signer },
+			({ status }) => {
+				if (status.isInBlock) {
+					Swal.close()
+					pb.collection("polls").update(poll.id, { pollId })
+					Swal.fire({
+						title: "Poll successfully created!",
+						text: `Completed at block hash #${status.asInBlock.toString()}!`,
+						icon: "success",
+						confirmButtonText: "Cool, take me there!",
+					}).then((res) => {
+						if (res.isConfirmed) {
+							window.location.replace(`/polls/${poll.id}`)
+						}
+					})
+				} else {
+					Swal.fire({
+						title: `Please wait until extrinsic completion. Status: ${status.type}.`,
+						toast: true,
+						position: "bottom-right",
+						timerProgressBar: true,
+						timer: 5000,
+						showConfirmButton: false,
+						didOpen: () => Swal.showLoading(null),
+					})
+				}
+			},
+		)
+		.catch((error: Error) => {
+			Swal.fire({
+				title: "Error during poll creation transaction!",
+				text: `Server returned the following error: ${error}`,
+				icon: "error",
+				confirmButtonText: "Cool, let me fix it!",
+			})
+		})
 }

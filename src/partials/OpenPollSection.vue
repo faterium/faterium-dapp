@@ -11,7 +11,7 @@ interface Props {
 }
 const props = defineProps<Props>()
 
-const votes = ref([])
+const parsedPoll = ref(Object.assign(new PollDetails(null), props.poll))
 
 // Call substrate FateriumPolls Vote extrinsic
 const voteOnPoll = async () => {
@@ -23,17 +23,10 @@ const voteOnPoll = async () => {
 	const injector = await web3FromSource(account.meta.source)
 	// Connect to our substrate node
 	const api = await connectToNode()
-	const queryResult = await Promise.all([
-		api.query.system.number(),
-		api.query.timestamp.now(),
-		api.query.fateriumPolls.pollCount(),
-	])
-	console.log("query", queryResult)
-	const blockNumber = parseInt(queryResult[0].toString(), 10)
-	const now = parseInt(queryResult[1].toString(), 10)
-	const pollId = parseInt(queryResult[2].toString(), 10)
-
-	const extrinsic = api.tx.fateriumPolls.vote(props.poll.pollId, [])
+	const extrinsic = api.tx.fateriumPolls.vote(
+		parsedPoll.value.pollId,
+		parsedPoll.value.votingOptions(),
+	)
 	console.log("extrinsic", extrinsic)
 	extrinsic
 		.signAndSend(
@@ -46,15 +39,17 @@ const voteOnPoll = async () => {
 						title: "Successfully voted!",
 						text: `Completed at block hash #${status.asInBlock.toString()}!`,
 						icon: "success",
-						confirmButtonText: "Cool, take me there!",
+						confirmButtonText: "Cool!",
 					})
+				} else if (status.isFinalized) {
+					// do nothing
 				} else {
 					Swal.fire({
 						title: `Please wait until extrinsic completion. Status: ${status.type}.`,
 						toast: true,
 						position: "bottom-right",
 						timerProgressBar: true,
-						timer: 5000,
+						timer: 3000,
 						showConfirmButton: false,
 						didOpen: () => Swal.showLoading(null),
 					})
@@ -63,43 +58,107 @@ const voteOnPoll = async () => {
 		)
 		.catch((error: any) => {
 			Swal.fire({
-				title: "Error during poll creation transaction!",
+				title: "Error during vote transaction!",
 				text: `Server returned the following error: ${error}`,
 				icon: "error",
 				confirmButtonText: "Cool, let me fix it!",
 			})
 		})
 }
+// Call substrate FateriumPolls Vote extrinsic
+const collectFromPoll = async () => {
+	const accounts = await getAccounts()
+	const account = accounts[0]
+	console.log("account", account)
+	// To be able to retrieve the signer interface from this account
+	// we can use web3FromSource which will return an InjectedExtension type
+	const injector = await web3FromSource(account.meta.source)
+	// Connect to our substrate node
+	const api = await connectToNode()
+	const extrinsic = api.tx.fateriumPolls.collect(parsedPoll.value.pollId)
+	console.log("extrinsic", extrinsic)
+	extrinsic
+		.signAndSend(
+			account.address,
+			{ signer: injector.signer },
+			({ status }) => {
+				if (status.isInBlock) {
+					Swal.close()
+					Swal.fire({
+						title: "Successfully collected!",
+						text: `Completed at block hash #${status.asInBlock.toString()}!`,
+						icon: "success",
+						confirmButtonText: "Cool!",
+					})
+				} else if (status.isFinalized) {
+					// do nothing
+				} else {
+					Swal.fire({
+						title: `Please wait until extrinsic completion. Status: ${status.type}.`,
+						toast: true,
+						position: "bottom-right",
+						timerProgressBar: true,
+						timer: 3000,
+						showConfirmButton: false,
+						didOpen: () => Swal.showLoading(null),
+					})
+				}
+			},
+		)
+		.catch((error: any) => {
+			Swal.fire({
+				title: "Error during collect transaction!",
+				text: `Server returned the following error: ${error}`,
+				icon: "error",
+				confirmButtonText: "Cool, let me fix it!",
+			})
+		})
+}
+const loadSubstratePoll = async () => {
+	const pid = parsedPoll.value.pollId
+	if (!pid) return
+	const api = await connectToNode()
+	const result = await api.query.fateriumPolls.pollDetailsOf(pid)
+	parsedPoll.value.details = result.toJSON() as any
+	const options = parsedPoll.value.getOptions()
+	parsedPoll.value.options = [...options]
+}
+onMounted(async () => {
+	await loadSubstratePoll()
+})
 </script>
 
 <template lang="pug">
 main.content.section
 	img.preview(
-		:src="props.poll.imageUrl"
+		:src="parsedPoll.imageUrl"
 		alt="poll preview"
 	)
 	div.wrapper
-		h1.title {{ props.poll.title }}
-		p.description {{ props.poll.description }}
-		div.info
-			span.date-start Created: <b>{{ dayjs(props.poll.dateStart).format("YYYY-MM-DD") }}</b>
-			span.date-end Will end on: <b>{{ dayjs(props.poll.dateEnd).format("YYYY-MM-DD") }}</b>
+		h1.title {{ parsedPoll.title }}
+		p.description {{ parsedPoll.description }}
+		div.info-block
+			span.date-start Start: <b>{{ parsedPoll.dateEndFrom() }}</b>
+			span.date-end End: <b>{{ parsedPoll.dateEndFrom() }}</b>
+		div.info-block
+			span.date-start Volume: <b>{{ parsedPoll.getCapital() }}</b>
+			span.date-end Status: <b>{{ parsedPoll.getStatus() }}</b>
 		div.options
 			ListInput.voting-options(
 				:itemComponent="ListItemVoting"
 				title="Voting options"
 				:inputSettings=`[]`
-				v-model="props.poll.options"
+				v-model="parsedPoll.options"
 			)
-				| Specify those who will get the winning deposit and their interest.
-				br
-				| Interest sum of all beneficiaries should be min=0% and max=100%.
 		div.actions
 			Button.action.create(
 				text="vote" fill
 				@click.prevent="voteOnPoll"
 			)
-			Button.action.back(text="collect" fill)
+			Button.action.back(
+				text="collect" fill
+				@click.prevent="collectFromPoll"
+			)
 </template>
 
 <style lang="scss" scoped>
@@ -113,11 +172,11 @@ main.content.section
 		h1.title {
 			@apply text-4xl font-bold m-0 mb-2 text-center text-black text-left;
 		}
-		div.info {
-			@apply flex flex-row gap-20 mt-3 w-full;
+		div.info-block {
+			@apply flex flex-row gap-5 mt-3 w-full;
 			color: #9a9ba2;
 			b {
-				color: black;
+				@apply text-black font-bold;
 			}
 		}
 		div.options {
@@ -126,10 +185,7 @@ main.content.section
 		div.actions {
 			@apply flex flex-row gap-4 mb-10;
 			.create {
-				@apply bg-green-500;
-				&:hover {
-					@apply bg-green-400;
-				}
+				@apply bg-green-500 hover:bg-green-400;
 			}
 		}
 	}

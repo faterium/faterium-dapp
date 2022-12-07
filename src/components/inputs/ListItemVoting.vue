@@ -24,7 +24,7 @@ div.list-item-voting
 		:value="modelValue.text"
 		disabled
 	)
-	input.interest.flex-4(
+	input.interest.flex-2(
 		type="number"
 		min="1"
 		step="1"
@@ -33,7 +33,7 @@ div.list-item-voting
 		placeholder="e.g. 99999"
 		v-bind="$attrs"
 	)
-	input.percentage.flex-1(
+	input.percentage.flex-2(
 		:value="modelValue.percentage"
 		disabled
 	)

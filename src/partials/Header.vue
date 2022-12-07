@@ -10,6 +10,7 @@ const onClickConnect = async () => {
 		toast: true,
 		icon: "success",
 		position: "bottom-right",
+		timer: 2000,
 		showConfirmButton: false,
 	})
 }

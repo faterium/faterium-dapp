@@ -7,6 +7,11 @@ interface Props {
 	polls: PollDetails[]
 }
 const props = defineProps<Props>()
+
+const getPolls = () => {
+	// Cast object to class
+	return props.polls.map((val) => Object.assign(new PollDetails(null), val))
+}
 </script>
 
 <template lang="pug">
@@ -15,7 +20,7 @@ main.content.section
 		h1.title all polls
 		div.polls-list
 			ListPoll(
-				v-for="(poll, index) of props.polls"
+				v-for="(poll, index) of getPolls()"
 				:key="index"
 				:url="poll.getPollUrl()"
 				:title="poll.title"
