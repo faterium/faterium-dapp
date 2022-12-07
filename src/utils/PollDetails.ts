@@ -65,7 +65,7 @@ export class PollDetails {
 		this.pollId = val ? val.pollId : ""
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		this.details = {} as any
+		this.details = { votes: [] } as any
 	}
 
 	public static formatDate(d: Dayjs) {
@@ -126,7 +126,7 @@ export class PollDetails {
 		const sum = this.getCapital()
 		const newOptions = this.options
 		this.details.votes.forEach((vote, index) => {
-			newOptions[index].percentage = `${(vote / sum * 100).toFixed(2)}%`
+			newOptions[index].percentage = `${(vote / (sum === 0 ? 1 : sum) * 100).toFixed(2)}%`
 		})
 		return newOptions
 	}

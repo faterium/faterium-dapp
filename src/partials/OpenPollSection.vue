@@ -4,7 +4,7 @@ import Swal from "sweetalert2"
 import dayjs from "dayjs"
 import { Button, ListInput, ListItemVoting } from "@components/inputs"
 import { connectPB, PollDetails } from "@utils/index"
-import { connectToNode, getAccounts, web3FromSource } from "@utils/Substrate"
+import { connectToNode, voteOnPoll, collectFromPoll } from "@utils/Substrate"
 
 interface Props {
 	poll: PollDetails
@@ -13,116 +13,28 @@ const props = defineProps<Props>()
 
 const parsedPoll = ref(Object.assign(new PollDetails(null), props.poll))
 
-// Call substrate FateriumPolls Vote extrinsic
-const voteOnPoll = async () => {
-	const accounts = await getAccounts()
-	const account = accounts[0]
-	console.log("account", account)
-	// To be able to retrieve the signer interface from this account
-	// we can use web3FromSource which will return an InjectedExtension type
-	const injector = await web3FromSource(account.meta.source)
-	// Connect to our substrate node
-	const api = await connectToNode()
-	const extrinsic = api.tx.fateriumPolls.vote(
-		parsedPoll.value.pollId,
-		parsedPoll.value.votingOptions(),
-	)
-	console.log("extrinsic", extrinsic)
-	extrinsic
-		.signAndSend(
-			account.address,
-			{ signer: injector.signer },
-			({ status }) => {
-				if (status.isInBlock) {
-					Swal.close()
-					Swal.fire({
-						title: "Successfully voted!",
-						text: `Completed at block hash #${status.asInBlock.toString()}!`,
-						icon: "success",
-						confirmButtonText: "Cool!",
-					})
-				} else if (status.isFinalized) {
-					// do nothing
-				} else {
-					Swal.fire({
-						title: `Please wait until extrinsic completion. Status: ${status.type}.`,
-						toast: true,
-						position: "bottom-right",
-						timerProgressBar: true,
-						timer: 3000,
-						showConfirmButton: false,
-						didOpen: () => Swal.showLoading(null),
-					})
-				}
-			},
-		)
-		.catch((error: any) => {
-			Swal.fire({
-				title: "Error during vote transaction!",
-				text: `Server returned the following error: ${error}`,
-				icon: "error",
-				confirmButtonText: "Cool, let me fix it!",
-			})
-		})
-}
-// Call substrate FateriumPolls Vote extrinsic
-const collectFromPoll = async () => {
-	const accounts = await getAccounts()
-	const account = accounts[0]
-	console.log("account", account)
-	// To be able to retrieve the signer interface from this account
-	// we can use web3FromSource which will return an InjectedExtension type
-	const injector = await web3FromSource(account.meta.source)
-	// Connect to our substrate node
-	const api = await connectToNode()
-	const extrinsic = api.tx.fateriumPolls.collect(parsedPoll.value.pollId)
-	console.log("extrinsic", extrinsic)
-	extrinsic
-		.signAndSend(
-			account.address,
-			{ signer: injector.signer },
-			({ status }) => {
-				if (status.isInBlock) {
-					Swal.close()
-					Swal.fire({
-						title: "Successfully collected!",
-						text: `Completed at block hash #${status.asInBlock.toString()}!`,
-						icon: "success",
-						confirmButtonText: "Cool!",
-					})
-				} else if (status.isFinalized) {
-					// do nothing
-				} else {
-					Swal.fire({
-						title: `Please wait until extrinsic completion. Status: ${status.type}.`,
-						toast: true,
-						position: "bottom-right",
-						timerProgressBar: true,
-						timer: 3000,
-						showConfirmButton: false,
-						didOpen: () => Swal.showLoading(null),
-					})
-				}
-			},
-		)
-		.catch((error: any) => {
-			Swal.fire({
-				title: "Error during collect transaction!",
-				text: `Server returned the following error: ${error}`,
-				icon: "error",
-				confirmButtonText: "Cool, let me fix it!",
-			})
-		})
-}
 const loadSubstratePoll = async () => {
 	const pid = parsedPoll.value.pollId
 	if (!pid) return
 	const api = await connectToNode()
 	const result = await api.query.fateriumPolls.pollDetailsOf(pid)
+	if (!result.toJSON()) return
 	parsedPoll.value.details = result.toJSON() as any
 	const options = parsedPoll.value.getOptions()
 	parsedPoll.value.options = [...options]
 	console.log("details", parsedPoll.value.details)
+}
+// Call substrate FateriumPolls vote extrinsic
+const vote = async () => {
+	await voteOnPoll(parsedPoll.value).catch((err) => console.error(err))
+	await loadSubstratePoll()
+	setTimeout(() => {
+		loadSubstratePoll()
+	}, 2000)
+}
+// Call substrate FateriumPolls collect extrinsic
+const collect = async () => {
+	await collectFromPoll(parsedPoll.value).catch((err) => console.error(err))
 }
 onMounted(async () => {
 	await loadSubstratePoll()
@@ -154,11 +66,11 @@ main.content.section
 		div.actions
 			Button.action.create(
 				text="vote" fill
-				@click.prevent="voteOnPoll"
+				@click.prevent="vote"
 			)
 			Button.action.back(
 				text="collect" fill
-				@click.prevent="collectFromPoll"
+				@click.prevent="collect"
 			)
 </template>
 

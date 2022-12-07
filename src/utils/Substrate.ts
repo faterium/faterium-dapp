@@ -1,3 +1,5 @@
+/* eslint-disable max-lines */
+
 import Swal from "sweetalert2"
 import { web3Accounts, web3Enable, web3FromSource } from "@polkadot/extension-dapp"
 import { ApiPromise, WsProvider } from "@polkadot/api"
@@ -88,7 +90,7 @@ export const substrateCreatePoll = async (
 		optionsCount,
 		currency,
 		dayjs(poll.dateStart).diff(dayjs(PollDetails.formatDate(dayjs())), "seconds") < 100
-			? blockNumber + 10
+			? blockNumber + 2
 			: poll.computeStartBlock(blockNumber, 6),
 		poll.computeEndBlock(blockNumber, 6),
 	)
@@ -106,10 +108,8 @@ export const substrateCreatePoll = async (
 						text: `Completed at block hash #${status.asInBlock.toString()}!`,
 						icon: "success",
 						confirmButtonText: "Cool, take me there!",
-					}).then((res) => {
-						if (res.isConfirmed) {
-							window.location.replace(`/polls/${poll.id}`)
-						}
+					}).then((_) => {
+						window.location.replace(`/polls/${poll.id}`)
 					})
 				} else {
 					Swal.fire({
@@ -127,6 +127,108 @@ export const substrateCreatePoll = async (
 		.catch((error: Error) => {
 			Swal.fire({
 				title: "Error during poll creation transaction!",
+				text: `Server returned the following error: ${error}`,
+				icon: "error",
+				confirmButtonText: "Cool, let me fix it!",
+			})
+		})
+}
+
+export const voteOnPoll = async (poll: PollDetails) => {
+	const accounts = await getAccounts()
+	const account = accounts[0]
+	console.log("account", account)
+	// To be able to retrieve the signer interface from this account
+	// we can use web3FromSource which will return an InjectedExtension type
+	const injector = await web3FromSource(account.meta.source)
+	// Connect to our substrate node
+	const api = await connectToNode()
+	const extrinsic = api.tx.fateriumPolls.vote(
+		poll.pollId,
+		poll.votingOptions(),
+	)
+	console.log("extrinsic", extrinsic)
+	extrinsic
+		.signAndSend(
+			account.address,
+			{ signer: injector.signer },
+			({ status }) => {
+				if (status.isInBlock) {
+					Swal.close()
+					Swal.fire({
+						title: "Successfully voted!",
+						text: `Completed at block hash #${status.asInBlock.toString()}!`,
+						icon: "success",
+						confirmButtonText: "Cool!",
+					})
+				} else if (status.isFinalized) {
+					// do nothing
+				} else {
+					Swal.fire({
+						title: `Please wait until extrinsic completion. Status: ${status.type}.`,
+						toast: true,
+						position: "bottom-right",
+						timerProgressBar: true,
+						timer: 3000,
+						showConfirmButton: false,
+						didOpen: () => Swal.showLoading(null),
+					})
+				}
+			},
+		)
+		.catch((error: Error) => {
+			Swal.fire({
+				title: "Error during vote transaction!",
+				text: `Server returned the following error: ${error}`,
+				icon: "error",
+				confirmButtonText: "Cool, let me fix it!",
+			})
+		})
+}
+
+// Call substrate FateriumPolls Vote extrinsic
+export const collectFromPoll = async (poll: PollDetails) => {
+	const accounts = await getAccounts()
+	const account = accounts[0]
+	console.log("account", account)
+	// To be able to retrieve the signer interface from this account
+	// we can use web3FromSource which will return an InjectedExtension type
+	const injector = await web3FromSource(account.meta.source)
+	// Connect to our substrate node
+	const api = await connectToNode()
+	const extrinsic = api.tx.fateriumPolls.collect(poll.pollId)
+	console.log("extrinsic", extrinsic)
+	extrinsic
+		.signAndSend(
+			account.address,
+			{ signer: injector.signer },
+			({ status }) => {
+				if (status.isInBlock) {
+					Swal.close()
+					Swal.fire({
+						title: "Successfully collected!",
+						text: `Completed at block hash #${status.asInBlock.toString()}!`,
+						icon: "success",
+						confirmButtonText: "Cool!",
+					})
+				} else if (status.isFinalized) {
+					// do nothing
+				} else {
+					Swal.fire({
+						title: `Please wait until extrinsic completion. Status: ${status.type}.`,
+						toast: true,
+						position: "bottom-right",
+						timerProgressBar: true,
+						timer: 3000,
+						showConfirmButton: false,
+						didOpen: () => Swal.showLoading(null),
+					})
+				}
+			},
+		)
+		.catch((error: Error) => {
+			Swal.fire({
+				title: "Error during collect transaction!",
 				text: `Server returned the following error: ${error}`,
 				icon: "error",
 				confirmButtonText: "Cool, let me fix it!",
