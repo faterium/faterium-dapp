@@ -122,6 +122,7 @@ const loadSubstratePoll = async () => {
 	parsedPoll.value.details = result.toJSON() as any
 	const options = parsedPoll.value.getOptions()
 	parsedPoll.value.options = [...options]
+	console.log("details", parsedPoll.value.details)
 }
 onMounted(async () => {
 	await loadSubstratePoll()
@@ -138,7 +139,7 @@ main.content.section
 		h1.title {{ parsedPoll.title }}
 		p.description {{ parsedPoll.description }}
 		div.info-block
-			span.date-start Start: <b>{{ parsedPoll.dateEndFrom() }}</b>
+			span.date-start Start: <b>{{ parsedPoll.dateStartFrom() }}</b>
 			span.date-end End: <b>{{ parsedPoll.dateEndFrom() }}</b>
 		div.info-block
 			span.date-start Volume: <b>{{ parsedPoll.getCapital() }}</b>
