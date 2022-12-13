@@ -5,9 +5,10 @@
 	"license": "Apache-2.0",
 	"version": "0.1.0",
 	"scripts": {
-		"dev": "astro dev",
+		"dev": "CONNECT_TESTNET=true astro dev",
+		"dev:local": "astro dev",
 		"start": "astro dev",
-		"build": "astro build",
+		"build": "CONNECT_TESTNET=true astro build",
 		"preview": "astro preview",
 		"astro": "astro",
 		"eslint": "eslint 'src/**/*.{js,ts,astro,vue}'",

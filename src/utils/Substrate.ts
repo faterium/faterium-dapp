@@ -11,7 +11,9 @@ export { ApiPromise } from "@polkadot/api"
 export { web3Accounts, web3Enable, web3FromSource } from "@polkadot/extension-dapp"
 
 export const connectToNode = async () => {
-	const wsProvider = new WsProvider("wss://dapp-node.faterium.com")
+	const wsProvider = new WsProvider(import.meta.env.CONNECT_TESTNET
+		? "wss://dapp-node.faterium.com"
+		: "ws://127.0.0.1:9944")
 	const api = await ApiPromise.create({
 		provider: wsProvider,
 		types: {
@@ -99,18 +101,35 @@ export const substrateCreatePoll = async (
 		.signAndSend(
 			account.address,
 			{ signer: injector.signer },
-			({ status }) => {
+			({ events = [], status }) => {
 				if (status.isInBlock) {
-					Swal.close()
-					pb.collection("polls").update(poll.id, { pollId })
-					Swal.fire({
-						title: "Poll successfully created!",
-						text: `Completed at block hash #${status.asInBlock.toString()}!`,
-						icon: "success",
-						confirmButtonText: "Cool, take me there!",
-					}).then((_) => {
-						window.location.replace(`/polls/${poll.id}`)
+					console.log("Events:", events);
+					let actualResultError = ""
+					events.forEach(({ event: { data, method, section }, phase }) => {
+						console.log("\t", phase.toString(), `: ${section}.${method}`, data.toString())
+						if (method === "ExtrinsicFailed") {
+							actualResultError = data.toString()
+						}
 					})
+					Swal.close()
+					if (actualResultError === "") {
+						pb.collection("polls").update(poll.id, { pollId })
+						Swal.fire({
+							title: "Poll successfully created!",
+							text: `Completed at block hash #${status.asInBlock.toString()}!`,
+							icon: "success",
+							confirmButtonText: "Cool, take me there!",
+						}).then((_) => {
+							window.location.replace(`/polls/${poll.id}`)
+						})
+					} else {
+						Swal.fire({
+							title: "Error during poll creation transaction!",
+							text: `Server returned the following error: ${actualResultError}`,
+							icon: "error",
+							confirmButtonText: "Cool, let me fix it!",
+						})
+					}
 				} else {
 					Swal.fire({
 						title: `Please wait until extrinsic completion. Status: ${status.type}.`,
@@ -152,15 +171,32 @@ export const voteOnPoll = async (poll: PollDetails) => {
 		.signAndSend(
 			account.address,
 			{ signer: injector.signer },
-			({ status }) => {
+			({ events = [], status }) => {
 				if (status.isInBlock) {
-					Swal.close()
-					Swal.fire({
-						title: "Successfully voted!",
-						text: `Completed at block hash #${status.asInBlock.toString()}!`,
-						icon: "success",
-						confirmButtonText: "Cool!",
+					console.log("Events:", events);
+					let actualResultError = ""
+					events.forEach(({ event: { data, method, section }, phase }) => {
+						console.log("\t", phase.toString(), `: ${section}.${method}`, data.toString())
+						if (method === "ExtrinsicFailed") {
+							actualResultError = data.toString()
+						}
 					})
+					Swal.close()
+					if (actualResultError === "") {
+						Swal.fire({
+							title: "Successfully voted!",
+							text: `Completed at block hash #${status.asInBlock.toString()}!`,
+							icon: "success",
+							confirmButtonText: "Cool!",
+						})
+					} else {
+						Swal.fire({
+							title: "Error during vote transaction!",
+							text: `Server returned the following error: ${actualResultError}`,
+							icon: "error",
+							confirmButtonText: "Cool, let me fix it!",
+						})
+					}
 				} else if (status.isFinalized) {
 					// do nothing
 				} else {
@@ -202,15 +238,36 @@ export const collectFromPoll = async (poll: PollDetails) => {
 		.signAndSend(
 			account.address,
 			{ signer: injector.signer },
-			({ status }) => {
+			({ events = [], status }) => {
 				if (status.isInBlock) {
-					Swal.close()
-					Swal.fire({
-						title: "Successfully collected!",
-						text: `Completed at block hash #${status.asInBlock.toString()}!`,
-						icon: "success",
-						confirmButtonText: "Cool!",
+					console.log("Events:", events);
+					let actualResultError = ""
+					let actualResult = ""
+					events.forEach(({ event: { data, method, section }, phase }) => {
+						console.log("\t", phase.toString(), `: ${section}.${method}`, data.toString())
+						if (method === "ExtrinsicFailed") {
+							actualResultError = data.toString()
+						}
+						if (`${section}.${method}` === "fateriumPolls.Collected") {
+							actualResult = data.toString()
+						}
 					})
+					Swal.close()
+					if (actualResultError === "") {
+						Swal.fire({
+							title: "Successfully collected!",
+							text: `Completed at block hash #${status.asInBlock.toString()}! Tx data: ${actualResult}`,
+							icon: "success",
+							confirmButtonText: "Cool!",
+						})
+					} else {
+						Swal.fire({
+							title: "Error during collect transaction!",
+							text: `Server returned the following error: ${actualResultError}`,
+							icon: "error",
+							confirmButtonText: "Cool, let me fix it!",
+						})
+					}
 				} else if (status.isFinalized) {
 					// do nothing
 				} else {

@@ -2,6 +2,10 @@ import { Record } from "pocketbase"
 import dayjs, { Dayjs } from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime"
 
+const API = import.meta.env.CONNECT_TESTNET
+	? "https://dapp-api.faterium.com"
+	: "http://127.0.0.1:8090"
+
 dayjs.extend(relativeTime)
 
 export interface VotingOption {
@@ -50,10 +54,10 @@ export class PollDetails {
 		this.description = val ? val.description : ""
 
 		this.imageUrl = img ?
-			`https://dapp-api.faterium.com/ipfs/${img.cid}`
+			`${API}/ipfs/${img.cid}`
 			: "/assets/poll_preview.png"
 		this.thumbUrl = img ?
-			`https://dapp-api.faterium.com/api/files/${img.collectionId}/${img.id}/${img.file}?thumb=120x80`
+			`${API}/api/files/${img.collectionId}/${img.id}/${img.file}?thumb=120x80`
 			: "https://faterium.com/preview.png"
 
 		this.dateStart = val ? val.dateStart : ""
