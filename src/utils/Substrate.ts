@@ -11,7 +11,7 @@ export { ApiPromise } from "@polkadot/api"
 export { web3Accounts, web3Enable, web3FromSource } from "@polkadot/extension-dapp"
 
 export const connectToNode = async () => {
-	const wsProvider = new WsProvider(import.meta.env.CONNECT_TESTNET
+	const wsProvider = new WsProvider(import.meta.env.PUBLIC_NETWORK === "testnet"
 		? "wss://dapp-node.faterium.com"
 		: "ws://127.0.0.1:9944")
 	const api = await ApiPromise.create({
@@ -53,6 +53,7 @@ export const substrateCreatePoll = async (
 	goal: number,
 	optionsCount: number,
 	selectedCurrency: { name: string, value: string | null },
+	multipleVotes: boolean,
 ) => {
 	const accounts = await getAccounts()
 	const account = accounts[0]
@@ -90,6 +91,7 @@ export const substrateCreatePoll = async (
 		settings,
 		goal,
 		optionsCount,
+		multipleVotes,
 		currency,
 		dayjs(poll.dateStart).diff(dayjs(PollDetails.formatDate(dayjs())), "seconds") < 100
 			? blockNumber + 2

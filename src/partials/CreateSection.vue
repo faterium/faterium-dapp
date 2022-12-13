@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, ref } from "vue"
+import { ref } from "vue"
 import dayjs from "dayjs"
 import Swal from "sweetalert2"
 import {
@@ -31,6 +31,13 @@ const formData = ref({
 		selected: "Native",
 	},
 	goal: "",
+	multipleVotes: {
+		items: {
+			Allow: null,
+			Disallow: null,
+		},
+		selected: "Allow",
+	},
 	beneficiaries: [] as string[][],
 })
 
@@ -118,6 +125,7 @@ const submit = async () => {
 				formData.value.currency.selected
 			],
 		},
+		formData.value.multipleVotes.selected === "Allow",
 	).catch((reason) => {
 		console.error(reason)
 		Swal.fire({
@@ -204,6 +212,11 @@ main.content.section
 				type="number"
 				required
 			) The minimum target amount of tokens to make poll happen.
+			FormSelectInput.multiple-votes(
+				title="Multiple votes"
+				v-model="formData.multipleVotes"
+				required
+			) Make it possible to vote for multiple options.
 			ListInput.beneficiaries(
 				:itemComponent="ListItemBeneficiary"
 				title="Poll beneficiaries"

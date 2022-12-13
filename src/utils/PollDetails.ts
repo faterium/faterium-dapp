@@ -2,7 +2,7 @@ import { Record } from "pocketbase"
 import dayjs, { Dayjs } from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime"
 
-const API = import.meta.env.CONNECT_TESTNET
+const API = import.meta.env.PUBLIC_NETWORK === "testnet"
 	? "https://dapp-api.faterium.com"
 	: "http://127.0.0.1:8090"
 
