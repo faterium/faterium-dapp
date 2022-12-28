@@ -3,42 +3,27 @@ import Logo from "@components/Logo.vue"
 </script>
 
 <template lang="pug">
-div.footer
+footer
 	span.copyright © 2022 Faterium. All rights reserved.
-	span.author Made with love by <a href="https://dodorare.com" target="_blank"><Logo /></a>
+	span.author
+		| Made with love by
+		a(href="https://dodorare.com" target="_blank"): Logo
 </template>
 
 <style lang="scss" scoped>
-div.footer {
-	box-sizing: border-box;
-	position: fixed;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	height: 80px;
-	z-index: 2;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 0 40px;
-
-	font-size: 14px;
+footer {
+	@apply flex justify-between items-center box-border min-h-20 px-10 text-sm;
 
 	span.author {
-		display: flex;
-		align-items: center;
-
-		.logo {
-			margin-left: 12px;
-			height: 20px;
+		@apply flex items-center;
+		a {
+			@apply ml-3;
 		}
 	}
 }
-
 @media screen and (max-width: 660px) {
-	div.footer {
-		flex-direction: column-reverse;
-		padding: 10px 0 20px;
+	footer {
+		@apply flex-col-reverse pt-3 px-0 pb-5;
 	}
 }
 </style>

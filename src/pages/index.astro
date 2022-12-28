@@ -1,7 +1,9 @@
 ---
 import Layout from "@layouts/Layout.astro"
 import Header from "@partials/Header.vue"
-import MainSection from "@partials/MainSection.vue"
+import PollsSection from "@partials/PollsSection.vue"
+import CommunitiesSection from "@partials/CommunitiesSection.vue"
+import CategoriesSection from "@partials/CategoriesSection.vue"
 import Footer from "@partials/Footer.vue"
 import { connectPB, PollDetails } from "@utils/index"
 
@@ -26,6 +28,8 @@ const polls = await loadPolls()
 	coverUrl="https://dapp.faterium.com/preview.png"
 >
 	<Header client:only />
-	<MainSection client:load polls={polls} />
+	<PollsSection client:load polls={polls} />
+	<CommunitiesSection client:load polls={polls} />
+	<CategoriesSection client:load polls={polls} />
 	<Footer />
 </Layout>

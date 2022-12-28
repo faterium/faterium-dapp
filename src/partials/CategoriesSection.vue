@@ -10,37 +10,41 @@ const props = defineProps<Props>()
 
 const getPolls = () => {
 	// Cast object to class
-	return props.polls.map((val) => Object.assign(new PollDetails(null), val))
+	return props.polls
+		.concat(props.polls)
+		.map((val) => Object.assign(new PollDetails(null), val))
 }
 </script>
 
 <template lang="pug">
 main.content.section
 	div.wrapper
-		h1.title all polls
-		div.polls-list
+		h1.title Featured Categories
+		div.polls-grid
 			ListPoll(
 				v-for="(poll, index) of getPolls()"
 				:key="index"
 				:url="poll.getPollUrl()"
 				:title="poll.title"
+				name="The Sandbox"
+				stats="479k views - 13 hours left"
 				:image="poll.thumbUrl"
 			)
-		div.actions
-			Button.action.create(text="create a poll" fill url="/create-poll")
-			Button.action.update(text="click me" fill @click="() => {}")
 </template>
 
 <style lang="scss" scoped>
 .content {
-	@apply flex flex-col h-100vh w-100vw relative justify-center items-center;
+	@apply flex flex-col h-200 w-full justify-start items-center py-24;
 	.wrapper {
-		@apply flex flex-col justify-center items-center z-2;
+		@apply flex flex-col justify-center items-center;
 		h1.title {
-			@apply text-4xl font-bold m-0 mb-8 text-center text-black;
+			@apply text-4xl font-black m-0 mb-8 text-center text-black;
 		}
 		div.polls-list {
 			@apply flex flex-col justify-start items-start gap-4 overflow-scroll h-80 w-120;
+		}
+		div.polls-grid {
+			@apply grid gap-4 grid-cols-3;
 		}
 		div.actions {
 			@apply flex flex-row gap-4 mt-8;

@@ -17,6 +17,13 @@ const { title, description, coverUrl } = Astro.props
 		<Head title={title} description={description} coverUrl={coverUrl} />
 
 		<style lang="sass" is:global>
+			/* NunitoSans - Black */
+			@font-face
+				font-display: swap
+				font-family: "NunitoSans"
+				font-style: normal
+				font-weight: 900
+				src: local(""), url("/fonts/NunitoSans-Black.woff2") format("woff2")
 			/* NunitoSans - Bold */
 			@font-face
 				font-display: swap
@@ -33,7 +40,7 @@ const { title, description, coverUrl } = Astro.props
 				src: local(""), url("/fonts/NunitoSans-Light.woff2") format("woff2")
 
 			html, body
-				background: #EEE
+				background: #fff
 				font-family: "NunitoSans"
 
 			body

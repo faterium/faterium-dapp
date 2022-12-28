@@ -10,12 +10,12 @@ All commands are run from the root of the project, from a terminal:
 
 | Command				| Action											 |
 | :--------------------- | :------------------------------------------------- |
-| `npm install`		  | Installs dependencies							  |
-| `npm run dev`		  | Starts local dev server at `localhost:3000` |
-| `npm run build`		| Build your production site to `./dist/`			|
-| `npm run preview`	  | Preview your build locally, before deploying	   |
-| `npm run astro ...`	| Run CLI commands like `astro add`, `astro preview` |
-| `npm run astro --help` | Get help using the Astro CLI					   |
+| `yarn`			| Installs dependencies							  |
+| `yarn dev`		  | Starts local dev server at `localhost:3000` |
+| `yarn build`		| Build your production site to `./dist/`			|
+| `yarn preview`	  | Preview your build locally, before deploying	   |
+| `yarn astro ...`	| Run CLI commands like `astro add`, `astro preview` |
+| `yarn astro --help` | Get help using the Astro CLI					   |
 
 ## Local setup
 
@@ -24,11 +24,11 @@ If you want to run local node, server, and dapp - use our [Launch local network]
 Then run the following command to launch and connect to local services (`localhost:9944` and `localhost:8090`):
 
 ```sh
-npm run dev
+yarn dev
 ```
 
 Then run the following command to launch and connect to `dapp-*.faterium.com` services:
 
 ```sh
-PUBLIC_NETWORK=testnet npm run dev
+PUBLIC_NETWORK=testnet yarn dev
 ```
