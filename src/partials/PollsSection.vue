@@ -19,7 +19,7 @@ const getPolls = () => {
 <template lang="pug">
 main.content.section
 	div.wrapper
-		h1.title Trending Polls
+		h2.title Trending Polls
 		div.polls-grid
 			ListPoll(
 				v-for="(poll, index) of getPolls()"
@@ -37,7 +37,7 @@ main.content.section
 	@apply flex flex-col h-200 w-full relative justify-start items-center py-24;
 	.wrapper {
 		@apply flex flex-col justify-center items-center z-2;
-		h1.title {
+		h2.title {
 			@apply text-4xl font-black m-0 mb-8 text-center text-black;
 		}
 		div.polls-grid {
