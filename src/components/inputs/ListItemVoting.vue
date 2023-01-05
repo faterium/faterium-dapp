@@ -5,6 +5,7 @@ interface Props {
 	inputSettings: any[]
 	modelValue: VotingOption
 	onRemove: Function
+	removeButton: boolean
 }
 const props = defineProps<Props>()
 const emit = defineEmits(["update:modelValue"])
@@ -43,7 +44,7 @@ div.list-item-voting
 div.list-item-voting {
 	@apply flex flex-row justify-start items-center gap-2 w-full;
 	input {
-		@apply p-3 rounded-4px w-full;
+		@apply p-3 rounded-4px w-full bg-gray-100;
 		&.flex-1 {
 			flex: 1;
 		}
@@ -59,7 +60,7 @@ div.list-item-voting {
 	}
 	div.index {
 		@apply flex justify-center items-center min-h-8 min-w-8 text-sm
-			bg-slate-300 rounded-1 text-dark-300 font-bold cursor-pointer;
+			bg-gray-100 rounded-1 text-dark-300 font-bold cursor-pointer;
 		transition: all 0.2s ease;
 		&:hover {
 			@apply bg-slate-200;

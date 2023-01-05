@@ -4,6 +4,7 @@ interface Props {
 	title: string
 	inputSettings: any[]
 	modelValue: any[]
+	minCount: number
 	required?: boolean
 	addText?: string
 	onItemAdd?: Function
@@ -30,6 +31,7 @@ div.list-input
 			:inputSettings="inputSettings"
 			v-model="modelValue[index]"
 			:onRemove="() => onRemove(index)"
+			:removeButton="index < minCount"
 		)
 	div.bottom
 		div.add-option(v-if="addText" @click.prevent="onItemAdd")
@@ -60,7 +62,7 @@ div.list-input {
 		}
 		span.add {
 			@apply flex flex-row justify-center items-center min-h-8 min-w-8 mr-3 text-sm
-				bg-slate-300 rounded-1 text-dark-300 font-bold cursor-pointer;
+				bg-gray-100 rounded-1 text-dark-300 font-bold cursor-pointer;
 			transition: all 0.2s ease;
 		}
 		span.text {

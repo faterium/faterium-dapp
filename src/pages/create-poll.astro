@@ -2,6 +2,8 @@
 import Layout from "@layouts/Layout.astro"
 import Header from "@partials/Header.vue"
 import CreateSection from "@partials/CreateSection.vue"
+
+const community = Astro.url.searchParams.get("community")! || ""
 ---
 
 <Layout
@@ -10,5 +12,5 @@ import CreateSection from "@partials/CreateSection.vue"
 	coverUrl="https://dapp.faterium.com/preview.png"
 >
 	<Header client:only />
-	<CreateSection client:only />
+	<CreateSection client:only community={community} />
 </Layout>

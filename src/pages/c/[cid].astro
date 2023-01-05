@@ -2,16 +2,32 @@
 import Layout from "@layouts/Layout.astro"
 import Header from "@partials/Header.vue"
 import OpenCommunity from "@partials/OpenCommunity.vue"
+import Footer from "@partials/Footer.vue"
+import { connectPB, PollDetails } from "@utils/index"
 
 const { cid } = Astro.params;
 
+const loadPolls = async () => {
+	const pb = connectPB()
+	const result = await pb.collection("polls").getFullList(100, {
+		// Filter all polls that have no pollId assigned to them
+		filter: "pollId != 0",
+		// In desc order
+		sort: "-created",
+		// With image
+		expand: "image",
+	})
+	return result.map((val) => new PollDetails(val))
+}
+
 const community = {
 	id: cid,
-	name: "@game_of_thrones",
+	name: "game_of_thrones",
 	displayName: "Game of Thrones",
 	description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
 	imageBannerUrl: "https://dapp-api.faterium.com/ipfs/QmPL7MwuSHKH2e6qma1ZnTeMt4QJKSMY2ZHyVx3mQNXyPH",
 }
+const polls = await loadPolls()
 ---
 
 <Layout
@@ -20,5 +36,6 @@ const community = {
 	coverUrl="https://dapp.faterium.com/preview.png"
 >
 	<Header client:only />
-	<OpenCommunity client:only community={community as any} />
+	<OpenCommunity client:only community={community as any} polls={polls} />
+	<Footer />
 </Layout>

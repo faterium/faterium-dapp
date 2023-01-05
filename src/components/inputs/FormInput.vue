@@ -38,7 +38,7 @@ div.form-input {
 	}
 	input,
 	textarea {
-		@apply p-3 mt-3 rounded-4px w-full;
+		@apply p-3 mt-3 rounded-4px w-full bg-gray-100;
 	}
 	textarea {
 		@apply min-h-30;

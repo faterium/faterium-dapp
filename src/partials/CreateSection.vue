@@ -14,13 +14,18 @@ import {
 import { connectPB, PocketBase, PollDetails } from "@utils/index"
 import { substrateCreatePoll } from "@utils/Substrate"
 
+interface Props {
+	community: string
+}
+const props = defineProps<Props>()
+
 const fileFormData = new FormData()
 const submitDisabled = ref(false)
 const formData = ref({
 	title: "",
 	image: "",
 	description: "",
-	options: [""],
+	options: ["", ""],
 	dateStart: "",
 	dateEnd: "",
 	currency: {
@@ -185,6 +190,7 @@ main.content.section
 				}]`
 				v-model="formData.options"
 				addText="add an option"
+				:minCount="2"
 				:onItemAdd="function() { formData.options.push('') }"
 				required
 			) Voting options for the poll.

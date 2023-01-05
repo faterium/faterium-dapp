@@ -1,19 +1,24 @@
 <script lang="ts" setup>
-import { ref, onMounted } from "vue"
-import Swal from "sweetalert2"
+import { ref } from "vue"
 import dayjs from "dayjs"
-import { Button, ListInput, ListItemVoting } from "@components/inputs"
-import { connectPB, CommunityDetails } from "@utils/index"
-import { connectToNode, voteOnPoll, collectFromPoll } from "@utils/Substrate"
+import { Button } from "@components/inputs"
+import ListPoll from "@components/ListPoll.vue"
+import { CommunityDetails, PollDetails } from "@utils/index"
 
 interface Props {
 	community: CommunityDetails
+	polls: PollDetails[]
 }
 const props = defineProps<Props>()
 
 const parsedCommunity = ref(
 	Object.assign(new CommunityDetails(null), props.community),
 )
+
+const getPolls = () => {
+	// Cast object to class
+	return props.polls.map((val) => Object.assign(new PollDetails(null), val))
+}
 </script>
 
 <template lang="pug">
@@ -39,7 +44,7 @@ main.content.section
 					)
 		h1.title {{ parsedCommunity.displayName }}
 		div.user-info
-			b.username {{ parsedCommunity.name }}
+			b.username @{{ parsedCommunity.name }}
 			span.date-created Created: <b>1 Apr 2022</b>
 		div.info-blocks
 			div.info-block(
@@ -50,8 +55,20 @@ main.content.section
 				span.title Polls created
 		p.description {{ parsedCommunity.description }}
 		div.actions
-			Button.action.explore.create(text="Explore" fill url="/communities")
-			Button.action.explore.create(text="Explore" fill url="/communities")
+			Button.action.create(text="Create poll" fill :url="`/create-poll?community=${parsedCommunity.name}`")
+			Button.action.create(text="Follow" fill url="/communities")
+	div.polls
+		h2.title Community Polls
+		div.polls-grid
+			ListPoll(
+				v-for="(poll, index) of getPolls()"
+				:key="index"
+				:url="poll.getPollUrl()"
+				:title="poll.title"
+				name="The Sandbox"
+				stats="479k views - 13 hours left"
+				:image="poll.thumbUrl"
+			)
 </template>
 
 <style lang="scss" scoped>
@@ -61,7 +78,7 @@ main.content.section
 		@apply mt-60px w-screen max-h-120 max-h-120 object-cover px-14;
 	}
 	.wrapper {
-		@apply flex flex-col justify-start items-start z-2 w-240 h-full pt-40px;
+		@apply flex flex-col justify-start items-start z-2 w-268 h-full pt-40px;
 		div.top-block {
 			@apply flex flex-row justify-between -mt-22 w-full;
 			.profile-image {
@@ -70,7 +87,7 @@ main.content.section
 			div.social-links {
 				@apply flex flex-row gap-2 mt-6;
 				a.social-link {
-					@apply h-12 w-12 rounded-1 -top-2 border-2 border-gray-200 overflow-hidden;
+					@apply h-12 w-12 rounded-1 -top-2 border-2 border-white overflow-hidden;
 					img {
 						@apply object-cover object-center h-full w-full;
 					}
@@ -106,7 +123,16 @@ main.content.section
 			}
 		}
 		div.actions {
-			@apply flex flex-row gap-6 mt-6 mb-30;
+			@apply flex flex-row gap-6 mt-6 mb-12;
+		}
+	}
+	.polls {
+		@apply flex flex-col justify-center items-start z-2 py-12;
+		h2.title {
+			@apply text-4xl font-black m-0 mb-8 text-center text-black;
+		}
+		div.polls-grid {
+			@apply grid gap-4 grid-cols-4;
 		}
 	}
 }
