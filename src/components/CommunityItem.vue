@@ -41,7 +41,7 @@ a.community-item {
 	div.bottom {
 		@apply flex flex-col gap-3 box-border -mt-12 px-6 pb-6 z-2;
 		img.thumb {
-			@apply h-16 w-16 rounded-1 -top-2 border-2 border-gray-200;
+			@apply object-cover object-center h-16 w-16 rounded-1 -top-2 border-2 border-gray-200;
 		}
 		div.info {
 			@apply flex flex-col leading-5;
