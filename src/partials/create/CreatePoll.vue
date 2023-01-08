@@ -13,6 +13,7 @@ import {
 } from "@components/inputs"
 import { connectPB, PocketBase, PollDetails } from "@utils/index"
 import { substrateCreatePoll } from "@utils/Substrate"
+import BasePage from "./basePage.vue"
 
 interface Props {
 	community: string
@@ -152,120 +153,95 @@ const submitButton = () =>
 </script>
 
 <template lang="pug">
-main.content.section
-	div.wrapper
-		h1.title Create poll
-		p.description * Required fields
-		form.create-form(type="group" @submit.prevent="submitButton")
-			FormInput.title(
-				title="Poll title"
-				v-model="formData.title"
-				placeholder="e.g. What poll to make?"
-				type="text"
-				required
-			) Title of the poll, will be shown on all views.
-			MediaInput.image(
-				title="Preview image"
-				type="file"
-				@change.stop="fileChanged"
-				required
-			)
-				| File types supported: JPG, PNG, GIF, SVG.
-				br
-				| Max size: 10 MB. Preferred aspect ratio: 2.39:1 or 16:9.
-			FormInput.description(
-				title="Description of poll"
-				placeholder="Provide a detailed description of your poll."
-				v-model="formData.description"
-				textarea
-			)
-				| The description will be included on the poll's detail page underneath its image.
-				br
-				| Markdown syntax is supported.
-			ListInput.options(
-				:itemComponent="ListItemOption"
-				title="Voting options"
-				:inputSettings=`[{
-					placeholder: "e.g. Some awesome voting option.",
-				}]`
-				v-model="formData.options"
-				addText="add an option"
-				:minCount="2"
-				:onItemAdd="function() { formData.options.push('') }"
-				required
-			) Voting options for the poll.
-			FormInput.start-date(
-				title="Start date"
-				v-model="formData.dateStart"
-				type="datetime-local"
-			) When the poll will start. If nothing selected - poll will start right after the creation.
-			FormInput.end-date(
-				title="End date"
-				v-model="formData.dateEnd"
-				type="datetime-local"
-				required
-			) When the poll will end.
-			FormSelectInput.currency(
-				title="Payment currency"
-				placeholder="e.g. 123"
-				v-model="formData.currency"
-				required
-			) What currency will be used to vote on this poll. Can be Native or AssetId.
-			FormInput.goal(
-				title="Goal amount"
-				placeholder="e.g. 999.999999"
-				v-model="formData.goal"
-				type="number"
-				required
-			) The minimum target amount of tokens to make poll happen.
-			FormSelectInput.multiple-votes(
-				title="Multiple votes"
-				v-model="formData.multipleVotes"
-				required
-			) Make it possible to vote for multiple options.
-			ListInput.beneficiaries(
-				:itemComponent="ListItemBeneficiary"
-				title="Poll beneficiaries"
-				:inputSettings=`[{
-					placeholder: "e.g. FvnazYM5KAetYpXoVDfqt9WFcJogKbekXVJ3Fz5oW2Dv82P",
-					flex: 4,
-				}, {
-					placeholder: "e.g. 10.0%",
-					flex: 1,
-				}]`
-				v-model="formData.beneficiaries"
-				addText="add a beneficiary"
-				:onItemAdd="function () { formData.beneficiaries.push(['', '10.00']) }"
-			)
-				| Specify those who will get the winning deposit and their interest.
-				br
-				| Interest sum of all beneficiaries should be min=0% and max=100%.
-			div.actions
-				Button.action.create(
-					text="create poll"
-					submit fill
-					:disabled="submitDisabled"
-				)
-				//- Button.action.back(text="cancel" fill url="/")
+BasePage(title="Create poll" :submitButton="submitButton")
+	FormInput.title(
+		title="Poll title"
+		v-model="formData.title"
+		placeholder="e.g. What poll to make?"
+		type="text"
+		required
+	) Title of the poll, will be shown on all views.
+	MediaInput.image(
+		title="Preview image"
+		type="file"
+		@change.stop="fileChanged"
+		required
+	)
+		| File types supported: JPG, PNG, GIF, SVG.
+		br
+		| Max size: 10 MB. Preferred aspect ratio: 2.39:1 or 16:9.
+	FormInput.description(
+		title="Description of poll"
+		placeholder="Provide a detailed description of your poll."
+		v-model="formData.description"
+		textarea
+	)
+		| The description will be included on the poll's detail page underneath its image.
+		br
+		| Markdown syntax is supported.
+	ListInput.options(
+		:itemComponent="ListItemOption"
+		title="Voting options"
+		:inputSettings=`[{
+			placeholder: "e.g. Some awesome voting option.",
+		}]`
+		v-model="formData.options"
+		addText="add an option"
+		:minCount="2"
+		:onItemAdd="function() { formData.options.push('') }"
+		required
+	) Voting options for the poll.
+	FormInput.start-date(
+		title="Start date"
+		v-model="formData.dateStart"
+		type="datetime-local"
+	) When the poll will start. If nothing selected - poll will start right after the creation.
+	FormInput.end-date(
+		title="End date"
+		v-model="formData.dateEnd"
+		type="datetime-local"
+		required
+	) When the poll will end.
+	FormSelectInput.currency(
+		title="Payment currency"
+		placeholder="e.g. 123"
+		v-model="formData.currency"
+		required
+	) What currency will be used to vote on this poll. Can be Native or AssetId.
+	FormInput.goal(
+		title="Goal amount"
+		placeholder="e.g. 999.999999"
+		v-model="formData.goal"
+		type="number"
+		required
+	) The minimum target amount of tokens to make poll happen.
+	FormSelectInput.multiple-votes(
+		title="Multiple votes"
+		v-model="formData.multipleVotes"
+		required
+	) Make it possible to vote for multiple options.
+	ListInput.beneficiaries(
+		:itemComponent="ListItemBeneficiary"
+		title="Poll beneficiaries"
+		:inputSettings=`[{
+			placeholder: "e.g. FvnazYM5KAetYpXoVDfqt9WFcJogKbekXVJ3Fz5oW2Dv82P",
+			flex: 4,
+		}, {
+			placeholder: "e.g. 10.0%",
+			flex: 1,
+		}]`
+		v-model="formData.beneficiaries"
+		addText="add a beneficiary"
+		:onItemAdd="function () { formData.beneficiaries.push(['', '10.00']) }"
+	)
+		| Specify those who will get the winning deposit and their interest.
+		br
+		| Interest sum of all beneficiaries should be min=0% and max=100%.
+	div.actions
+		Button.action.create(
+			text="create poll"
+			submit fill
+			:disabled="submitDisabled"
+		)
+		//- Button.action.back(text="cancel" fill url="/")
 </template>
-
-<style lang="scss" scoped>
-.content {
-	@apply flex flex-col h-full w-100vw relative justify-center items-center;
-	.wrapper {
-		@apply flex flex-col justify-start items-start z-2 w-140 h-full pt-100px;
-		h1.title {
-			@apply text-4xl font-bold m-0 text-center text-black;
-		}
-		.create-form {
-			@apply my-6 w-full;
-			& > div {
-				@apply my-4;
-			}
-			div.actions {
-				@apply flex flex-row gap-4 mt-6 pb-20;
-			}
-		}
-	}
-}
-</style>

@@ -5,14 +5,25 @@ import Button from "@components/inputs/Button.vue"
 
 const onClickConnect = async () => {
 	const allInjected = await web3Enable("Faterium dApp")
-	Swal.fire({
-		title: `Connected ${allInjected.length} account/s`,
-		toast: true,
-		icon: "success",
-		position: "bottom-right",
-		timer: 2000,
-		showConfirmButton: false,
-	})
+	if (allInjected.length > 0) {
+		Swal.fire({
+			title: `Connected ${allInjected.length} account/s`,
+			toast: true,
+			icon: "success",
+			position: "bottom-right",
+			timer: 2000,
+			showConfirmButton: false,
+		})
+	} else {
+		Swal.fire({
+			title: "No accounts connected or extension not found",
+			toast: true,
+			icon: "error",
+			position: "bottom-right",
+			timer: 2000,
+			showConfirmButton: false,
+		})
+	}
 }
 </script>
 

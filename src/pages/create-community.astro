@@ -1,16 +1,16 @@
 ---
 import Layout from "@layouts/Layout.astro"
 import Header from "@partials/Header.vue"
-import CreatePoll from "@partials/create/CreatePoll.vue"
+import CreateCommunity from "@partials/create/CreateCommunity.vue"
 
 const community = Astro.url.searchParams.get("community")! || ""
 ---
 
 <Layout
-	title="Create Poll"
+	title="Create Community"
 	description="Faterium Decentralized Application to work with Faterium Network."
 	coverUrl="https://dapp.faterium.com/preview.png"
 >
 	<Header client:only />
-	<CreatePoll client:only community={community} />
+	<CreateCommunity client:only community={community} />
 </Layout>

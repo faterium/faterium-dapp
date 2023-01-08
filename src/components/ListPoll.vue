@@ -30,7 +30,7 @@ a.list-poll {
 	div.bottom {
 		@apply flex gap-3 leading-5;
 		img.thumb {
-			@apply h-10 w-10 rounded-1 -top-2;
+			@apply h-10 w-10 object-cover object-center rounded-1 -top-2;
 		}
 		div.right {
 			@apply flex flex-col;

@@ -24,7 +24,9 @@ const onInput = (val: string) => {
 
 <template lang="pug">
 div.form-select-input
-	h3.title {{ title }} {{ required ? "*" : "" }}
+	h3.title
+		| {{ title }}
+		span.optional {{ required ? "" : "(optional)" }}
 	div.description: slot
 	fieldset
 		div.radio-button(
@@ -53,6 +55,9 @@ div.form-select-input {
 	@apply flex flex-col justify-start items-start;
 	h3.title {
 		@apply text-base font-bold;
+		.optional {
+			@apply opacity-30 ml-1;
+		}
 	}
 	div.description {
 		@apply text-sm font-normal;

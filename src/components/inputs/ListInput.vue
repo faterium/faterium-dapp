@@ -4,7 +4,7 @@ interface Props {
 	title: string
 	inputSettings: any[]
 	modelValue: any[]
-	minCount: number
+	minCount?: number
 	required?: boolean
 	addText?: string
 	onItemAdd?: Function
@@ -21,7 +21,9 @@ const onRemove = (id: number) => {
 
 <template lang="pug">
 div.list-input
-	h3.title {{ title }} {{ required ? "*" : "" }}
+	h3.title
+		| {{ title }}
+		span.optional {{ required ? "" : "(optional)" }}
 	div.description: slot
 	div.list-items
 		component(
@@ -44,6 +46,9 @@ div.list-input {
 	@apply flex flex-col justify-start items-start;
 	h3.title {
 		@apply text-base font-bold;
+		.optional {
+			@apply opacity-30 ml-1;
+		}
 	}
 	div.description {
 		@apply text-sm font-normal;

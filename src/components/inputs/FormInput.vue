@@ -11,7 +11,9 @@ const emit = defineEmits(["update:modelValue"])
 
 <template lang="pug">
 div.form-input
-	h3.title {{ title }} {{ required ? "*" : "" }}
+	h3.title
+		| {{ title }}
+		span.optional {{ required ? "" : "(optional)" }}
 	div.description: slot
 	textarea(
 		v-if="textarea"
@@ -32,6 +34,9 @@ div.form-input {
 	@apply flex flex-col justify-start items-start;
 	h3.title {
 		@apply text-base font-bold;
+		.optional {
+			@apply opacity-30 ml-1;
+		}
 	}
 	div.description {
 		@apply text-sm font-normal;
