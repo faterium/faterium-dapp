@@ -5,6 +5,8 @@ interface Props {
 	title: string
 	modelValue?: any
 	required?: boolean
+	small?: boolean
+	large?: boolean
 }
 const props = defineProps<Props>()
 const emit = defineEmits(["onUpload"])
@@ -26,10 +28,9 @@ const onSelectFile = () => {
 		emit("onUpload", files[0])
 	}
 }
+const withoutData = () => !imageData.value
 const getImage = () =>
-	!imageData.value
-		? "url(/assets/poll_preview.png)"
-		: `url(${imageData.value})`
+	withoutData() ? "url(/assets/poll_preview.png)" : `url(${imageData.value})`
 </script>
 
 <template lang="pug">
@@ -38,7 +39,11 @@ div.media-input
 		| {{ title }}
 		span.optional {{ required ? "" : "(optional)" }}
 	div.description: slot
-	div.image-input(:style="{ 'background-image': getImage() }" @click="chooseImage")
+	div.image-input(
+		:class="{ small, large, withImage: !withoutData() }"
+		:style="{ 'background-image': getImage() }"
+		@click="chooseImage"
+	)
 		input.file-input(ref="fileInput" type="file" @input="onSelectFile")
 </template>
 
@@ -61,10 +66,19 @@ div.media-input {
 		}
 	}
 	.image-input {
-		@apply mt-3 rounded-4px h-50 w-100 block cursor-pointer bg-cover bg-center;
+		@apply mt-3 rounded-4px h-50 w-100 block cursor-pointer bg-center bg-no-repeat bg-gray-100;
 		transition: all 0.2s ease;
 		&:hover {
-			filter: brightness(80%);
+			filter: brightness(90%);
+		}
+		&.withImage {
+			@apply bg-cover;
+		}
+		&.small {
+			@apply w-30 h-30 rounded-1;
+		}
+		&.large {
+			@apply w-full;
 		}
 	}
 	.file-input {

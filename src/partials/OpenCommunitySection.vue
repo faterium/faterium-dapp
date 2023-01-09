@@ -55,7 +55,7 @@ main.content.section
 				span.title Polls created
 		p.description {{ parsedCommunity.description }}
 		div.actions
-			Button.action.create(text="Create poll" fill :url="`/create-poll?community=${parsedCommunity.name}`")
+			Button.action.create(text="Create poll" fill :url="`/create/poll?community=${parsedCommunity.name}`")
 			Button.action.create(text="Follow" fill url="/communities")
 	div.polls
 		h2.title Community Polls

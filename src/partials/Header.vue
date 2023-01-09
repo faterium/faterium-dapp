@@ -33,7 +33,7 @@ header.header
 		| faterium
 		span.badge pre-alpha
 	div.actions
-		Button.action.create(text="Create" fill url="/create-poll")
+		Button.action.create(text="Create" fill url="/create")
 		Button.action.connect(text="Connect" fill @click="onClickConnect")
 </template>
 

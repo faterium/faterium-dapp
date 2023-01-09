@@ -29,7 +29,7 @@ const polls = await loadPolls()
 >
 	<Header client:only />
 	<PollsSection client:load polls={polls} />
-	<CommunitiesSection client:load polls={polls} />
 	<CategoriesSection client:load polls={polls} />
+	<CommunitiesSection client:load polls={polls} />
 	<Footer />
 </Layout>

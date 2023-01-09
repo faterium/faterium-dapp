@@ -81,7 +81,7 @@ main.content.section
 		@apply mt-60px w-screen max-h-120 max-h-120 object-cover;
 	}
 	.wrapper {
-		@apply flex flex-col justify-start items-start z-2 w-140 h-full pt-40px;
+		@apply flex flex-col justify-start items-start z-2 w-160 h-full pt-40px;
 		h1.title {
 			@apply text-4xl font-bold m-0 mb-2 text-center text-black text-left;
 		}

@@ -30,11 +30,12 @@ main.content.section
 				stats="479k views - 13 hours left"
 				:image="poll.thumbUrl"
 			)
+		Button.action.explore.create(text="See all" fill url="/polls")
 </template>
 
 <style lang="scss" scoped>
 .content {
-	@apply flex flex-col h-200 w-full relative justify-start items-center py-24;
+	@apply flex flex-col w-full relative justify-start items-center pt-24 pb-12;
 	.wrapper {
 		@apply flex flex-col justify-center items-center z-2;
 		h2.title {
@@ -43,8 +44,9 @@ main.content.section
 		div.polls-grid {
 			@apply grid gap-4 grid-cols-4;
 		}
-		div.actions {
-			@apply flex flex-row gap-4 mt-8;
+		.explore {
+			@apply mt-8 py-4 px-16 rounded-4xl bg-transparent border-green-500 text-green-500
+				hover:text-white hover:bg-green-500;
 		}
 	}
 }

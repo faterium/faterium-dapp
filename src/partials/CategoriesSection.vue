@@ -10,25 +10,20 @@ const props = defineProps<Props>()
 
 const getPolls = () => {
 	// Cast object to class
-	return props.polls
-		.concat(props.polls)
-		.concat(props.polls)
-		.map((val) => Object.assign(new PollDetails(null), val))
+	return props.polls.map((val) => Object.assign(new PollDetails(null), val))
 }
 </script>
 
 <template lang="pug">
 main.content.section
 	div.wrapper
-		h2.title Featured Categories
+		h2.title Featured categories
 		div.categories
 			CategoryItem(
 				v-for="(poll, index) of getPolls()"
 				:key="index"
 				:url="poll.getPollUrl()"
-				:title="poll.title"
-				name="Games"
-				status="1 active poll"
+				:name="poll.title"
 				stats="147m followers"
 				:image="poll.thumbUrl"
 			)
@@ -37,7 +32,7 @@ main.content.section
 
 <style lang="scss" scoped>
 .content {
-	@apply flex flex-col h-200 w-full relative justify-start items-center py-24;
+	@apply flex flex-col h-200 w-full relative justify-start items-center py-12 bg-light-400;
 	.wrapper {
 		@apply flex flex-col justify-center items-center z-2;
 		h2.title {
@@ -47,7 +42,7 @@ main.content.section
 			@apply grid gap-4 grid-cols-3;
 		}
 		.explore {
-			@apply mt-12 py-4 px-16 rounded-4xl bg-transparent border-green-500 text-green-500
+			@apply mt-8 py-4 px-16 rounded-4xl bg-transparent border-green-500 text-green-500
 				hover:text-white hover:bg-green-500;
 		}
 	}

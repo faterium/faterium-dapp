@@ -17,7 +17,7 @@ const getPolls = () => {
 <template lang="pug">
 main.content.section
 	div.wrapper
-		h2.title Featured Communities
+		h2.title Featured communities
 		div.communities
 			CommunityItem(
 				v-for="(poll, index) of getPolls()"
@@ -35,7 +35,7 @@ main.content.section
 
 <style lang="scss" scoped>
 .content {
-	@apply flex flex-col h-200 w-full relative justify-start items-center py-24 bg-light-400;
+	@apply flex flex-col h-200 w-full relative justify-start items-center py-12;
 	.wrapper {
 		@apply flex flex-col justify-center items-center z-2;
 		h2.title {

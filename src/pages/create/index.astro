@@ -1,16 +1,14 @@
 ---
 import Layout from "@layouts/Layout.astro"
 import Header from "@partials/Header.vue"
-import CreateCommunity from "@partials/create/CreateCommunity.vue"
-
-const community = Astro.url.searchParams.get("community")! || ""
+import CreatePage from "@partials/create/CreatePage.vue"
 ---
 
 <Layout
-	title="Create Community"
+	title="Create"
 	description="Faterium Decentralized Application to work with Faterium Network."
 	coverUrl="https://dapp.faterium.com/preview.png"
 >
 	<Header client:only />
-	<CreateCommunity client:only community={community} />
+	<CreatePage client:only />
 </Layout>

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 interface Props {
 	title: string
-	submitButton: Function
+	submitButton?: Function
 }
 const props = defineProps<Props>()
 
@@ -25,13 +25,15 @@ function getRandomPhrase() {
 	const i = Math.floor(Math.random() * randomPhrases.length)
 	return randomPhrases[i]
 }
+
+const description = getRandomPhrase()
 </script>
 
 <template lang="pug">
 main.content.section
 	div.wrapper
 		h1.title {{ title }}
-		p.description {{ getRandomPhrase() }}
+		p.description {{ description }}
 		form.create-form(type="group" @submit.prevent="submitButton")
 			slot
 </template>
@@ -40,12 +42,12 @@ main.content.section
 .content {
 	@apply flex flex-col h-full w-100vw relative justify-center items-center;
 	.wrapper {
-		@apply flex flex-col justify-start items-start z-2 w-140 h-full pt-100px;
+		@apply flex flex-col justify-start items-start z-2 w-160 h-full pt-100px;
 		h1.title {
-			@apply text-4xl font-bold m-0 text-center text-black;
+			@apply text-4xl font-bold m-0 text-black;
 		}
 		p.description {
-			@apply font-normal opacity-50;
+			@apply font-normal opacity-50 ml-0.4;
 		}
 		.create-form {
 			@apply my-6 w-full;
