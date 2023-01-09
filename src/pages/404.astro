@@ -1,0 +1,16 @@
+---
+import Layout from "@layouts/Layout.astro"
+import Header from "@partials/Header.vue"
+import NotFoundSection from "@partials/NotFoundSection.vue"
+import Footer from "@partials/Footer.vue"
+---
+
+<Layout
+	title="Not found"
+	description="Faterium Decentralized Application to work with Faterium Network."
+	coverUrl="https://dapp.faterium.com/preview.png"
+>
+	<Header client:only />
+	<NotFoundSection />
+	<Footer />
+</Layout>

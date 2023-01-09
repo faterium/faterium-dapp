@@ -6,14 +6,13 @@ import { ApiPromise, WsProvider } from "@polkadot/api"
 import dayjs from "dayjs"
 import { PollDetails } from "./PollDetails"
 import { PocketBase } from "./PocketBase"
+import { NODE_API } from "./consts"
 
 export { ApiPromise } from "@polkadot/api"
 export { web3Accounts, web3Enable, web3FromSource } from "@polkadot/extension-dapp"
 
 export const connectToNode = async () => {
-	const wsProvider = new WsProvider(import.meta.env.PUBLIC_NETWORK === "testnet"
-		? "wss://dapp-node.faterium.com"
-		: "ws://127.0.0.1:9944")
+	const wsProvider = new WsProvider(NODE_API)
 	const api = await ApiPromise.create({
 		provider: wsProvider,
 		types: {

@@ -37,6 +37,7 @@
 				"extraFileExtensions": [".astro"]
 			},
 			"rules": {
+				"consistent-return": "off",
 				"import/extensions": "off",
 				"quotes": ["error", "double"],
 				"import/no-named-as-default-member": "off",

@@ -1,16 +1,18 @@
 <script lang="ts" setup>
 import { Button } from "@components/inputs"
 import CommunityItem from "@components/CommunityItem.vue"
-import { PollDetails } from "@utils/index"
+import { CommunityDetails } from "@utils/index"
 
 interface Props {
-	polls: PollDetails[]
+	communities: CommunityDetails[]
 }
 const props = defineProps<Props>()
 
-const getPolls = () => {
+const getCommunities = () => {
 	// Cast object to class
-	return props.polls.map((val) => Object.assign(new PollDetails(null), val))
+	return props.communities.map((val) =>
+		Object.assign(new CommunityDetails(null), val),
+	)
 }
 </script>
 
@@ -20,15 +22,15 @@ main.content.section
 		h2.title Featured communities
 		div.communities
 			CommunityItem(
-				v-for="(poll, index) of getPolls()"
+				v-for="(community, index) of getCommunities()"
 				:key="index"
-				:url="poll.getPollUrl()"
-				:title="poll.title"
-				name="Lorem Dolor lorem Ipsum is simply dummy text  lorem Ipsum is simply dummy text "
+				:url="community.getCommunityUrl()"
+				:name="community.name"
+				:description="community.description"
 				status="1 active poll"
 				stats="147m followers"
-				:bannerImage="poll.thumbUrl"
-				:communityImage="poll.thumbUrl"
+				:bannerImage="community.bannerImage"
+				:communityImage="community.logoImage"
 			)
 		Button.action.explore.create(text="Explore" fill url="/communities")
 </template>

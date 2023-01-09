@@ -14,23 +14,21 @@ const props = defineProps<Props>()
 const parsedCommunity = ref(
 	Object.assign(new CommunityDetails(null), props.community),
 )
-
-const getPolls = () => {
-	// Cast object to class
-	return props.polls.map((val) => Object.assign(new PollDetails(null), val))
-}
+const parsedPolls = ref(
+	props.polls.map((val) => Object.assign(new PollDetails(null), val)),
+)
 </script>
 
 <template lang="pug">
 main.content.section
 	img.preview(
-		:src="parsedCommunity.imageBannerUrl"
+		:src="parsedCommunity.bannerImage"
 		alt="poll preview"
 	)
 	div.wrapper
 		div.top-block
 			img.profile-image(
-				:src="parsedCommunity.imageBannerUrl"
+				:src="parsedCommunity.logoImage"
 				alt="poll preview"
 			)
 			div.social-links
@@ -39,7 +37,7 @@ main.content.section
 					:key="index"
 				)
 					img(
-						:src="parsedCommunity.imageBannerUrl"
+						:src="parsedCommunity.logoImage"
 						alt="poll preview"
 					)
 		h1.title {{ parsedCommunity.displayName }}
@@ -61,7 +59,7 @@ main.content.section
 		h2.title Community Polls
 		div.polls-grid
 			ListPoll(
-				v-for="(poll, index) of getPolls()"
+				v-for="(poll, index) of parsedPolls"
 				:key="index"
 				:url="poll.getPollUrl()"
 				:title="poll.title"
@@ -127,7 +125,7 @@ main.content.section
 		}
 	}
 	.polls {
-		@apply flex flex-col justify-center items-start z-2 py-12;
+		@apply flex flex-col justify-center items-start z-2 pt-12 pb-24;
 		h2.title {
 			@apply text-4xl font-black m-0 mb-8 text-center text-black;
 		}

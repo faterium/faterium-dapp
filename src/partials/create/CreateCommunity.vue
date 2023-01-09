@@ -9,7 +9,7 @@ import {
 	FormInput,
 	ListItemOption,
 } from "@components/inputs"
-import { connectPB, PocketBase, PollDetails, Record } from "@utils/index"
+import { connectPB, PocketBase, CommunityDetails } from "@utils/index"
 import { substrateCreatePoll } from "@utils/Substrate"
 import BasePage from "./basePage.vue"
 
@@ -18,9 +18,9 @@ const formData = ref({
 	name: "",
 	displayName: "",
 	description: "",
-	logoImage: new FormData(),
-	bannerImage: new FormData(),
-	featuredImage: new FormData(),
+	logoImage: null,
+	bannerImage: null,
+	featuredImage: null,
 	team: [""],
 	linkTwitter: "",
 	linkDiscord: "",
@@ -33,11 +33,7 @@ const fileChanged = (event: Event, item: string) => {
 	const element = event.target as HTMLInputElement
 	const fileList: FileList | null = element.files
 	for (let i = 0; i < fileList.length; i += 1) {
-		const tmp = new FormData()
-		tmp.append("file", fileList.item(i))
-		console.log(tmp)
-		formData.value.logoImage = tmp
-		console.log(formData.value.logoImage)
+		formData.value[item] = fileList.item(i)
 	}
 }
 // const uploadImages = async (
@@ -93,32 +89,46 @@ const submit = async () => {
 	// 	position: "bottom-right",
 	// 	showConfirmButton: false,
 	// })
-	const data = {
-		name: formData.value.name,
-		displayName: formData.value.displayName,
-		description: formData.value.description,
-		logoImage: formData.value.logoImage,
-		bannerImage: formData.value.bannerImage,
-		featuredImage: formData.value.featuredImage,
-		team: formData.value.team,
-		linkTwitter: formData.value.linkTwitter,
-		linkDiscord: formData.value.linkDiscord,
-		linkYoutube: formData.value.linkYoutube,
-		linkInstagram: formData.value.linkInstagram,
-		linkWebpage: formData.value.linkWebpage,
-	}
-	const communityRes = await uploadCommunityDetails(pb, data).catch((err) => {
-		Swal.fire({
-			title: "Error during poll details upload!",
-			text: `Server returned ${err.status} error.
-			It may happen if you specified invalid poll details!`,
-			icon: "error",
-			confirmButtonText: "Cool, let me fix it!",
-		})
+	// console.log(formData.value[item].get(item))
+	const formDataValue = new FormData()
+	Object.keys(formData.value).forEach((k) => {
+		formDataValue.append(k, formData.value[k])
 	})
+	// const data = {
+	// 	name: formData.value.name,
+	// 	displayName: formData.value.displayName,
+	// 	description: formData.value.description,
+	// 	logoImage: formData.value.logoImage,
+	// 	bannerImage: formData.value.bannerImage,
+	// 	featuredImage: formData.value.featuredImage,
+	// 	team: formData.value.team,
+	// 	linkTwitter: formData.value.linkTwitter,
+	// 	linkDiscord: formData.value.linkDiscord,
+	// 	linkYoutube: formData.value.linkYoutube,
+	// 	linkInstagram: formData.value.linkInstagram,
+	// 	linkWebpage: formData.value.linkWebpage,
+	// }
+	const communityRes = await uploadCommunityDetails(pb, formDataValue).catch(
+		(err) => {
+			Swal.fire({
+				title: "Error during poll details upload!",
+				text: `Server returned ${err.status} error.
+			It may happen if you specified invalid poll details!`,
+				icon: "error",
+				confirmButtonText: "Cool, let me fix it!",
+			})
+		},
+	)
 	if (!communityRes) return
 	console.log(communityRes)
-	// const poll = new PollDetails(communityRes)
+	const community = new CommunityDetails(communityRes)
+	Swal.fire({
+		title: "Community successfully created!",
+		icon: "success",
+		confirmButtonText: "Cool, take me there!",
+	}).then((_) => {
+		window.location.replace(`/c/${communityRes.id}`)
+	})
 }
 const submitButton = () =>
 	submit()

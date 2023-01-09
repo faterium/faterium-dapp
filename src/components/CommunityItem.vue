@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 interface Props {
 	url: string
-	title: string
 	name: string
+	description: string
 	status: string
 	stats: string
 	bannerImage: string
@@ -19,8 +19,8 @@ a.community-item(:href="url" target="_self")
 	div.bottom
 		img.thumb(:src="communityImage" alt="community image")
 		div.info
-			h2.poll-title {{ title }}
-			h3.name {{ name }}
+			h2.name {{ name }}
+			p.description {{ description }}
 			h3.stats {{ stats }}
 </template>
 
@@ -45,11 +45,14 @@ a.community-item {
 		}
 		div.info {
 			@apply flex flex-col leading-5;
-			h2.poll-title {
+			h2.name {
 				@apply font-bold text-2xl break-normal;
 			}
-			h3.name {
-				@apply my-1 text-sm;
+			p.description {
+				@apply my-1 text-sm whitespace-pre-wrap overflow-hidden text-ellipsis h-10;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
 			}
 			h3.stats {
 				@apply font-bold text-sm;
