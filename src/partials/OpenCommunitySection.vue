@@ -32,14 +32,31 @@ main.content.section
 				alt="poll preview"
 			)
 			div.social-links
-				a.social-link(
-					v-for="(link, index) of [1, 2, 3]"
-					:key="index"
+				a.social-link.twitter(
+					v-if="parsedCommunity.linkTwitter !== ''"
+					:href="parsedCommunity.linkTwitter"
 				)
-					img(
-						:src="parsedCommunity.logoImage"
-						alt="poll preview"
-					)
+					img(src="/assets/icons/twitter.svg" alt="twitter")
+				a.social-link.discord(
+					v-if="parsedCommunity.linkDiscord !== ''"
+					:href="parsedCommunity.linkDiscord"
+				)
+					img(src="/assets/icons/discord.svg" alt="discord")
+				a.social-link.youtube(
+					v-if="parsedCommunity.linkYoutube !== ''"
+					:href="parsedCommunity.linkYoutube"
+				)
+					img(src="/assets/icons/youtube.svg" alt="youtube")
+				a.social-link.instagram(
+					v-if="parsedCommunity.linkInstagram !== ''"
+					:href="parsedCommunity.linkInstagram"
+				)
+					img(src="/assets/icons/instagram.svg" alt="instagram")
+				a.social-link.webpage(
+					v-if="parsedCommunity.linkWebpage !== ''"
+					:href="parsedCommunity.linkWebpage"
+				)
+					img(src="/assets/icons/webpage.svg" alt="webpage")
 		h1.title {{ parsedCommunity.displayName }}
 		div.user-info
 			b.username @{{ parsedCommunity.name }}
@@ -85,7 +102,7 @@ main.content.section
 			div.social-links {
 				@apply flex flex-row gap-2 mt-6;
 				a.social-link {
-					@apply h-12 w-12 rounded-1 -top-2 border-2 border-white overflow-hidden;
+					@apply h-12 w-12 -top-2 overflow-hidden;
 					img {
 						@apply object-cover object-center h-full w-full;
 					}
