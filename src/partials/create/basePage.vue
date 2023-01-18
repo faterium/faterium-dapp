@@ -30,8 +30,8 @@ const description = getRandomPhrase()
 </script>
 
 <template lang="pug">
-main.content.section
-	div.wrapper
+main.content.create-page
+	div.create-wrapper
 		h1.title {{ title }}
 		p.description {{ description }}
 		form.create-form(type="group" @submit.prevent="submitButton")
@@ -39,9 +39,9 @@ main.content.section
 </template>
 
 <style lang="scss">
-.content {
+.content.create-page {
 	@apply flex flex-col h-full w-100vw relative justify-center items-center;
-	.wrapper {
+	.create-wrapper {
 		@apply flex flex-col justify-start items-start z-2 w-160 h-full pt-100px;
 		h1.title {
 			@apply text-4xl font-bold m-0 text-black;

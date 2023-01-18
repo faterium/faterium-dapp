@@ -15,6 +15,7 @@ export default defineConfig({
 	integrations: [
 		vue(),
 		sitemap({
+			customPages: ["/"],
 			changefreq: ("weekly" as ChangeFreq),
 			priority: 1.0,
 			lastmod: new Date("2022-08-30"),
