@@ -121,7 +121,7 @@ export const substrateCreatePoll = async (
 							icon: "success",
 							confirmButtonText: "Cool, take me there!",
 						}).then((_) => {
-							window.location.replace(`/p/${poll.id}`)
+							window.location.replace(`/polls/${poll.id}`)
 						})
 					} else {
 						Swal.fire({

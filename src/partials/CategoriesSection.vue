@@ -1,33 +1,39 @@
 <script lang="ts" setup>
 import { Button } from "@components/inputs"
 import CategoryItem from "@components/CategoryItem.vue"
-import { PollDetails } from "@utils/index"
+import { CategoryDetails } from "@utils/index"
 
 interface Props {
-	polls: PollDetails[]
+	marginTop?: boolean
+	categories: CategoryDetails[]
 }
 const props = defineProps<Props>()
 
-const getPolls = () => {
+const getCategories = () => {
 	// Cast object to class
-	return props.polls.map((val) => Object.assign(new PollDetails(null), val))
+	return props.categories.map((val) =>
+		Object.assign(new CategoryDetails(null), val),
+	)
 }
 </script>
 
 <template lang="pug">
-main.content.section
+main.content.section(:class="{ marginTop }")
 	div.wrapper
 		h2.title Featured categories
 		div.categories
 			CategoryItem(
-				v-for="(poll, index) of getPolls()"
+				v-for="(cat, index) of getCategories()"
 				:key="index"
-				:url="poll.getPollUrl()"
-				:name="poll.title"
+				:url="cat.getCategoryUrl()"
+				:name="cat.name"
 				stats="147m followers"
-				:image="poll.thumbUrl"
+				:image="cat.image"
 			)
-		Button.action.explore.create(text="See more" fill url="/categories")
+		Button.action.explore.create(
+			v-if="!marginTop"
+			text="See more" fill url="/categories"
+		)
 </template>
 
 <style lang="scss" scoped>
@@ -44,6 +50,12 @@ main.content.section
 		.explore {
 			@apply mt-8 py-4 px-16 rounded-4xl bg-transparent border-green-500 text-green-500
 				hover:text-white hover:bg-green-500;
+		}
+	}
+	&.marginTop {
+		@apply pt-24 min-h-200 h-auto bg-white;
+		.wrapper div.categories {
+			@apply pb-28;
 		}
 	}
 }

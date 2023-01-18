@@ -127,7 +127,7 @@ const submit = async () => {
 		icon: "success",
 		confirmButtonText: "Cool, take me there!",
 	}).then((_) => {
-		window.location.replace(`/c/${communityRes.id}`)
+		window.location.replace(`/communities/${communityRes.id}`)
 	})
 }
 const submitButton = () =>

@@ -4,6 +4,7 @@ import CommunityItem from "@components/CommunityItem.vue"
 import { CommunityDetails } from "@utils/index"
 
 interface Props {
+	marginTop?: boolean
 	communities: CommunityDetails[]
 }
 const props = defineProps<Props>()
@@ -17,7 +18,7 @@ const getCommunities = () => {
 </script>
 
 <template lang="pug">
-main.content.section
+main.content.section(:class="{ marginTop }")
 	div.wrapper
 		h2.title Featured communities
 		div.communities
@@ -32,7 +33,10 @@ main.content.section
 				:bannerImage="community.bannerImage"
 				:communityImage="community.logoImage"
 			)
-		Button.action.explore.create(text="Explore" fill url="/communities")
+		Button.action.explore.create(
+			v-if="!marginTop"
+			text="Explore" fill url="/communities"
+		)
 </template>
 
 <style lang="scss" scoped>
@@ -47,8 +51,14 @@ main.content.section
 			@apply grid gap-4 grid-cols-3;
 		}
 		.explore {
-			@apply mt-12 py-4 px-16 rounded-4xl bg-transparent border-green-500 text-green-500
+			@apply my-12 py-4 px-16 rounded-4xl bg-transparent border-green-500 text-green-500
 				hover:text-white hover:bg-green-500;
+		}
+	}
+	&.marginTop {
+		@apply pt-24 min-h-200 h-auto;
+		.wrapper div.communities {
+			@apply pb-28;
 		}
 	}
 }

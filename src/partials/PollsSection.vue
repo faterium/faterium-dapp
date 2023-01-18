@@ -4,22 +4,21 @@ import ListPoll from "@components/ListPoll.vue"
 import { PollDetails } from "@utils/index"
 
 interface Props {
+	category?: string
 	polls: PollDetails[]
 }
 const props = defineProps<Props>()
 
 const getPolls = () => {
 	// Cast object to class
-	return props.polls
-		.concat(props.polls)
-		.map((val) => Object.assign(new PollDetails(null), val))
+	return props.polls.map((val) => Object.assign(new PollDetails(null), val))
 }
 </script>
 
 <template lang="pug">
-main.content.section
+main.content.section(:class="{ category: !!category }")
 	div.wrapper
-		h2.title Trending Polls
+		h2.title {{ category ? `Polls for ${category}` : 'Trending Polls' }}
 		div.polls-grid
 			ListPoll(
 				v-for="(poll, index) of getPolls()"
@@ -30,7 +29,10 @@ main.content.section
 				stats="479k views - 13 hours left"
 				:image="poll.thumbUrl"
 			)
-		Button.action.explore.create(text="See all" fill url="/polls")
+		Button.action.explore.create(
+			v-if="!category"
+			text="See all" fill url="/polls"
+		)
 </template>
 
 <style lang="scss" scoped>
@@ -48,6 +50,9 @@ main.content.section
 			@apply mt-8 py-4 px-16 rounded-4xl bg-transparent border-green-500 text-green-500
 				hover:text-white hover:bg-green-500;
 		}
+	}
+	&.category {
+		@apply mb-28;
 	}
 }
 </style>

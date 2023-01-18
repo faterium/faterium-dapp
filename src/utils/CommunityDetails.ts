@@ -44,6 +44,6 @@ export class CommunityDetails {
 	}
 
 	public getCommunityUrl() {
-		return `/c/${this.name}`
+		return `/communities/${this.name}`
 	}
 }

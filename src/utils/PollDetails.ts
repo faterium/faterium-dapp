@@ -87,7 +87,7 @@ export class PollDetails {
 	}
 
 	public getPollUrl() {
-		return `/p/${this.id}`
+		return `/polls/${this.id}`
 	}
 
 	public computeStartBlock(current: number, period: number) {

@@ -1,0 +1,31 @@
+---
+import Layout from "@layouts/Layout.astro"
+import Header from "@partials/Header.vue"
+import PollsSection from "@partials/PollsSection.vue"
+import Footer from "@partials/Footer.vue"
+import { connectPB, PollDetails } from "@utils/index"
+
+const loadPolls = async () => {
+	const pb = connectPB()
+	const result = await pb.collection("polls").getFullList(0, {
+		// Filter all polls that have no pollId assigned to them
+		filter: "pollId != 0",
+		// In desc order
+		sort: "-created",
+		// With image
+		expand: "image,community",
+	})
+	return result.map((val) => new PollDetails(val))
+}
+const polls = await loadPolls()
+---
+
+<Layout
+	title="Faterium poll"
+	description="Faterium Decentralized Application to work with Faterium Network."
+	coverUrl="https://dapp.faterium.com/preview.png"
+>
+	<Header client:only />
+	<PollsSection client:load category="all categories" polls={polls} />
+	<Footer />
+</Layout>

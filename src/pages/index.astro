@@ -5,11 +5,11 @@ import PollsSection from "@partials/PollsSection.vue"
 import CommunitiesSection from "@partials/CommunitiesSection.vue"
 import CategoriesSection from "@partials/CategoriesSection.vue"
 import Footer from "@partials/Footer.vue"
-import { connectPB, PollDetails, CommunityDetails } from "@utils/index"
+import { connectPB, PollDetails, CommunityDetails, CategoryDetails } from "@utils/index"
 
 const loadPolls = async () => {
 	const pb = connectPB()
-	const result = await pb.collection("polls").getFullList(12, {
+	const result = await pb.collection("polls").getFullList(0, {
 		// Filter all polls that have no pollId assigned to them
 		filter: "pollId != 0",
 		// In desc order
@@ -21,14 +21,23 @@ const loadPolls = async () => {
 }
 const loadCommunities = async () => {
 	const pb = connectPB()
-	const result = await pb.collection("communities").getFullList(12, {
+	const result = await pb.collection("communities").getFullList(0, {
 		// In desc order
 		sort: "-created",
 	})
 	return result.map((val) => new CommunityDetails(val))
 }
+const loadCategories = async () => {
+	const pb = connectPB()
+	const result = await pb.collection("categories").getList(0, 3, {
+		// In desc order
+		sort: "created",
+	})
+	return result.items.map((val) => new CategoryDetails(val))
+}
 const polls = await loadPolls()
 const communities = await loadCommunities()
+const categories = await loadCategories()
 ---
 
 <Layout
@@ -38,7 +47,7 @@ const communities = await loadCommunities()
 >
 	<Header client:only />
 	<PollsSection client:load polls={polls} />
-	<CategoriesSection client:load polls={polls} />
+	<CategoriesSection client:load categories={categories} />
 	<CommunitiesSection client:load communities={communities} />
 	<Footer />
 </Layout>
