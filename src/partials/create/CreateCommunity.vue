@@ -36,23 +36,6 @@ const fileChanged = (event: Event, item: string) => {
 		formData.value[item] = fileList.item(i)
 	}
 }
-// const uploadImages = async (
-// 	pb: PocketBase,
-// ): Promise<[string, string, string]> => {
-// 	const logoImage = await pb
-// 		.collection("images")
-// 		.create(formData.value.logoImage)
-// 	console.log("Upload logo result", logoImage)
-// 	const bannerImage = await pb
-// 		.collection("images")
-// 		.create(formData.value.bannerImage)
-// 	console.log("Upload banner result", bannerImage)
-// 	const featuredImage = await pb
-// 		.collection("images")
-// 		.create(formData.value.featuredImage)
-// 	console.log("Upload featured result", featuredImage)
-// 	return [logoImage.id, bannerImage.id, featuredImage.id]
-// }
 const uploadCommunityDetails = async (pb: PocketBase, data: any) => {
 	console.log("Upload data", data)
 	const result = await pb.collection("communities").create(data)
@@ -70,44 +53,10 @@ const submit = async () => {
 		showConfirmButton: false,
 		didOpen: () => Swal.showLoading(null),
 	})
-	// const [logoImage, bannerImage, featuredImage] = await uploadImages(
-	// 	pb,
-	// ).catch((err) => {
-	// 	throw Swal.fire({
-	// 		title: "Error on images upload!",
-	// 		text: `Server returned ${err.status} error.
-	// 		It may happen if you uploaded image that is not specified or invalid!`,
-	// 		icon: "error",
-	// 		confirmButtonText: "I will try again!",
-	// 	})
-	// })
-	// if (!logoImage || !bannerImage || !featuredImage) return
-	// Swal.fire({
-	// 	title: "Images successfully uploaded to the server and IPFS!",
-	// 	toast: true,
-	// 	icon: "success",
-	// 	position: "bottom-right",
-	// 	showConfirmButton: false,
-	// })
-	// console.log(formData.value[item].get(item))
 	const formDataValue = new FormData()
 	Object.keys(formData.value).forEach((k) => {
 		formDataValue.append(k, formData.value[k])
 	})
-	// const data = {
-	// 	name: formData.value.name,
-	// 	displayName: formData.value.displayName,
-	// 	description: formData.value.description,
-	// 	logoImage: formData.value.logoImage,
-	// 	bannerImage: formData.value.bannerImage,
-	// 	featuredImage: formData.value.featuredImage,
-	// 	team: formData.value.team,
-	// 	linkTwitter: formData.value.linkTwitter,
-	// 	linkDiscord: formData.value.linkDiscord,
-	// 	linkYoutube: formData.value.linkYoutube,
-	// 	linkInstagram: formData.value.linkInstagram,
-	// 	linkWebpage: formData.value.linkWebpage,
-	// }
 	const communityRes = await uploadCommunityDetails(pb, formDataValue).catch(
 		(err) => {
 			Swal.fire({

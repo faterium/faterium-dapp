@@ -56,7 +56,7 @@ main.content.section(:class="{ marginTop }")
 		}
 	}
 	&.marginTop {
-		@apply pt-24 min-h-200 h-auto;
+		@apply pt-24 min-h-200 h-auto bg-white;
 		.wrapper div.communities {
 			@apply pb-28;
 		}

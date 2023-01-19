@@ -293,3 +293,121 @@ export const collectFromPoll = async (poll: PollDetails) => {
 			})
 		})
 }
+
+export const substrateCreateAsset = async (
+	pb: PocketBase,
+	formData: {
+		icon: string,
+		name: string,
+		symbol: string,
+		decimals: number,
+		minBalance: number,
+		assetId: number,
+	}
+) => {
+	const accounts = await getAccounts()
+	const account = accounts[0]
+	console.log("account", account)
+	// To be able to retrieve the signer interface from this account
+	// we can use web3FromSource which will return an InjectedExtension type
+	const injector = await web3FromSource(account.meta.source)
+	// Connect to our substrate node
+	const api = await connectToNode()
+	api.tx.assets.create(formData.assetId, account.address, formData.minBalance)
+		.signAndSend(
+			account.address,
+			{ signer: injector.signer },
+			({ events = [], status }) => {
+				if (status.isInBlock) {
+					console.log("Events:", events);
+					let actualResultError = ""
+					events.forEach(({ event: { data, method, section }, phase }) => {
+						console.log("\t", phase.toString(), `: ${section}.${method}`, data.toString())
+						if (method === "ExtrinsicFailed") {
+							actualResultError = data.toString()
+						}
+					})
+					Swal.close()
+					if (actualResultError === "") {
+						api.tx.assets.setMetadata(formData.assetId, formData.name, formData.symbol, formData.decimals)
+							.signAndSend(
+								account.address,
+								{ signer: injector.signer },
+								async ({ events: e = [], status: s }) => {
+									if (s.isInBlock) {
+										console.log("Events:", e);
+										let aResultError = ""
+										e.forEach(({ event: { data, method, section }, phase }) => {
+											console.log("\t", phase.toString(), `: ${section}.${method}`, data.toString())
+											if (method === "ExtrinsicFailed") {
+												aResultError = data.toString()
+											}
+										})
+										Swal.close()
+										if (aResultError === "") {
+											console.log("Upload data", formData)
+											const formDataValue = new FormData()
+											Object.keys(formData).forEach((k) => {
+												formDataValue.append(k, formData[k])
+											})
+											await pb
+												.collection("assets")
+												.create(formDataValue)
+
+											Swal.fire({
+												title: "Successfully created!",
+												text: `Completed at block hash #${s.asInBlock.toString()}! To mint open @polkadot/apps`,
+												icon: "success",
+												confirmButtonText: "Cool!",
+											}).then((_) => {
+												window.open("https://dapp-apps.faterium.com/#/assets", "_blank")
+												window.location.replace("/create")
+											})
+										}
+									} else if (s.isFinalized) {
+										// do nothing
+									} else {
+										Swal.fire({
+											title: `Please wait until extrinsic completion. Status: ${s.type}.`,
+											toast: true,
+											position: "bottom-right",
+											timerProgressBar: true,
+											timer: 3000,
+											showConfirmButton: false,
+											didOpen: () => Swal.showLoading(null),
+										})
+									}
+								}
+							)
+					} else {
+						Swal.fire({
+							title: "Error during asset creation!",
+							text: `Server returned the following error: ${actualResultError}`,
+							icon: "error",
+							confirmButtonText: "Cool, let me fix it!",
+						})
+					}
+				} else if (status.isFinalized) {
+					// do nothing
+				} else {
+					Swal.fire({
+						title: `Please wait until extrinsic completion. Status: ${status.type}.`,
+						toast: true,
+						position: "bottom-right",
+						timerProgressBar: true,
+						timer: 3000,
+						showConfirmButton: false,
+						didOpen: () => Swal.showLoading(null),
+					})
+				}
+			},
+		)
+		.catch((error: Error) => {
+			Swal.fire({
+				title: "Error during asset creation!",
+				text: `Server returned the following error: ${error}`,
+				icon: "error",
+				confirmButtonText: "Cool, let me fix it!",
+			})
+		})
+}
