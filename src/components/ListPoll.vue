@@ -5,6 +5,7 @@ interface Props {
 	name: string
 	stats: string
 	image: string
+	logoImage: string
 }
 const props = defineProps<Props>()
 </script>
@@ -13,7 +14,7 @@ const props = defineProps<Props>()
 a.list-poll(:href="url" target="_self")
 	img.poll-image(:src="image" alt="poll image")
 	div.bottom
-		img.thumb(:src="image" alt="poll image")
+		img.thumb(:src="logoImage" alt="logo image")
 		div.right
 			h2.poll-title {{ title }}
 			h3.name {{ name }}

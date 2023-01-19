@@ -15,7 +15,7 @@ const loadPolls = async () => {
 		// In desc order
 		sort: "-created",
 		// With image
-		expand: "image",
+		expand: "image,community",
 	})
 	return result.map((val) => new PollDetails(val))
 }

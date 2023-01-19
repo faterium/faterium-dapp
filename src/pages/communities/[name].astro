@@ -20,7 +20,7 @@ const loadPolls = async (cid: string) => {
 		// In desc order
 		sort: "-created",
 		// With image
-		expand: "image",
+		expand: "image,community",
 	})
 	return result.map((val) => new PollDetails(val))
 }

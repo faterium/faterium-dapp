@@ -25,9 +25,10 @@ main.content.section(:class="{ category: !!category }")
 				:key="index"
 				:url="poll.getPollUrl()"
 				:title="poll.title"
-				name="The Sandbox"
-				stats="479k views - 13 hours left"
+				:name="poll.community.displayName"
+				:stats="`@${poll.community.name}`"
 				:image="poll.thumbUrl"
+				:logoImage="poll.community.logoImage"
 			)
 		Button.action.explore.create(
 			v-if="!category"

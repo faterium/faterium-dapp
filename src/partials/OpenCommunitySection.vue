@@ -92,9 +92,10 @@ main.content.section
 				:key="index"
 				:url="poll.getPollUrl()"
 				:title="poll.title"
-				name="The Sandbox"
-				stats="479k views - 13 hours left"
+				:name="poll.community.displayName"
+				:stats="`@${poll.community.name}`"
 				:image="poll.thumbUrl"
+				:logoImage="poll.community.logoImage"
 			)
 </template>
 

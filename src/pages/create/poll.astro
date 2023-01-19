@@ -2,8 +2,16 @@
 import Layout from "@layouts/Layout.astro"
 import Header from "@partials/Header.vue"
 import CreatePoll from "@partials/create/CreatePoll.vue"
+import { connectPB, CommunityDetails } from "@utils/index"
 
-const community = Astro.url.searchParams.get("community")! || ""
+const communityName = Astro.url.searchParams.get("community")! || ""
+
+const loadCommunity = async () => {
+	const pb = connectPB()
+	const val = await pb.collection("communities").getFirstListItem(`name="${communityName}"`)
+	return new CommunityDetails(val)
+}
+const community = await loadCommunity().catch(() => {})
 ---
 
 <Layout
@@ -12,5 +20,5 @@ const community = Astro.url.searchParams.get("community")! || ""
 	coverUrl="https://dapp.faterium.com/preview.png"
 >
 	<Header client:only />
-	<CreatePoll client:only community={community} />
+	<CreatePoll client:only communityId={!community ? null : community.id} />
 </Layout>

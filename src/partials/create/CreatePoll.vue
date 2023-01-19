@@ -16,7 +16,7 @@ import { substrateCreatePoll } from "@utils/Substrate"
 import BasePage from "./basePage.vue"
 
 interface Props {
-	community: string
+	communityId?: string
 }
 const props = defineProps<Props>()
 
@@ -106,6 +106,7 @@ const submit = async () => {
 			dayjs(formData.value.dateEnd, "YYYY-MM-DD HH:mm:ss.SSS[Z]"),
 		),
 		image: image.id,
+		community: props.communityId,
 	}
 	const pollRes = await uploadPollDetails(pb, data).catch((err) => {
 		Swal.fire({

@@ -2,6 +2,7 @@ import { Record } from "pocketbase"
 import dayjs, { Dayjs } from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime"
 import { SERVER_API } from "./consts"
+import { CommunityDetails } from "./CommunityDetails"
 
 dayjs.extend(relativeTime)
 
@@ -38,6 +39,7 @@ export class PollDetails {
 	public dateEnd: string
 	public options: VotingOption[]
 	public pollId: string
+	public community: CommunityDetails
 	// Poll details from Substrate node
 	public details: SubstratePollDetails
 
@@ -54,7 +56,7 @@ export class PollDetails {
 			`${SERVER_API}/ipfs/${img.cid}`
 			: "/assets/poll_preview.png"
 		this.thumbUrl = img ?
-			`${SERVER_API}/api/files/${img.collectionId}/${img.id}/${img.file}?thumb=120x80`
+			`${SERVER_API}/api/files/${img.collectionId}/${img.id}/${img.file}?thumb=240x160`
 			: "https://faterium.com/preview.png"
 
 		this.dateStart = val ? val.dateStart : ""
@@ -64,6 +66,9 @@ export class PollDetails {
 			val.options.map((text, index) => ({ text, index, vote: 0, percentage: "0.0%" }))
 			: []
 		this.pollId = val ? val.pollId : ""
+
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		this.community = val ? new CommunityDetails(val.expand.community as any) : new CommunityDetails(null)
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		this.details = { votes: [] } as any

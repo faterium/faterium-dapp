@@ -8,7 +8,7 @@ const { pid } = Astro.params;
 
 const loadPoll = async (id: string) => {
 	const pb = connectPB()
-	const result = await pb.collection("polls").getOne(id, { expand: "image" })
+	const result = await pb.collection("polls").getOne(id, { expand: "image,community" })
 	if (!result) return null
 	return new PollDetails(result)
 }
