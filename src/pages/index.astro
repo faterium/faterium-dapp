@@ -22,6 +22,8 @@ const loadPolls = async () => {
 const loadCommunities = async () => {
 	const pb = connectPB()
 	const result = await pb.collection("communities").getFullList(0, {
+		// Filter all polls that have no pollId assigned to them
+		filter: "isUser = false",
 		// In desc order
 		sort: "-created",
 	})

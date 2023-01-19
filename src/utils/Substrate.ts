@@ -4,6 +4,8 @@ import Swal from "sweetalert2"
 import { web3Accounts, web3Enable, web3FromSource } from "@polkadot/extension-dapp"
 import { ApiPromise, WsProvider } from "@polkadot/api"
 import dayjs from "dayjs"
+import { decodeAddress, signatureVerify } from "@polkadot/util-crypto"
+import { u8aToHex } from "@polkadot/util"
 import { PollDetails } from "./PollDetails"
 import { PocketBase } from "./PocketBase"
 import { NODE_API } from "./consts"
@@ -43,6 +45,12 @@ export const getAccounts = async () => {
 	const allAccounts = await web3Accounts()
 	// eslint-disable-next-line consistent-return
 	return allAccounts
+}
+
+export const isValidSignature = (signedMessage, signature, address) => {
+	const publicKey = decodeAddress(address)
+	const hexPublicKey = u8aToHex(publicKey)
+	return signatureVerify(signedMessage, signature, hexPublicKey).isValid
 }
 
 export const substrateCreatePoll = async (

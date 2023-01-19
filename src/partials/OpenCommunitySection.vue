@@ -6,16 +6,28 @@ import ListPoll from "@components/ListPoll.vue"
 import { CommunityDetails, PollDetails } from "@utils/index"
 
 interface Props {
-	community: CommunityDetails
-	polls: PollDetails[]
+	community?: CommunityDetails
+	polls?: PollDetails[]
+
+	profile?: CommunityDetails
+	communities?: CommunityDetails[]
 }
 const props = defineProps<Props>()
 
 const parsedCommunity = ref(
-	Object.assign(new CommunityDetails(null), props.community),
+	Object.assign(
+		new CommunityDetails(null),
+		!props.community ? props.profile : props.community,
+	),
 )
+const parse = () =>
+	props.communities.map((val) =>
+		Object.assign(new CommunityDetails(null), val),
+	)
 const parsedPolls = ref(
-	props.polls.map((val) => Object.assign(new PollDetails(null), val)),
+	!props.polls
+		? parse()
+		: props.polls.map((val) => Object.assign(new PollDetails(null), val)),
 )
 </script>
 

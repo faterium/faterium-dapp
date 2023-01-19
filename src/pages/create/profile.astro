@@ -1,14 +1,14 @@
 ---
 import Layout from "@layouts/Layout.astro"
 import Header from "@partials/Header.vue"
-import CreateAsset from "@partials/create/CreateAsset.vue"
+import CreateCommunity from "@partials/create/CreateCommunity.vue"
 ---
 
 <Layout
-	title="Create Asset"
+	title="Update Profile"
 	description="Faterium Decentralized Application to work with Faterium Network."
 	coverUrl="https://dapp.faterium.com/preview.png"
 >
 	<Header client:only />
-	<CreateAsset client:only />
+	<CreateCommunity client:only isUser={true} />
 </Layout>

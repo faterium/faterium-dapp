@@ -13,6 +13,12 @@ import { connectPB, PocketBase, CommunityDetails } from "@utils/index"
 import { substrateCreatePoll } from "@utils/Substrate"
 import BasePage from "./basePage.vue"
 
+interface Props {
+	isUser?: boolean
+	userDetails?: CommunityDetails
+}
+const props = defineProps<Props>()
+
 const submitDisabled = ref(false)
 const formData = ref({
 	name: "",
@@ -27,6 +33,7 @@ const formData = ref({
 	linkYoutube: "",
 	linkInstagram: "",
 	linkWebpage: "",
+	isUser: !!props.isUser,
 })
 
 const fileChanged = (event: Event, item: string) => {
@@ -90,29 +97,31 @@ const submitButton = () =>
 </script>
 
 <template lang="pug">
-BasePage(title="Create community" :submitButton="submitButton")
+BasePage(
+	:title="isUser ? 'Update profile' : 'Create community'"
+	:submitButton="submitButton"
+)
 	FormInput.name(
-		title="Community name"
+		:title="isUser ? 'Username' : 'Community name'"
 		v-model="formData.name"
 		placeholder="e.g. jon_snow_fans"
 		type="text"
 		required
-	) This link will be shown on the community's detail page underneath its image
+	) Unique name that will be shown underneath its image.
 	FormInput.display-name(
 		title="Display name"
 		v-model="formData.displayName"
 		placeholder="e.g. Jon Snow fan club"
 		type="text"
-	) Name of the community, will be shown on all views.
+	) Display name, will be shown on all views.
 	FormInput.description(
-		title="Description of community"
-		placeholder="Provide a detailed description of your community."
+		:title="isUser ? 'Biography' : 'Description of community'"
+		placeholder="Provide a detailed description or biography."
 		v-model="formData.description"
 		textarea
-	)
-		| The description will be included on the community's detail page underneath its image and display name.
+	) The description will be included on the detail's page underneath its image and display name.
 	MediaInput.logo-image(
-		title="Logo image"
+		:title="isUser ? 'Profile image' : 'Logo image'"
 		@change.stop="function (e) { fileChanged(e, 'logoImage') }"
 		small required
 	)
@@ -154,31 +163,31 @@ BasePage(title="Create community" :submitButton="submitButton")
 		v-model="formData.linkTwitter"
 		placeholder="e.g. https://twitter.com/<username>"
 		type="text"
-	) This link will be shown on the community's detail page underneath its image
+	) This link will be shown on the detail's page underneath its image.
 	FormInput.link.discord(
 		title="Link for community Discord"
 		v-model="formData.linkDiscord"
 		placeholder="e.g. https://discord.com/invite/<id>"
 		type="text"
-	) This link will be shown on the community's detail page underneath its image
+	) This link will be shown on the detail's page underneath its image.
 	FormInput.link.youtube(
 		title="Link for community Youtube"
 		v-model="formData.linkYoutube"
 		placeholder="e.g. https://youtube.com/<username>"
 		type="text"
-	) This link will be shown on the community's detail page underneath its image
+	) This link will be shown on the detail's page underneath its image.
 	FormInput.link.instagram(
 		title="Link for community Instagram"
 		v-model="formData.linkInstagram"
 		placeholder="e.g. https://instagram.com/<username>"
 		type="text"
-	) This link will be shown on the community's detail page underneath its image
+	) This link will be shown on the detail's page underneath its image.
 	FormInput.link.webpage(
 		title="Link for community Webpage"
 		v-model="formData.linkWebpage"
 		placeholder="e.g. https://example.com"
 		type="text"
-	) This link will be shown on the community's detail page underneath its image
+	) This link will be shown on the detail's page underneath its image.
 	div.actions
 		Button.action.create(
 			text="Create community"

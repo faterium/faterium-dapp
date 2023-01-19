@@ -1,0 +1,48 @@
+---
+import Layout from "@layouts/Layout.astro"
+import Header from "@partials/Header.vue"
+import OpenCommunitySection from "@partials/OpenCommunitySection.vue"
+import Footer from "@partials/Footer.vue"
+import { connectPB, CommunityDetails } from "@utils/index"
+
+const { name } = Astro.params;
+
+const loadProfile = async () => {
+	const pb = connectPB()
+	const val = await pb.collection("communities").getFirstListItem(`name="${name}"`, {
+		filter: "isUser = 1"
+	})
+	return new CommunityDetails(val)
+}
+const loadCommunities = async (cid: string) => {
+	const pb = connectPB()
+	const result = await pb.collection("communities").getFullList(12, {
+		// Filter all polls that have no pollId assigned to them
+		filter: `team = "${cid}"`,
+		// In desc order
+		sort: "-created",
+		// With image
+		expand: "image",
+	})
+	return result.map((val) => new CommunityDetails(val))
+}
+
+const profile = await loadProfile().catch(() => {})
+if (!profile) {
+	return Astro.redirect("/404")
+}
+const communities = await loadCommunities(profile.id)
+if (!communities) {
+	return Astro.redirect("/404")
+}
+---
+
+<Layout
+	title="Faterium User"
+	description="Faterium Decentralized Application to work with Faterium Network."
+	coverUrl="https://dapp.faterium.com/preview.png"
+>
+	<Header client:only />
+	<OpenCommunitySection client:only profile={profile} communities={communities} />
+	<Footer />
+</Layout>
