@@ -10,7 +10,6 @@ import {
 	ListItemOption,
 } from "@components/inputs"
 import { connectPB, PocketBase, CommunityDetails } from "@utils/index"
-import { substrateCreatePoll } from "@utils/Substrate"
 import BasePage from "./basePage.vue"
 
 interface Props {
@@ -67,9 +66,9 @@ const submit = async () => {
 	const communityRes = await uploadCommunityDetails(pb, formDataValue).catch(
 		(err) => {
 			Swal.fire({
-				title: "Error during poll details upload!",
+				title: "Error during community upload!",
 				text: `Server returned ${err.status} error.
-			It may happen if you specified invalid poll details!`,
+			It may happen if you specified invalid community details!`,
 				icon: "error",
 				confirmButtonText: "Cool, let me fix it!",
 			})

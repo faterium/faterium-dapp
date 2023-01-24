@@ -1,31 +1,7 @@
 <script lang="ts" setup>
-import Swal from "sweetalert2"
-import { web3Enable } from "@polkadot/extension-dapp"
-import Button from "@components/inputs/Button.vue"
+import HeaderConnect from "@partials/HeaderConnect.vue"
 import FateriumLogo from "@components/logos/FateriumLogo.vue"
-
-const onClickConnect = async () => {
-	const allInjected = await web3Enable("Faterium dApp")
-	if (allInjected.length > 0) {
-		Swal.fire({
-			title: `Connected ${allInjected.length} account/s`,
-			toast: true,
-			icon: "success",
-			position: "bottom-right",
-			timer: 2000,
-			showConfirmButton: false,
-		})
-	} else {
-		Swal.fire({
-			title: "No accounts connected or extension not found",
-			toast: true,
-			icon: "error",
-			position: "bottom-right",
-			timer: 2000,
-			showConfirmButton: false,
-		})
-	}
-}
+import Button from "@components/inputs/Button.vue"
 </script>
 
 <template lang="pug">
@@ -33,7 +9,7 @@ header.header
 	FateriumLogo
 	div.actions
 		Button.action.create(text="Create" fill url="/create")
-		Button.action.connect(text="Connect" fill @click="onClickConnect")
+		HeaderConnect
 </template>
 
 <style lang="scss" scoped>

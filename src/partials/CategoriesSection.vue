@@ -38,7 +38,7 @@ main.content.section(:class="{ marginTop }")
 
 <style lang="scss" scoped>
 .content {
-	@apply flex flex-col h-200 w-full relative justify-start items-center py-12 bg-light-400;
+	@apply flex flex-col h-full w-full relative justify-start items-center py-12 bg-light-400;
 	.wrapper {
 		@apply flex flex-col justify-center items-center z-2;
 		h2.title {
