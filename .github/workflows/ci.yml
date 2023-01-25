@@ -12,8 +12,8 @@ jobs:
     - name: Run eslint command
       run: yarn eslint
 
-  lhci:
-    name: Lighthouse
+  tests:
+    name: Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -25,9 +25,5 @@ jobs:
           node-version: 16.x
       - name: Install dependencies and build
         run: yarn && yarn build
-      # - name: Install and run Lighthouse CI
-      #   run: |
-      #     yarn global add @lhci/cli@0.10.x
-      #     lhci autorun
-      #   env:
-      #     LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+      - name: Run tests
+        run: yarn test

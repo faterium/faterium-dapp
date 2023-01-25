@@ -5,3 +5,6 @@ dist-ssr
 *.local
 package-lock.json
 .lighthouseci
+/test-results/
+/playwright-report/
+/playwright/.cache/

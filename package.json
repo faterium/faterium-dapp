@@ -11,11 +11,13 @@
 		"preview": "astro preview",
 		"astro": "astro",
 		"eslint": "eslint 'src/**/*.{js,ts,astro,vue}'",
-		"eslint:fix": "eslint 'src/**/*.{js,ts,astro,vue}' --fix"
+		"eslint:fix": "eslint 'src/**/*.{js,ts,astro,vue}' --fix",
+		"test": "playwright test"
 	},
 	"devDependencies": {
 		"@astrojs/sitemap": "^1.0.0",
 		"@astrojs/vue": "^1.0.0",
+		"@playwright/test": "^1.30.0",
 		"@types/eslint": "^8.4.6",
 		"@types/prettier": "^2.7.0",
 		"@typescript-eslint/eslint-plugin": "^5.36.1",
