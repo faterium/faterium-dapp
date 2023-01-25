@@ -25,7 +25,7 @@ div.list-item-voting
 		:value="modelValue.text"
 		disabled
 	)
-	input.interest.flex-2(
+	input.interest.flex-1(
 		type="number"
 		min="1"
 		step="1"
@@ -34,7 +34,7 @@ div.list-item-voting
 		placeholder="e.g. 99999"
 		v-bind="$attrs"
 	)
-	input.percentage.flex-2(
+	input.percentage.flex-1(
 		:value="modelValue.percentage"
 		disabled
 	)
@@ -44,7 +44,7 @@ div.list-item-voting
 div.list-item-voting {
 	@apply flex flex-row justify-start items-center gap-2 w-full;
 	input {
-		@apply p-3 rounded-4px w-full bg-gray-100;
+		@apply p-3 rounded-4px w-full bg-white;
 		&.flex-1 {
 			flex: 1;
 		}
@@ -56,6 +56,9 @@ div.list-item-voting {
 		}
 		&.flex-4 {
 			flex: 4;
+		}
+		&.interest {
+			@apply bg-gray-100 py-1 px-2;
 		}
 	}
 	div.index {

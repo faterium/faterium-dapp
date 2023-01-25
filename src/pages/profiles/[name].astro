@@ -9,20 +9,18 @@ const { name } = Astro.params;
 
 const loadProfile = async () => {
 	const pb = connectPB()
-	const val = await pb.collection("communities").getFirstListItem(`name="${name}"`, {
-		filter: "isUser = 1"
+	const val = await pb.collection("communities").getList(0, 1, {
+		filter: `name = "${name}" && isUser = 1`,
+		expand: "category",
 	})
-	return new CommunityDetails(val)
+	return val.items.length === 1 ? new CommunityDetails(val.items[0]) : null
 }
 const loadCommunities = async (cid: string) => {
 	const pb = connectPB()
 	const result = await pb.collection("communities").getFullList(12, {
-		// Filter all polls that have no pollId assigned to them
-		filter: `team = "${cid}"`,
-		// In desc order
+		filter: `team ~ "${cid}"`,
 		sort: "-created",
-		// With image
-		expand: "image",
+		expand: "category",
 	})
 	return result.map((val) => new CommunityDetails(val))
 }

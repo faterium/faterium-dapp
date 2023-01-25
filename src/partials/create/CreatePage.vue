@@ -21,8 +21,8 @@ BasePage(title="Create community or polls")
 	div.bottom
 		CategoryItem.profile(
 			url="/create/profile"
-			name="Update profile"
-			stats="Profile for your address"
+			name="Create profile"
+			stats="User profile"
 			image="https://i.imgur.com/eG5UxoU.jpg"
 		)
 		CategoryItem.asset(

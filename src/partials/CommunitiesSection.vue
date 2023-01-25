@@ -25,7 +25,7 @@ main.content.section(:class="{ marginTop }")
 			CommunityItem(
 				v-for="(community, index) of getCommunities()"
 				:key="index"
-				:url="community.getCommunityUrl()"
+				:url="community.getUrl()"
 				:name="community.name"
 				:description="community.description"
 				:stats="`${community.pollCount} polls created`"

@@ -23,7 +23,7 @@ main.content.section(:class="{ category: !!category }")
 			ListPoll(
 				v-for="(poll, index) of getPolls().splice(0, 8)"
 				:key="index"
-				:url="poll.getPollUrl()"
+				:url="poll.getUrl()"
 				:title="poll.title"
 				:name="poll.community.displayName"
 				:stats="`@${poll.community.name}`"

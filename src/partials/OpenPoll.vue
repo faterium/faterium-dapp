@@ -48,6 +48,11 @@ main.content.section
 		alt="poll preview"
 	)
 	div.wrapper
+		div.top-block
+			a(:href="`/communities/${parsedPoll.community.name}`"): img.profile-image(
+				:src="parsedPoll.community.logoImage"
+				alt="poll preview"
+			)
 		h1.title {{ parsedPoll.title }}
 		p.description {{ parsedPoll.description }}
 		div.info-block
@@ -82,6 +87,12 @@ main.content.section
 	}
 	.wrapper {
 		@apply flex flex-col justify-start items-start z-2 w-160 h-full pt-40px;
+		div.top-block {
+			@apply flex flex-row justify-between -mt-22 w-full;
+			.profile-image {
+				@apply object-cover object-center h-24 w-24 rounded-xl border-4 border-white;
+			}
+		}
 		h1.title {
 			@apply text-4xl font-bold m-0 mb-2 text-center text-black text-left;
 		}

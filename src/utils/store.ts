@@ -8,21 +8,21 @@ export interface User {
 }
 
 export const users = atom<User[]>([
-	{
-		picture: "https://variety.com/wp-content/uploads/2022/11/Screen-Shot-2022-11-02-at-8.33.52-AM.png",
-		username: "kiri",
-		displayName: "Kiri Sully",
-	},
-	{
-		picture: "https://animecorner.me/wp-content/uploads/2022/07/anya-diary.png",
-		username: "Anya Forger",
-		displayName: "anyaforger",
-	},
-	{
-		picture: "https://dailysuperheroes.com/wp-content/uploads/2020/02/tony-stark.jpg",
-		username: "tonystark",
-		displayName: "Tony Stark",
-	},
+	// {
+	// 	picture: "https://variety.com/wp-content/uploads/2022/11/Screen-Shot-2022-11-02-at-8.33.52-AM.png",
+	// 	username: "kiri",
+	// 	displayName: "Kiri Sully",
+	// },
+	// {
+	// 	picture: "https://animecorner.me/wp-content/uploads/2022/07/anya-diary.png",
+	// 	username: "Anya Forger",
+	// 	displayName: "anyaforger",
+	// },
+	// {
+	// 	picture: "https://dailysuperheroes.com/wp-content/uploads/2020/02/tony-stark.jpg",
+	// 	username: "tonystark",
+	// 	displayName: "Tony Stark",
+	// },
 ])
 export const signedUser = persistentAtom<User | null>("signedUser", users.get()[0], {
 	encode: JSON.stringify,
@@ -31,4 +31,7 @@ export const signedUser = persistentAtom<User | null>("signedUser", users.get()[
 
 export const changeSignedUser = action(signedUser, "changeSignedUser", (store, user: User) => {
 	store.set(user)
+})
+export const addUser = action(users, "addUser", (store, user: User) => {
+	store.set(store.get().concat(user))
 })

@@ -3,6 +3,7 @@ import { ref } from "vue"
 import dayjs from "dayjs"
 import { Button } from "@components/inputs"
 import ListPoll from "@components/ListPoll.vue"
+import CommunityItem from "@components/CommunityItem.vue"
 import { CommunityDetails, PollDetails } from "@utils/index"
 
 interface Props {
@@ -20,20 +21,21 @@ const parsedCommunity = ref(
 		!props.community ? props.profile : props.community,
 	),
 )
-const parse = () =>
-	props.communities.map((val) =>
-		Object.assign(new CommunityDetails(null), val),
-	)
 const parsedPolls = ref(
-	!props.polls
-		? parse()
-		: props.polls.map((val) => Object.assign(new PollDetails(null), val)),
+	props.polls &&
+		props.polls.map((val) => Object.assign(new PollDetails(null), val)),
+)
+const parsedCommunities = ref(
+	props.communities &&
+		props.communities.map((val) =>
+			Object.assign(new CommunityDetails(null), val),
+		),
 )
 const getFeatures = () => {
 	return [
 		{
 			title: "polls created",
-			stats: props.polls.length,
+			stats: props.polls?.length || 0,
 		},
 		{
 			title: "communities",
@@ -95,14 +97,24 @@ main.content.section
 		p.description {{ parsedCommunity.description }}
 		div.actions
 			Button.action.create(text="Create poll" fill :url="`/create/poll?community=${parsedCommunity.name}`")
-			Button.action.create(text="Follow" fill url="/communities")
 	div.polls
-		h2.title Community Polls
-		div.polls-grid
+		h2.title {{ !polls ? "Communities" : "Community Polls" }}
+		div.communities(v-if="!polls")
+			CommunityItem(
+				v-for="(community, index) of parsedCommunities"
+				:key="index"
+				:url="community.getUrl()"
+				:name="community.name"
+				:description="community.description"
+				:stats="`${community.pollCount} polls created`"
+				:bannerImage="community.bannerImage"
+				:communityImage="community.logoImage"
+			)
+		div.polls-grid(v-else)
 			ListPoll(
 				v-for="(poll, index) of parsedPolls"
 				:key="index"
-				:url="poll.getPollUrl()"
+				:url="poll.getUrl()"
 				:title="poll.title"
 				:name="poll.community.displayName"
 				:stats="`@${poll.community.name}`"
@@ -169,11 +181,14 @@ main.content.section
 	.polls {
 		@apply flex flex-col justify-center items-start z-2 pt-12 pb-24;
 		h2.title {
-			@apply text-4xl font-black m-0 mb-8 text-center text-black;
+			@apply text-4xl font-black m-0 mb-8 text-black;
 		}
 		div.polls-grid {
 			@apply grid gap-4 grid-cols-4;
 		}
+	}
+	div.communities {
+		@apply grid gap-4 grid-cols-3;
 	}
 }
 </style>

@@ -91,7 +91,7 @@ export class PollDetails {
 		)
 	}
 
-	public getPollUrl() {
+	public getUrl() {
 		return `/polls/${this.id}`
 	}
 

@@ -66,9 +66,11 @@ const submit = async () => {
 	const communityRes = await uploadCommunityDetails(pb, formDataValue).catch(
 		(err) => {
 			Swal.fire({
-				title: "Error during community upload!",
+				title: `Error during ${
+					props.isUser ? "user" : "community"
+				} upload!`,
 				text: `Server returned ${err.status} error.
-			It may happen if you specified invalid community details!`,
+			It may happen if you specified invalid details!`,
 				icon: "error",
 				confirmButtonText: "Cool, let me fix it!",
 			})
@@ -78,11 +80,15 @@ const submit = async () => {
 	console.log(communityRes)
 	const community = new CommunityDetails(communityRes)
 	Swal.fire({
-		title: "Community successfully created!",
+		title: `${
+			props.isUser ? "Profile" : "Community"
+		} successfully created!`,
 		icon: "success",
 		confirmButtonText: "Cool, take me there!",
 	}).then((_) => {
-		window.location.replace(`/communities/${communityRes.id}`)
+		window.location.replace(
+			`/${props.isUser ? "profiles" : "communities"}/${communityRes.id}`,
+		)
 	})
 }
 const submitButton = () =>
@@ -97,7 +103,7 @@ const submitButton = () =>
 
 <template lang="pug">
 BasePage(
-	:title="isUser ? 'Update profile' : 'Create community'"
+	:title="isUser ? 'Create profile' : 'Create community'"
 	:submitButton="submitButton"
 )
 	FormInput.name(
@@ -189,7 +195,7 @@ BasePage(
 	) This link will be shown on the detail's page underneath its image.
 	div.actions
 		Button.action.create(
-			text="Create community"
+			:text="isUser ? 'Create profile' : 'Create community'"
 			submit fill
 			:disabled="submitDisabled"
 		)

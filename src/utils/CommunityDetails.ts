@@ -53,7 +53,7 @@ export class CommunityDetails {
 		this.pollCount = val ? val.pollCount : ""
 	}
 
-	public getCommunityUrl() {
+	public getUrl() {
 		return `/communities/${this.name}`
 	}
 }
