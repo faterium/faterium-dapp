@@ -3,7 +3,7 @@ interface Props {
 	url: string
 	name: string
 	description: string
-	status: string
+	status?: string
 	stats: string
 	bannerImage: string
 	communityImage: string
@@ -15,7 +15,7 @@ const props = defineProps<Props>()
 a.community-item(:href="url" target="_self")
 	div.image
 		img(:src="bannerImage" alt="community banner")
-		span.status {{ status }}
+		span.status(v-if="status") {{ status }}
 	div.bottom
 		img.thumb(:src="communityImage" alt="community image")
 		div.info

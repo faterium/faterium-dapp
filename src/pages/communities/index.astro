@@ -3,17 +3,34 @@ import Layout from "@layouts/Layout.astro"
 import Header from "@partials/Header.vue"
 import CommunitiesSection from "@partials/CommunitiesSection.vue"
 import Footer from "@partials/Footer.vue"
-import { connectPB, CommunityDetails } from "@utils/index"
+import { connectPB, CommunityDetails, PollDetails } from "@utils/index"
 
-const loadCommunities = async () => {
+const loadPolls = async () => {
+	const pb = connectPB()
+	const result = await pb.collection("polls").getFullList(0, {
+		// Filter all polls that have no pollId assigned to them
+		filter: "pollId != 0",
+		// In desc order
+		sort: "-created",
+		expand: "image,community",
+	})
+	return result.map((val) => new PollDetails(val))
+}
+const loadCommunities = async (polls: PollDetails[]) => {
 	const pb = connectPB()
 	const result = await pb.collection("communities").getFullList(12, {
 		// In desc order
 		sort: "-created",
 	})
-	return result.map((val) => new CommunityDetails(val))
+	return result.map((val) => {
+		const com = new CommunityDetails(val)
+		const count = polls.reduce((a, b) => b.community.name === com.name ? 1 + a : a, 0)
+		com.pollCount = count
+		return com
+	})
 }
-const communities = await loadCommunities()
+const polls = await loadPolls()
+const communities = await loadCommunities(polls)
 ---
 
 <Layout

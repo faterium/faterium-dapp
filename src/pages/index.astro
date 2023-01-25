@@ -14,32 +14,42 @@ const loadPolls = async () => {
 		filter: "pollId != 0",
 		// In desc order
 		sort: "-created",
-		// With image
 		expand: "image,community",
 	})
 	return result.map((val) => new PollDetails(val))
 }
-const loadCommunities = async () => {
+const loadCommunities = async (polls: PollDetails[]) => {
 	const pb = connectPB()
 	const result = await pb.collection("communities").getFullList(0, {
 		// Filter all polls that have no pollId assigned to them
 		filter: "isUser = false",
 		// In desc order
 		sort: "-created",
+		expand: "category",
 	})
-	return result.map((val) => new CommunityDetails(val))
+	return result.map((val) => {
+		const com = new CommunityDetails(val)
+		const count = polls.reduce((a, b) => b.community.name === com.name ? 1 + a : a, 0)
+		com.pollCount = count
+		return com
+	})
 }
-const loadCategories = async () => {
+const loadCategories = async (coms: CommunityDetails[]) => {
 	const pb = connectPB()
-	const result = await pb.collection("categories").getList(0, 3, {
+	const result = await pb.collection("categories").getList(0, 6, {
 		// In desc order
-		sort: "created",
+		sort: "-created",
 	})
-	return result.items.map((val) => new CategoryDetails(val))
+	return result.items.map((val) => {
+		const cat = new CategoryDetails(val)
+		const count = coms.reduce((a, b) => b.category?.name === cat.name ? 1 + a : a, 0)
+		cat.pollCount = count
+		return cat
+	})
 }
 const polls = await loadPolls()
-const communities = await loadCommunities()
-const categories = await loadCategories()
+const communities = await loadCommunities(polls)
+const categories = await loadCategories(communities)
 ---
 
 <Layout

@@ -6,6 +6,7 @@ export class CategoryDetails {
 	public name: string
 	public description: string
 	public image: string
+	public pollCount?: number
 
 	// Accepts PocketBase Record with expand.
 	constructor(val: Record | null) {
@@ -16,6 +17,8 @@ export class CategoryDetails {
 		this.image = val ?
 			`${SERVER_API}/api/files/${val.collectionId}/${val.id}/${val.image}`
 			: "/assets/poll_preview.png"
+
+		this.pollCount = val ? val.pollCount : ""
 	}
 
 	public getCategoryUrl() {

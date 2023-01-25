@@ -29,6 +29,18 @@ const parsedPolls = ref(
 		? parse()
 		: props.polls.map((val) => Object.assign(new PollDetails(null), val)),
 )
+const getFeatures = () => {
+	return [
+		{
+			title: "polls created",
+			stats: props.polls.length,
+		},
+		{
+			title: "communities",
+			stats: props.communities?.length || 0,
+		},
+	]
+}
 </script>
 
 <template lang="pug">
@@ -72,14 +84,14 @@ main.content.section
 		h1.title {{ parsedCommunity.displayName }}
 		div.user-info
 			b.username @{{ parsedCommunity.name }}
-			span.date-created Created: <b>1 Apr 2022</b>
+			span.date-created Created: <b>{{ dayjs(parsedCommunity.created) }}</b>
 		div.info-blocks
 			div.info-block(
-				v-for="(infoBlock, index) of [1, 2, 3, 4, 5]"
+				v-for="(infoBlock, index) of getFeatures()"
 				:key="index"
 			)
-				b.stats 12.3k
-				span.title Polls created
+				b.stats {{ infoBlock.stats }}
+				span.title {{ infoBlock.title }}
 		p.description {{ parsedCommunity.description }}
 		div.actions
 			Button.action.create(text="Create poll" fill :url="`/create/poll?community=${parsedCommunity.name}`")

@@ -1,12 +1,18 @@
 <script lang="ts" setup>
+import { ref } from "vue"
 import Swal from "sweetalert2"
 import { web3Enable } from "@polkadot/extension-dapp"
 import Button from "@components/inputs/Button.vue"
+import { users, signedUser, changeSignedUser } from "@utils/store"
+import { useStore } from "@nanostores/vue"
 
 interface Props {
 	user?: string
+	users?: string[]
 }
 const props = defineProps<Props>()
+const closed = ref(true)
+const currentUser = useStore(signedUser)
 
 const onClickConnect = async () => {
 	const allInjected = await web3Enable("Faterium dApp")
@@ -30,20 +36,36 @@ const onClickConnect = async () => {
 		})
 	}
 }
+const getUsers = () => {
+	return users.get()
+}
 </script>
 
 <template lang="pug">
 div.header-connect
 	Button.action.connect(
-		v-if="user"
+		v-if="false"
 		text="Connect" fill
 		@click="onClickConnect"
 	)
-	div.signed-user
-		img.picture(src="https://variety.com/wp-content/uploads/2021/04/Avatar.jpg")
+	div.user.signed(
+		v-if="currentUser !== null"
+		@mouseover="closed = false"
+		@mouseleave="closed = true"
+	)
+		img.picture(:src="currentUser.picture")
 		div.text
-			span.name David Ackerman
-			span.username @enfipy
+			span.name {{ currentUser.displayName }}
+			span.username @{{ currentUser.username }}
+		div.dropdown(:class="{ closed }")
+			div.user(
+				v-for="(user, index) of getUsers()" :key="index"
+				@click="() => changeSignedUser(user)"
+			)
+				img.picture(:src="user.picture")
+				div.text
+					span.name {{ user.displayName }}
+					span.username @{{ user.username }}
 </template>
 
 <style lang="scss" scoped>
@@ -52,8 +74,8 @@ div.header-connect {
 	.action {
 		@apply py-2.5;
 	}
-	.signed-user {
-		@apply flex gap-2 cursor-pointer;
+	.user {
+		@apply flex gap-2 cursor-pointer relative w-50;
 		img.picture {
 			@apply h-10 w-10 object-cover object-center rounded-1;
 		}
@@ -61,6 +83,16 @@ div.header-connect {
 			@apply flex flex-col text-sm;
 			.name {
 				@apply font-bold;
+			}
+		}
+		.dropdown {
+			@apply absolute flex flex-col top-10/10 -left-3 -right-6 min-h-10 max-h-60
+				overflow-scroll pt-2 bg-white rounded-md;
+			.user {
+				@apply px-3 py-3 first:rounded-t-md last:rounded-b-md bg-gray-100 hover:bg-gray-200;
+			}
+			&.closed {
+				@apply hidden;
 			}
 		}
 	}

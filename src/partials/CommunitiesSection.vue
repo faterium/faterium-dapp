@@ -28,8 +28,7 @@ main.content.section(:class="{ marginTop }")
 				:url="community.getCommunityUrl()"
 				:name="community.name"
 				:description="community.description"
-				status="1 active poll"
-				stats="147m followers"
+				:stats="`${community.pollCount} polls created`"
 				:bannerImage="community.bannerImage"
 				:communityImage="community.logoImage"
 			)

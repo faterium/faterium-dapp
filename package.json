@@ -14,7 +14,6 @@
 		"eslint:fix": "eslint 'src/**/*.{js,ts,astro,vue}' --fix"
 	},
 	"devDependencies": {
-		"@astrojs/markdown-component": "^1.0.1",
 		"@astrojs/sitemap": "^1.0.0",
 		"@astrojs/vue": "^1.0.0",
 		"@types/eslint": "^8.4.6",
@@ -46,11 +45,14 @@
 	},
 	"dependencies": {
 		"@astrojs/cloudflare": "^4.1.0",
+		"@nanostores/persistent": "^0.7.0",
+		"@nanostores/vue": "^0.6.1",
 		"@polkadot/api": "^9.10.1",
 		"@polkadot/extension-dapp": "^0.44.6",
 		"@polkadot/ui-keyring": "^2.9.14",
 		"@polkadot/vue-identicon": "^2.9.14",
 		"dayjs": "^1.11.6",
+		"nanostores": "^0.7.1",
 		"pocketbase": "^0.8.1",
 		"sweetalert2": "^11.6.15"
 	}

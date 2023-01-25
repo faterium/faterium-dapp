@@ -21,7 +21,7 @@ main.content.section(:class="{ category: !!category }")
 		h2.title {{ category ? `Polls for ${category}` : 'Trending Polls' }}
 		div.polls-grid
 			ListPoll(
-				v-for="(poll, index) of getPolls()"
+				v-for="(poll, index) of getPolls().splice(0, 8)"
 				:key="index"
 				:url="poll.getPollUrl()"
 				:title="poll.title"

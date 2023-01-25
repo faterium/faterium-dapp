@@ -27,7 +27,7 @@ main.content.section(:class="{ marginTop }")
 				:key="index"
 				:url="cat.getCategoryUrl()"
 				:name="cat.name"
-				stats="147m followers"
+				:stats="`${cat.pollCount} communities`"
 				:image="cat.image"
 			)
 		Button.action.explore.create(
