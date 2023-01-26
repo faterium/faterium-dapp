@@ -1,17 +1,8 @@
 <script lang="ts" setup>
 import { ref } from "vue"
-import dayjs from "dayjs"
 import Swal from "sweetalert2"
-import {
-	Button,
-	ListInput,
-	MediaInput,
-	FormInput,
-	FormSelectInput,
-	ListItemOption,
-	ListItemBeneficiary,
-} from "@components/inputs"
-import { connectPB, PocketBase, PollDetails } from "@utils/index"
+import { Button, MediaInput, FormInput } from "@components/inputs"
+import { connectPB } from "@utils/index"
 import { substrateCreateAsset } from "@utils/Substrate"
 import BasePage from "./basePage.vue"
 
@@ -106,7 +97,7 @@ BasePage(title="Create asset" :submitButton="submitButton")
 	) The selected id for the asset. This should not match an already-existing asset id.
 	div.actions
 		Button.action.create(
-			text="create poll"
+			text="create asset"
 			submit fill
 			:disabled="submitDisabled"
 		)

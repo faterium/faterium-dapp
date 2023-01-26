@@ -23,12 +23,15 @@ const loadProfiles = async () => {
 	res.forEach((val) => {
 		const com = new CommunityDetails(val)
 		const user = {
+			id: com.id,
 			displayName: com.displayName,
 			username: com.name,
 			picture: com.logoImage,
 		}
 		addUser(user)
-		changeSignedUser(user)
+		if (!currentUser.value) {
+			changeSignedUser(user)
+		}
 	})
 }
 const onClickConnect = async () => {

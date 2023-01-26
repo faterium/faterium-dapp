@@ -18,8 +18,8 @@ const loadPolls = async () => {
 }
 const loadCommunities = async (polls: PollDetails[]) => {
 	const pb = connectPB()
-	const result = await pb.collection("communities").getFullList(12, {
-		// In desc order
+	const result = await pb.collection("communities").getFullList(0, {
+		filter: "isUser = false",
 		sort: "-created",
 	})
 	return result.map((val) => {

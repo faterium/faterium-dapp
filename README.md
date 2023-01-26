@@ -16,6 +16,7 @@ All commands are run from the root of the project, from a terminal:
 | `yarn preview`	  | Preview your build locally, before deploying	   |
 | `yarn astro ...`	| Run CLI commands like `astro add`, `astro preview` |
 | `yarn astro --help` | Get help using the Astro CLI					   |
+| `yarn test` 		| Run PlayWright tests for all devices				   |
 
 ## Local setup
 
@@ -32,3 +33,15 @@ Then run the following command to launch and connect to `dapp-*.faterium.com` se
 ```sh
 PUBLIC_NETWORK=testnet yarn dev
 ```
+
+## Local testing setup
+
+If you want to run tests - make sure you have installed all required [PlayWright](https://playwright.dev/docs/intro) dependencies for your system.
+
+Then you can launch all tests by simple command:
+
+```sh
+yarn test
+```
+
+It will launch all PlayWright tests and create report.

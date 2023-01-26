@@ -2,6 +2,7 @@ import { atom, action } from "nanostores"
 import { persistentAtom } from "@nanostores/persistent"
 
 export interface User {
+	id: string
 	picture: string
 	username: string
 	displayName: string

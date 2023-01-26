@@ -7,6 +7,8 @@ import CommunityItem from "@components/CommunityItem.vue"
 import { CommunityDetails, PollDetails } from "@utils/index"
 
 interface Props {
+	isUser?: boolean
+
 	community?: CommunityDetails
 	polls?: PollDetails[]
 
@@ -95,7 +97,7 @@ main.content.section
 				b.stats {{ infoBlock.stats }}
 				span.title {{ infoBlock.title }}
 		p.description {{ parsedCommunity.description }}
-		div.actions(v-if="!polls")
+		div.actions(v-if="!isUser")
 			Button.action.create(text="Create poll" fill :url="`/create/poll?community=${parsedCommunity.name}`")
 	div.polls
 		h2.title {{ !polls ? "Communities" : "Community Polls" }}

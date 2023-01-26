@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref } from "vue"
-import dayjs from "dayjs"
+import { signedUser } from "@utils/store"
+import { useStore } from "@nanostores/vue"
 import Swal from "sweetalert2"
 import {
 	Button,
@@ -17,6 +18,7 @@ interface Props {
 	userDetails?: CommunityDetails
 }
 const props = defineProps<Props>()
+const currentUser = useStore(signedUser)
 
 const submitDisabled = ref(false)
 const formData = ref({
@@ -26,7 +28,7 @@ const formData = ref({
 	logoImage: null,
 	bannerImage: null,
 	featuredImage: null,
-	team: [""],
+	team: [signedUser.get() !== null ? signedUser.get().id : ""],
 	linkTwitter: "",
 	linkDiscord: "",
 	linkYoutube: "",
@@ -87,7 +89,9 @@ const submit = async () => {
 		confirmButtonText: "Cool, take me there!",
 	}).then((_) => {
 		window.location.replace(
-			`/${props.isUser ? "profiles" : "communities"}/${communityRes.id}`,
+			`/${props.isUser ? "profiles" : "communities"}/${
+				communityRes.name
+			}`,
 		)
 	})
 }

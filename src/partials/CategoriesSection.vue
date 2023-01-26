@@ -4,6 +4,7 @@ import CategoryItem from "@components/CategoryItem.vue"
 import { CategoryDetails } from "@utils/index"
 
 interface Props {
+	limit?: number
 	marginTop?: boolean
 	categories: CategoryDetails[]
 }
@@ -11,16 +12,16 @@ const props = defineProps<Props>()
 
 const getCategories = () => {
 	// Cast object to class
-	return props.categories.map((val) =>
-		Object.assign(new CategoryDetails(null), val),
-	)
+	return props.categories
+		.map((val) => Object.assign(new CategoryDetails(null), val))
+		.slice(0, props.limit || 1000)
 }
 </script>
 
 <template lang="pug">
 main.content.section(:class="{ marginTop }")
 	div.wrapper
-		h2.title Featured categories
+		h2.title {{ !limit ? "All categories" : "Featured categories" }}
 		div.categories
 			CategoryItem(
 				v-for="(cat, index) of getCategories()"

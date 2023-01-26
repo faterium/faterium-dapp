@@ -21,9 +21,7 @@ const loadPolls = async () => {
 const loadCommunities = async (polls: PollDetails[]) => {
 	const pb = connectPB()
 	const result = await pb.collection("communities").getFullList(0, {
-		// Filter all polls that have no pollId assigned to them
 		filter: "isUser = false",
-		// In desc order
 		sort: "-created",
 		expand: "category",
 	})
@@ -59,7 +57,7 @@ const categories = await loadCategories(communities)
 >
 	<Header client:only />
 	<PollsSection client:load polls={polls} />
-	<CategoriesSection client:load categories={categories} />
-	<CommunitiesSection client:load communities={communities} />
+	<CategoriesSection client:load categories={categories} limit={6} />
+	<CommunitiesSection client:load communities={communities} limit={6} />
 	<Footer />
 </Layout>

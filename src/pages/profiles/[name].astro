@@ -3,10 +3,21 @@ import Layout from "@layouts/Layout.astro"
 import Header from "@partials/Header.vue"
 import OpenCommunitySection from "@partials/OpenCommunitySection.vue"
 import Footer from "@partials/Footer.vue"
-import { connectPB, CommunityDetails } from "@utils/index"
+import { connectPB, CommunityDetails, PollDetails } from "@utils/index"
 
 const { name } = Astro.params;
 
+const loadPolls = async () => {
+	const pb = connectPB()
+	const result = await pb.collection("polls").getFullList(0, {
+		// Filter all polls that have no pollId assigned to them
+		filter: "pollId != 0",
+		// In desc order
+		sort: "-created",
+		expand: "image,community",
+	})
+	return result.map((val) => new PollDetails(val))
+}
 const loadProfile = async () => {
 	const pb = connectPB()
 	const val = await pb.collection("communities").getList(0, 1, {
@@ -15,21 +26,27 @@ const loadProfile = async () => {
 	})
 	return val.items.length === 1 ? new CommunityDetails(val.items[0]) : null
 }
-const loadCommunities = async (cid: string) => {
+const loadCommunities = async (cid: string, polls: PollDetails[]) => {
 	const pb = connectPB()
 	const result = await pb.collection("communities").getFullList(12, {
-		filter: `team ~ "${cid}"`,
+		filter: `team ~ "${cid}" && isUser = false`,
 		sort: "-created",
 		expand: "category",
 	})
-	return result.map((val) => new CommunityDetails(val))
+	return result.map((val) => {
+		const com = new CommunityDetails(val)
+		const count = polls.reduce((a, b) => b.community.name === com.name ? 1 + a : a, 0)
+		com.pollCount = count
+		return com
+	})
 }
 
 const profile = await loadProfile().catch(() => {})
 if (!profile) {
 	return Astro.redirect("/404")
 }
-const communities = await loadCommunities(profile.id)
+const polls = await loadPolls()
+const communities = await loadCommunities(profile.id, polls)
 if (!communities) {
 	return Astro.redirect("/404")
 }
@@ -41,6 +58,6 @@ if (!communities) {
 	coverUrl="https://dapp.faterium.com/preview.png"
 >
 	<Header client:only />
-	<OpenCommunitySection client:only profile={profile} communities={communities} />
+	<OpenCommunitySection client:only profile={profile} communities={communities} isUser={true} />
 	<Footer />
 </Layout>
