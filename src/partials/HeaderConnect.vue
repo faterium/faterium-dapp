@@ -22,12 +22,13 @@ const loadProfiles = async () => {
 	})
 	res.forEach((val) => {
 		const com = new CommunityDetails(val)
-		console.log(com)
-		addUser({
+		const user = {
 			displayName: com.displayName,
 			username: com.name,
 			picture: com.logoImage,
-		})
+		}
+		addUser(user)
+		changeSignedUser(user)
 	})
 }
 const onClickConnect = async () => {
@@ -108,7 +109,7 @@ div.header-connect {
 		}
 		.dropdown {
 			@apply absolute flex flex-col top-10/10 -left-3 -right-6 min-h-10 max-h-60
-				overflow-scroll pt-2 bg-white rounded-md;
+				overflow-scroll pt-2 bg-transparent rounded-md;
 			.user {
 				@apply flex gap-2 cursor-pointer relative w-50
 					px-3 py-3 first:rounded-t-md last:rounded-b-md bg-gray-100 hover:bg-gray-200;

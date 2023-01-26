@@ -95,7 +95,7 @@ main.content.section
 				b.stats {{ infoBlock.stats }}
 				span.title {{ infoBlock.title }}
 		p.description {{ parsedCommunity.description }}
-		div.actions
+		div.actions(v-if="!polls")
 			Button.action.create(text="Create poll" fill :url="`/create/poll?community=${parsedCommunity.name}`")
 	div.polls
 		h2.title {{ !polls ? "Communities" : "Community Polls" }}
@@ -147,7 +147,7 @@ main.content.section
 			}
 		}
 		h1.title {
-			@apply text-6xl font-black m-0 mt-6 mb-2 text-center text-black text-left;
+			@apply text-6xl font-black m-0 mt-6 mb-2 text-black text-left;
 		}
 		div.user-info {
 			@apply flex flex-row gap-4 text-sm;
@@ -186,9 +186,9 @@ main.content.section
 		div.polls-grid {
 			@apply grid gap-4 grid-cols-4;
 		}
-	}
-	div.communities {
-		@apply grid gap-4 grid-cols-3;
+		div.communities {
+			@apply grid gap-4 grid-cols-3 w-full pt-12 pb-24;
+		}
 	}
 }
 </style>
