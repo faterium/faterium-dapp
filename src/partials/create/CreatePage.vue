@@ -5,7 +5,7 @@ import BasePage from "./basePage.vue"
 
 <template lang="pug">
 BasePage(title="Create community or polls")
-	div.top
+	div.block
 		CategoryItem.poll(
 			url="/create/poll"
 			name="Create poll"
@@ -18,7 +18,7 @@ BasePage(title="Create community or polls")
 			stats="Community for polls"
 			image="https://i.imgur.com/V4EITEJ.jpg"
 		)
-	div.bottom
+	div.block
 		CategoryItem.profile(
 			url="/create/profile"
 			name="Create profile"
@@ -31,14 +31,29 @@ BasePage(title="Create community or polls")
 			stats="Asset for polls"
 			image="https://i.imgur.com/W4Utjul.jpg"
 		)
+	div.block
+		CategoryItem.category(
+			url="/create/category"
+			name="Create category"
+			stats="Category for communities"
+			image="https://i.imgur.com/SLMyK4j.png"
+		)
+		CategoryItem.empty(
+			url=""
+			name=""
+			stats=""
+			image="https://i.imgur.com/SLMyK4j.png"
+		)
 </template>
 
 <style lang="scss" scoped>
-div.top,
-div.bottom {
+div.block {
 	@apply flex flex-row mb-5 gap-5;
 	a.category-item {
 		@apply w-full pl-6;
+		&.empty {
+			@apply invisible;
+		}
 	}
 }
 </style>

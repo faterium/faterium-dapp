@@ -1,0 +1,14 @@
+---
+import Layout from "@layouts/Layout.astro"
+import Header from "@partials/Header.vue"
+import CreateCategory from "@partials/create/CreateCategory.vue"
+---
+
+<Layout
+	title="Create Category"
+	description="Faterium Decentralized Application to work with Faterium Network."
+	coverUrl="https://dapp.faterium.com/preview.png"
+>
+	<Header client:only />
+	<CreateCategory client:only />
+</Layout>

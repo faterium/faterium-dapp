@@ -6,17 +6,6 @@ test("Meta Title is correct", async ({ page }) => {
 	await expect(page).toHaveTitle("Faterium dApp")
 })
 
-test("Base usage test", async ({ page }) => {
-	await page.goto("http://localhost:3000/")
-	await page.getByRole("heading", { name: "Trending Polls" }).click()
-	await page.getByRole("link", { name: "Polkadot ecosystem and socials networks? Polkadot @polkadot" }).click()
-	await page.getByRole("link", { name: "poll preview" }).click()
-	await page.getByRole("link", { name: "twitter", exact: true }).click({
-		modifiers: ["Meta"]
-	})
-	await expect(page).toHaveTitle("Faterium Community")
-})
-
 test("Create community test", async ({ page }) => {
 	await page.goto("http://localhost:3000/")
 	await page.getByRole("banner").getByRole("link", { name: "Create" }).click()
@@ -33,4 +22,25 @@ test("Create community test", async ({ page }) => {
 	await page.setInputFiles(".featured-image input[type='file']", "./public/preview.png")
 	await page.getByRole("button", { name: "Create community" }).click()
 	await page.getByRole("button", { name: "Cool, take me there!" }).click()
+})
+
+test("Create category test", async ({ page }) => {
+	await page.goto("http://localhost:3000/")
+	await page.getByRole("banner").getByRole("link", { name: "Create" }).click()
+	await page.getByRole("link", { name: "Create category" }).click()
+	await page.getByRole("textbox", { name: "e.g. Books" }).click()
+	const i = Math.floor(Math.random() * 100000)
+	await page.getByRole("textbox", { name: "e.g. Books" }).fill(`Cat-${i}`)
+	await page.getByRole("textbox", { name: "Provide a description for the category." }).click()
+	await page.getByRole("textbox", { name: "Provide a description for the category." }).fill("Description")
+	await page.setInputFiles(".icon-image input[type='file']", "./public/preview.png")
+	await page.getByRole("button", { name: "Create category" }).click()
+	await page.getByRole("button", { name: "Cool, take me there!" }).click()
+})
+
+test("Base usage test", async ({ page }) => {
+	await page.goto("http://localhost:3000/")
+	await page.getByRole("heading", { name: "Trending Polls" }).click()
+	await page.getByRole("link", { name: "Community Test" }).first().click()
+	await expect(page).toHaveTitle("Faterium Community")
 })

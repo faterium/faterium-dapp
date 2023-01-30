@@ -38,7 +38,7 @@ main.content.section(:class="{ category: !!category }")
 
 <style lang="scss" scoped>
 .content {
-	@apply flex flex-col w-full relative justify-start items-center pt-24 pb-12;
+	@apply flex flex-col w-full min-h-150 relative justify-start items-center pt-24 pb-12;
 	.wrapper {
 		@apply flex flex-col justify-center items-center z-2;
 		h2.title {

@@ -38,10 +38,30 @@ PUBLIC_NETWORK=testnet yarn dev
 
 If you want to run tests - make sure you have installed all required [PlayWright](https://playwright.dev/docs/intro) dependencies for your system.
 
-Then you can launch all tests by simple command:
+And you have local services up and running. To run `server` and `node` locally - run the following `docker-compose` command in the root of this directory:
+
+```sh
+docker-compose up -d
+```
+
+After services are launched - you can launch all End-to-End tests by simple command:
 
 ```sh
 yarn test
 ```
 
-It will launch all PlayWright tests and create report.
+It will launch all PlayWright tests against local services and create report.
+
+To stop and remove services - use the following command:
+
+```sh
+docker-compose down
+```
+
+## Testing against testnet
+
+If you want to test against testnet server for some reason - you can launch this command instead:
+
+```sh
+PUBLIC_NETWORK=testnet yarn test
+```

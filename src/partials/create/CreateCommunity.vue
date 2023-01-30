@@ -10,7 +10,12 @@ import {
 	FormInput,
 	ListItemOption,
 } from "@components/inputs"
-import { connectPB, PocketBase, CommunityDetails } from "@utils/index"
+import {
+	connectPB,
+	PocketBase,
+	simplifyError,
+	CommunityDetails,
+} from "@utils/index"
 import BasePage from "./basePage.vue"
 
 interface Props {
@@ -71,8 +76,7 @@ const submit = async () => {
 				title: `Error during ${
 					props.isUser ? "user" : "community"
 				} upload!`,
-				text: `Server returned ${err.status} error.
-			It may happen if you specified invalid details!`,
+				html: `Server returned error: </br> ${simplifyError(err)}`,
 				icon: "error",
 				confirmButtonText: "Cool, let me fix it!",
 			})

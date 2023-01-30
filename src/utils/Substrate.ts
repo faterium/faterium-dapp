@@ -7,11 +7,24 @@ import dayjs from "dayjs"
 import { decodeAddress, signatureVerify } from "@polkadot/util-crypto"
 import { u8aToHex } from "@polkadot/util"
 import { PollDetails } from "./PollDetails"
-import { PocketBase } from "./PocketBase"
-import { NODE_API } from "./consts"
+import { PocketBase, simplifyError } from "./PocketBase"
+import { APPS_URL, NODE_API } from "./consts"
 
 export { ApiPromise } from "@polkadot/api"
 export { web3Accounts, web3Enable, web3FromSource } from "@polkadot/extension-dapp"
+
+const handleSubstrateError = (status) => {
+	Swal.fire({
+		title: "Error during transaction!",
+		text: "Substrate Node returned an error, click button below to see more details.",
+		icon: "error",
+		confirmButtonText: "Open explorer",
+	}).then((result) => {
+		if (result.isConfirmed) {
+			window.open(`${APPS_URL}/#/explorer/query/${status.asInBlock.toString()}`, "_blank")
+		}
+	})
+}
 
 export const connectToNode = async () => {
 	const wsProvider = new WsProvider(NODE_API)
@@ -32,7 +45,10 @@ export const connectToNode = async () => {
 	return api
 }
 
-export const getAccounts = async () => {
+export const getAccount = async () => {
+	// const keyring = new Keyring({ type: "sr25519" })
+	// const alice = keyring.addFromUri("//Alice")
+
 	// This call fires up the authorization popup
 	const extensions = await web3Enable("my cool dapp")
 	if (extensions.length === 0) {
@@ -44,7 +60,7 @@ export const getAccounts = async () => {
 	// will be able to show and use accounts
 	const allAccounts = await web3Accounts()
 	// eslint-disable-next-line consistent-return
-	return allAccounts
+	return allAccounts[0]
 }
 
 export const isValidSignature = (signedMessage, signature, address) => {
@@ -62,9 +78,7 @@ export const substrateCreatePoll = async (
 	selectedCurrency: { name: string, value: string | null },
 	multipleVotes: boolean,
 ) => {
-	const accounts = await getAccounts()
-	const account = accounts[0]
-	console.log("account", account)
+	const account = await getAccount()
 	// To be able to retrieve the signer interface from this account
 	// we can use web3FromSource which will return an InjectedExtension type
 	const injector = await web3FromSource(account.meta.source)
@@ -132,12 +146,7 @@ export const substrateCreatePoll = async (
 							window.location.replace(`/polls/${poll.id}`)
 						})
 					} else {
-						Swal.fire({
-							title: "Error during poll creation transaction!",
-							text: `Server returned the following error: ${actualResultError}`,
-							icon: "error",
-							confirmButtonText: "Cool, let me fix it!",
-						})
+						handleSubstrateError(status)
 					}
 				} else {
 					Swal.fire({
@@ -154,18 +163,15 @@ export const substrateCreatePoll = async (
 		)
 		.catch((error: Error) => {
 			Swal.fire({
-				title: "Error during poll creation transaction!",
-				text: `Server returned the following error: ${error}`,
+				title: "Error during asset creation!",
+				text: `Unexpected error: ${JSON.stringify(error)}`,
 				icon: "error",
-				confirmButtonText: "Cool, let me fix it!",
 			})
 		})
 }
 
 export const voteOnPoll = async (poll: PollDetails) => {
-	const accounts = await getAccounts()
-	const account = accounts[0]
-	console.log("account", account)
+	const account = await getAccount()
 	// To be able to retrieve the signer interface from this account
 	// we can use web3FromSource which will return an InjectedExtension type
 	const injector = await web3FromSource(account.meta.source)
@@ -199,12 +205,7 @@ export const voteOnPoll = async (poll: PollDetails) => {
 							confirmButtonText: "Cool!",
 						})
 					} else {
-						Swal.fire({
-							title: "Error during vote transaction!",
-							text: `Server returned the following error: ${actualResultError}`,
-							icon: "error",
-							confirmButtonText: "Cool, let me fix it!",
-						})
+						handleSubstrateError(status)
 					}
 				} else if (status.isFinalized) {
 					// do nothing
@@ -223,19 +224,16 @@ export const voteOnPoll = async (poll: PollDetails) => {
 		)
 		.catch((error: Error) => {
 			Swal.fire({
-				title: "Error during vote transaction!",
-				text: `Server returned the following error: ${error}`,
+				title: "Error during asset creation!",
+				text: `Unexpected error: ${JSON.stringify(error)}`,
 				icon: "error",
-				confirmButtonText: "Cool, let me fix it!",
 			})
 		})
 }
 
 // Call substrate FateriumPolls Vote extrinsic
 export const collectFromPoll = async (poll: PollDetails) => {
-	const accounts = await getAccounts()
-	const account = accounts[0]
-	console.log("account", account)
+	const account = await getAccount()
 	// To be able to retrieve the signer interface from this account
 	// we can use web3FromSource which will return an InjectedExtension type
 	const injector = await web3FromSource(account.meta.source)
@@ -270,12 +268,7 @@ export const collectFromPoll = async (poll: PollDetails) => {
 							confirmButtonText: "Cool!",
 						})
 					} else {
-						Swal.fire({
-							title: "Error during collect transaction!",
-							text: `Server returned the following error: ${actualResultError}`,
-							icon: "error",
-							confirmButtonText: "Cool, let me fix it!",
-						})
+						handleSubstrateError(status)
 					}
 				} else if (status.isFinalized) {
 					// do nothing
@@ -294,12 +287,95 @@ export const collectFromPoll = async (poll: PollDetails) => {
 		)
 		.catch((error: Error) => {
 			Swal.fire({
-				title: "Error during collect transaction!",
-				text: `Server returned the following error: ${error}`,
+				title: "Error during asset creation!",
+				text: `Unexpected error: ${JSON.stringify(error)}`,
 				icon: "error",
-				confirmButtonText: "Cool, let me fix it!",
 			})
 		})
+}
+
+export const substrateCreateAssetInner = async (
+	pb: PocketBase,
+	api: ApiPromise,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	account: any,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	injector: any,
+	formData: {
+		icon: string,
+		name: string,
+		symbol: string,
+		decimals: number,
+		minBalance: number,
+		assetId: number,
+	}
+) => {
+	api.tx.assets.setMetadata(formData.assetId, formData.name, formData.symbol, formData.decimals)
+		.signAndSend(
+			account.address,
+			{ signer: injector.signer },
+			async ({ events: e = [], status: s }) => {
+				if (s.isInBlock) {
+					console.log("Status:", s);
+					console.log("Events:", e);
+					let aResultError = ""
+					e.forEach(({ event: { data, method, section }, phase }) => {
+						console.log("\t", phase.toString(), `: ${section}.${method}`, data.toString())
+						if (method === "ExtrinsicFailed") {
+							aResultError = data.toString()
+						}
+					})
+					Swal.close()
+					if (aResultError === "") {
+						console.log("Upload data", formData)
+						const formDataValue = new FormData()
+						Object.keys(formData).forEach((k) => {
+							formDataValue.append(k, formData[k])
+						})
+						await pb
+							.collection("assets")
+							.create(formDataValue)
+							.then(() => {
+								Swal.fire({
+									title: "Successfully created!",
+									text: `Completed at block hash #${s.asInBlock.toString()}! To mint open @polkadot/apps`,
+									icon: "success",
+									confirmButtonText: "Cool!",
+								}).then((result) => {
+									if (result.isConfirmed) {
+										window.open(`${APPS_URL}/#/assets`, "_blank")
+										window.location.replace("/create")
+									}
+								})
+							})
+							.catch(
+								(err) => {
+									Swal.fire({
+										title: "Error during asset details upload!",
+										html: `Server returned error: </br> ${simplifyError(err)}`,
+										icon: "error",
+										confirmButtonText: "Cool, let me fix it!",
+									})
+								},
+							)
+					} else {
+						handleSubstrateError(s)
+					}
+				} else if (s.isFinalized) {
+				// do nothing
+				} else {
+					Swal.fire({
+						title: `Please wait until extrinsic completion. Status: ${s.type}.`,
+						toast: true,
+						position: "bottom-right",
+						timerProgressBar: true,
+						timer: 3000,
+						showConfirmButton: false,
+						didOpen: () => Swal.showLoading(null),
+					})
+				}
+			}
+		)
 }
 
 export const substrateCreateAsset = async (
@@ -313,9 +389,7 @@ export const substrateCreateAsset = async (
 		assetId: number,
 	}
 ) => {
-	const accounts = await getAccounts()
-	const account = accounts[0]
-	console.log("account", account)
+	const account = await getAccount()
 	// To be able to retrieve the signer interface from this account
 	// we can use web3FromSource which will return an InjectedExtension type
 	const injector = await web3FromSource(account.meta.source)
@@ -337,63 +411,9 @@ export const substrateCreateAsset = async (
 					})
 					Swal.close()
 					if (actualResultError === "") {
-						api.tx.assets.setMetadata(formData.assetId, formData.name, formData.symbol, formData.decimals)
-							.signAndSend(
-								account.address,
-								{ signer: injector.signer },
-								async ({ events: e = [], status: s }) => {
-									if (s.isInBlock) {
-										console.log("Events:", e);
-										let aResultError = ""
-										e.forEach(({ event: { data, method, section }, phase }) => {
-											console.log("\t", phase.toString(), `: ${section}.${method}`, data.toString())
-											if (method === "ExtrinsicFailed") {
-												aResultError = data.toString()
-											}
-										})
-										Swal.close()
-										if (aResultError === "") {
-											console.log("Upload data", formData)
-											const formDataValue = new FormData()
-											Object.keys(formData).forEach((k) => {
-												formDataValue.append(k, formData[k])
-											})
-											await pb
-												.collection("assets")
-												.create(formDataValue)
-
-											Swal.fire({
-												title: "Successfully created!",
-												text: `Completed at block hash #${s.asInBlock.toString()}! To mint open @polkadot/apps`,
-												icon: "success",
-												confirmButtonText: "Cool!",
-											}).then((_) => {
-												window.open("https://dapp-apps.faterium.com/#/assets", "_blank")
-												window.location.replace("/create")
-											})
-										}
-									} else if (s.isFinalized) {
-										// do nothing
-									} else {
-										Swal.fire({
-											title: `Please wait until extrinsic completion. Status: ${s.type}.`,
-											toast: true,
-											position: "bottom-right",
-											timerProgressBar: true,
-											timer: 3000,
-											showConfirmButton: false,
-											didOpen: () => Swal.showLoading(null),
-										})
-									}
-								}
-							)
+						substrateCreateAssetInner(pb, api, account, injector, formData)
 					} else {
-						Swal.fire({
-							title: "Error during asset creation!",
-							text: `Server returned the following error: ${actualResultError}`,
-							icon: "error",
-							confirmButtonText: "Cool, let me fix it!",
-						})
+						handleSubstrateError(status)
 					}
 				} else if (status.isFinalized) {
 					// do nothing
@@ -413,9 +433,8 @@ export const substrateCreateAsset = async (
 		.catch((error: Error) => {
 			Swal.fire({
 				title: "Error during asset creation!",
-				text: `Server returned the following error: ${error}`,
+				text: `Unexpected error: ${JSON.stringify(error.message)}`,
 				icon: "error",
-				confirmButtonText: "Cool, let me fix it!",
 			})
 		})
 }

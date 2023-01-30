@@ -11,7 +11,7 @@ import {
 	ListItemOption,
 	ListItemBeneficiary,
 } from "@components/inputs"
-import { connectPB, PocketBase, PollDetails } from "@utils/index"
+import { connectPB, PocketBase, simplifyError, PollDetails } from "@utils/index"
 import { substrateCreatePoll } from "@utils/Substrate"
 import BasePage from "./basePage.vue"
 
@@ -79,8 +79,7 @@ const submit = async () => {
 	const image = await uploadFile(pb).catch((err) => {
 		Swal.fire({
 			title: "Error on image upload!",
-			text: `Server returned ${err.status} error.
-			It may happen if you uploaded image that is not specified or invalid!`,
+			html: `Server returned error: </br> ${simplifyError(err)}`,
 			icon: "error",
 			confirmButtonText: "I will try again!",
 		})
@@ -111,8 +110,7 @@ const submit = async () => {
 	const pollRes = await uploadPollDetails(pb, data).catch((err) => {
 		Swal.fire({
 			title: "Error during poll details upload!",
-			text: `Server returned ${err.status} error.
-			It may happen if you specified invalid poll details!`,
+			html: `Server returned error: </br> ${simplifyError(err)}`,
 			icon: "error",
 			confirmButtonText: "Cool, let me fix it!",
 		})

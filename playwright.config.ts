@@ -15,7 +15,7 @@ const config: PlaywrightTestConfig = {
 		},
 	],
 	webServer: {
-	  command: "PUBLIC_NETWORK=testnet yarn start",
+	  command: "yarn start",
 	  port: 3000,
 	},
 }

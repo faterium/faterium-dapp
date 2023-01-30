@@ -6,3 +6,7 @@ export const SERVER_API = import.meta.env.PUBLIC_NETWORK === "testnet"
 export const NODE_API = import.meta.env.PUBLIC_NETWORK === "testnet"
 	? "wss://dapp-node.faterium.com"
 	: "ws://127.0.0.1:9944"
+
+export const APPS_URL = import.meta.env.PUBLIC_NETWORK === "testnet"
+	? "https://dapp-apps.faterium.com"
+	: "http://127.0.0.1:8000"

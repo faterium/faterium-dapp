@@ -26,13 +26,21 @@ const fileChanged = (event: Event) => {
 }
 const submit = async () => {
 	submitDisabled.value = true
+	if (formData.value.minBalance < 1) {
+		Swal.fire({
+			title: "Minimum balance should be more than zero!",
+			icon: "error",
+			confirmButtonText: "Let me fix!",
+		})
+		return
+	}
 	const pb = connectPB()
 	// Call substrate CreateAsset extrinsic
 	await substrateCreateAsset(pb, formData.value).catch((reason) => {
 		console.error(reason)
 		Swal.fire({
 			title: "Error during substrate asset creation!",
-			text: `Got the following error: ${reason}.`,
+			text: `Got the following error: ${JSON.stringify(reason)}.`,
 			icon: "error",
 			confirmButtonText: "Cool, let me try again!",
 		})
