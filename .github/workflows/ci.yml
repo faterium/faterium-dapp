@@ -1,5 +1,7 @@
 name: CI
-on: [push]
+on:
+  push:
+    branches: [main]
 jobs:
 
   check:
@@ -26,4 +28,6 @@ jobs:
       - name: Install dependencies and build
         run: yarn && yarn build
       - name: Run tests
-        run: npx playwright install && yarn test
+        run: |
+          npx playwright install
+          PUBLIC_NETWORK=testnet yarn test
