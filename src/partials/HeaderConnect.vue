@@ -33,6 +33,9 @@ const loadProfiles = async () => {
 			changeSignedUser(user)
 		}
 	})
+	if (res.length <= 0) {
+		changeSignedUser(null)
+	}
 }
 const onClickConnect = async () => {
 	const allInjected = await web3Enable("Faterium dApp")

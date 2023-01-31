@@ -14,7 +14,7 @@ export const signedUser = persistentAtom<User | null>("signedUser", null, {
 	decode: JSON.parse,
 })
 
-export const changeSignedUser = action(signedUser, "changeSignedUser", (store, user: User) => {
+export const changeSignedUser = action(signedUser, "changeSignedUser", (store, user: User | null) => {
 	store.set(user)
 })
 export const addUser = action(users, "addUser", (store, user: User) => {
