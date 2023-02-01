@@ -23,13 +23,13 @@ import BasePage from "./basePage.vue"
 interface Props {
 	isUser?: boolean
 	userDetails?: CommunityDetails
-	categories: CategoryDetails[]
+	categories?: CategoryDetails[]
 }
 const props = defineProps<Props>()
 const currentUser = useStore(signedUser)
 
 const prepCat = (val: CategoryDetails) => `${val.id} - @${val.name}`
-const getCategories = () => props.categories.map(prepCat)
+const getCategories = () => props.categories?.map(prepCat)
 const submitDisabled = ref(false)
 const formData = ref({
 	name: "",
@@ -65,7 +65,7 @@ const submit = async () => {
 	submitDisabled.value = true
 	const pb = connectPB()
 	const parsedCat = formData.value.category.split(" - ")
-	if (parsedCat.length < 2) {
+	if (props.categories && parsedCat.length < 2) {
 		Swal.fire({
 			title: "Selected invalid category!",
 			icon: "error",
@@ -83,7 +83,7 @@ const submit = async () => {
 	})
 	const formDataValue = new FormData()
 	Object.keys(formData.value).forEach((k) => {
-		if (k === "category") {
+		if (k === "category" && props.categories) {
 			formDataValue.append(k, parsedCat[0])
 		} else {
 			formDataValue.append(k, formData.value[k])
@@ -177,6 +177,7 @@ BasePage(
 		br
 		| Max size: 5 MB. Preferred aspect ratio: 600px x 400px.
 	FormDropdownInput.category(
+		v-if="categories"
 		title="Category"
 		placeholder="e.g. Books"
 		v-model="formData.category"
