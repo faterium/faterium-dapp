@@ -4,6 +4,7 @@ import CommunityItem from "@components/CommunityItem.vue"
 import { CommunityDetails } from "@utils/index"
 
 interface Props {
+	category?: string
 	limit?: number
 	marginTop?: boolean
 	communities: CommunityDetails[]
@@ -16,12 +17,16 @@ const getCommunities = () => {
 		.map((val) => Object.assign(new CommunityDetails(null), val))
 		.slice(0, props.limit || 1000)
 }
+const getTitle = () => {
+	if (props.category) return `Communities for ${props.category}`
+	return !props.limit ? "All communities" : "Featured communities"
+}
 </script>
 
 <template lang="pug">
 main.content.section(:class="{ marginTop }")
 	div.wrapper
-		h2.title {{ !limit ? "All communities" : "Featured communities" }}
+		h2.title {{ getTitle() }}
 		div.communities
 			CommunityItem(
 				v-for="(community, index) of getCommunities()"

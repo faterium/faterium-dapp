@@ -2,6 +2,16 @@
 import Layout from "@layouts/Layout.astro"
 import Header from "@partials/Header.vue"
 import CreateCommunity from "@partials/create/CreateCommunity.vue"
+import { connectPB, CategoryDetails } from "@utils/index"
+
+const loadCategories = async () => {
+	const pb = connectPB()
+	const result = await pb.collection("categories").getFullList(0, {
+		sort: "-created",
+	})
+	return result.map((val) => new CategoryDetails(val))
+}
+const categories = await loadCategories()
 ---
 
 <Layout
@@ -10,5 +20,5 @@ import CreateCommunity from "@partials/create/CreateCommunity.vue"
 	coverUrl="https://dapp.faterium.com/preview.png"
 >
 	<Header client:only />
-	<CreateCommunity client:only />
+	<CreateCommunity client:only categories={categories} />
 </Layout>

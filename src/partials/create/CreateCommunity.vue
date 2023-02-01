@@ -8,6 +8,7 @@ import {
 	ListInput,
 	MediaInput,
 	FormInput,
+	FormDropdownInput,
 	ListItemOption,
 } from "@components/inputs"
 import {
@@ -15,16 +16,20 @@ import {
 	PocketBase,
 	simplifyError,
 	CommunityDetails,
+	CategoryDetails,
 } from "@utils/index"
 import BasePage from "./basePage.vue"
 
 interface Props {
 	isUser?: boolean
 	userDetails?: CommunityDetails
+	categories: CategoryDetails[]
 }
 const props = defineProps<Props>()
 const currentUser = useStore(signedUser)
 
+const prepCat = (val: CategoryDetails) => `${val.id} - @${val.name}`
+const getCategories = () => props.categories.map(prepCat)
 const submitDisabled = ref(false)
 const formData = ref({
 	name: "",
@@ -34,6 +39,7 @@ const formData = ref({
 	bannerImage: null,
 	featuredImage: null,
 	team: [signedUser.get() !== null ? signedUser.get().id : ""],
+	category: "",
 	linkTwitter: "",
 	linkDiscord: "",
 	linkYoutube: "",
@@ -58,6 +64,15 @@ const uploadCommunityDetails = async (pb: PocketBase, data: any) => {
 const submit = async () => {
 	submitDisabled.value = true
 	const pb = connectPB()
+	const parsedCat = formData.value.category.split(" - ")
+	if (parsedCat.length < 2) {
+		Swal.fire({
+			title: "Selected invalid category!",
+			icon: "error",
+			confirmButtonText: "I will fix it!",
+		})
+		return
+	}
 	Swal.fire({
 		title: "Please wait, uploading images to the server...",
 		toast: true,
@@ -68,7 +83,11 @@ const submit = async () => {
 	})
 	const formDataValue = new FormData()
 	Object.keys(formData.value).forEach((k) => {
-		formDataValue.append(k, formData.value[k])
+		if (k === "category") {
+			formDataValue.append(k, parsedCat[0])
+		} else {
+			formDataValue.append(k, formData.value[k])
+		}
 	})
 	const communityRes = await uploadCommunityDetails(pb, formDataValue).catch(
 		(err) => {
@@ -157,6 +176,13 @@ BasePage(
 		| File types supported: JPG, PNG, GIF, SVG.
 		br
 		| Max size: 5 MB. Preferred aspect ratio: 600px x 400px.
+	FormDropdownInput.category(
+		title="Category"
+		placeholder="e.g. Books"
+		v-model="formData.category"
+		:datalist="getCategories()"
+		required
+	) In what category this community will be created.
 	//- ListInput.team(
 	//- 	:itemComponent="ListItemOption"
 	//- 	title="Community team"

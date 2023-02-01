@@ -75,7 +75,7 @@ div.form-select-input {
 		}
 	}
 	input.text {
-		@apply p-3 mt-3 rounded-4px w-full;
+		@apply p-3 mt-3 rounded-4px w-full bg-gray-100;
 	}
 }
 </style>

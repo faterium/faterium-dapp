@@ -8,20 +8,37 @@ import {
 	MediaInput,
 	FormInput,
 	FormSelectInput,
+	FormDropdownInput,
 	ListItemOption,
 	ListItemBeneficiary,
 } from "@components/inputs"
-import { connectPB, PocketBase, simplifyError, PollDetails } from "@utils/index"
+import {
+	connectPB,
+	PocketBase,
+	simplifyError,
+	PollDetails,
+	CommunityDetails,
+} from "@utils/index"
 import { substrateCreatePoll } from "@utils/Substrate"
 import BasePage from "./basePage.vue"
 
 interface Props {
 	communityId?: string
+	communities: CommunityDetails[]
 }
 const props = defineProps<Props>()
 
 const fileFormData = new FormData()
 const submitDisabled = ref(false)
+
+const prepCom = (val: CommunityDetails) =>
+	`${val.id} - @${val.name} - ${val.displayName}`
+const getCommunities = () => props.communities.map(prepCom)
+const getCom = () => {
+	const com = props.communities.find((v) => v.id === props.communityId)
+	if (!com) return ""
+	return prepCom(com)
+}
 const formData = ref({
 	title: "",
 	image: "",
@@ -37,6 +54,7 @@ const formData = ref({
 		selected: "Native",
 	},
 	goal: "",
+	community: getCom(),
 	multipleVotes: {
 		items: {
 			Allow: null,
@@ -92,6 +110,15 @@ const submit = async () => {
 		position: "bottom-right",
 		showConfirmButton: false,
 	})
+	const parsedCom = formData.value.community.split(" - ")
+	if (parsedCom.length < 3) {
+		Swal.fire({
+			title: "Selected invalid community!",
+			icon: "error",
+			confirmButtonText: "I will fix it!",
+		})
+		return
+	}
 	const data = {
 		title: formData.value.title,
 		description: formData.value.description,
@@ -105,7 +132,7 @@ const submit = async () => {
 			dayjs(formData.value.dateEnd, "YYYY-MM-DD HH:mm:ss.SSS[Z]"),
 		),
 		image: image.id,
-		community: props.communityId,
+		community: parsedCom[0],
 	}
 	const pollRes = await uploadPollDetails(pb, data).catch((err) => {
 		Swal.fire({
@@ -214,6 +241,13 @@ BasePage(title="Create poll" :submitButton="submitButton")
 		type="number"
 		required
 	) The minimum target amount of tokens to make poll happen.
+	FormDropdownInput.community(
+		title="Community"
+		placeholder="e.g. @community"
+		v-model="formData.community"
+		:datalist="getCommunities()"
+		required
+	) In what community this poll will be posted.
 	FormSelectInput.multiple-votes(
 		title="Multiple votes"
 		v-model="formData.multipleVotes"

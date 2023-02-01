@@ -49,10 +49,14 @@ main.content.section
 	)
 	div.wrapper
 		div.top-block
-			a(:href="`/communities/${parsedPoll.community.name}`"): img.profile-image(
-				:src="parsedPoll.community.logoImage"
-				alt="poll preview"
-			)
+			a(:href="`/communities/${parsedPoll.community.name}`")
+				img.profile-image(
+					:src="parsedPoll.community.logoImage"
+					alt="poll preview"
+				)
+				div.right
+					h3.name @{{ parsedPoll.community.name }}
+					h3.display {{ parsedPoll.community.displayName }}
 		h1.title {{ parsedPoll.title }}
 		p.description {{ parsedPoll.description }}
 		div.info-block
@@ -67,6 +71,7 @@ main.content.section
 				title="Voting options"
 				:inputSettings=`[]`
 				v-model="parsedPoll.options"
+				required
 			)
 		div.actions
 			Button.action.create(
@@ -83,14 +88,26 @@ main.content.section
 .content {
 	@apply flex flex-col w-100vw relative justify-center items-center;
 	img.preview {
-		@apply mt-60px w-screen max-h-120 max-h-120 object-cover;
+		@apply mt-60px w-screen min-h-20 h-full max-h-120 object-cover;
 	}
 	.wrapper {
 		@apply flex flex-col justify-start items-start z-2 w-160 h-full pt-40px;
 		div.top-block {
-			@apply flex flex-row justify-between -mt-22 w-full;
+			@apply flex flex-row justify-between -mt-22 mb-6 w-full;
+			a {
+				@apply flex gap-4;
+			}
 			.profile-image {
 				@apply object-cover object-center h-24 w-24 rounded-xl border-4 border-white;
+			}
+			div.right {
+				@apply flex flex-col justify-end;
+				h3.display {
+					@apply font-bold text-sm;
+				}
+				h3.name {
+					@apply font-bold my-1 text-sm;
+				}
 			}
 		}
 		h1.title {
@@ -107,7 +124,7 @@ main.content.section
 			@apply my-12 w-full;
 		}
 		div.actions {
-			@apply flex flex-row gap-4 mb-10;
+			@apply flex flex-row gap-4 mb-24;
 			.create {
 				@apply bg-green-500 hover:bg-green-400;
 			}

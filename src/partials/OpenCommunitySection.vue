@@ -129,7 +129,7 @@ main.content.section
 .content {
 	@apply flex flex-col w-100vw relative justify-center items-center;
 	img.preview {
-		@apply mt-60px w-screen max-h-120 max-h-120 object-cover px-14;
+		@apply mt-60px w-screen min-h-20 h-full max-h-120 object-cover px-14;
 	}
 	.wrapper {
 		@apply flex flex-col justify-start items-start z-2 w-268 h-full pt-40px;

@@ -11,7 +11,17 @@ const loadCommunity = async () => {
 	const val = await pb.collection("communities").getFirstListItem(`name="${communityName}"`)
 	return new CommunityDetails(val)
 }
+const loadCommunities = async () => {
+	const pb = connectPB()
+	const result = await pb.collection("communities").getFullList(0, {
+		filter: "isUser = false",
+		sort: "-created",
+		expand: "category",
+	})
+	return result.map((val) => new CommunityDetails(val))
+}
 const community = await loadCommunity().catch(() => {})
+const communities = await loadCommunities()
 ---
 
 <Layout
@@ -20,5 +30,5 @@ const community = await loadCommunity().catch(() => {})
 	coverUrl="https://dapp.faterium.com/preview.png"
 >
 	<Header client:only />
-	<CreatePoll client:only communityId={!community ? null : community.id} />
+	<CreatePoll client:only communityId={!community ? null : community.id} communities={communities} />
 </Layout>
